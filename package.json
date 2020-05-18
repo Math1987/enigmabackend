@@ -1,11 +1,12 @@
 {
   "name": "base_typescript",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently -k -n \"Typescript, Node\" -p\"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/index.js\""
+    "dev": "concurrently -k -n \"Typescript, Node\" -p\"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/index.js\"",
+    "release": "standard-version"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "@types/node": "^13.13.5",
     "concurrently": "^5.2.0",
     "nodemon": "^2.0.3",
+    "standard-version": "^8.0.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
