@@ -4,12 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const socket_1 = require("./socket");
-const PORT = 7070;
+const socket_handler_1 = require("./socket.handler");
+const https_handler_1 = require("./https.handler");
+const data_1 = require("./data/data");
+const PORT = 4040;
 const app = express_1.default();
 app.set("port", PORT);
 const http = require("http").Server(app);
-socket_1.SocketHandler.init(http);
+https_handler_1.HttpsHandler.init(app);
+socket_handler_1.SocketHandler.init(http);
+data_1.Data.init(function (data) {
+});
 app.get('/', function (req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader("Access-Control-Allow-Origin", "*");

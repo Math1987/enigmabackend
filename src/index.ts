@@ -1,12 +1,19 @@
 import express, {NextFunction, Request, Response} from 'express';
-import {SocketHandler} from "./socket";
-const PORT = 7070 ;
+import {SocketHandler} from "./socket.handler";
+import {HttpsHandler} from "./https.handler";
+import {Data} from "./data/data";
+const PORT = 4040 ;
 
 const app = express();
 app.set("port", PORT);
 const http = require("http").Server(app);
 
+HttpsHandler.init(app);
 SocketHandler.init(http);
+
+Data.init(function (data) {
+
+});
 
 
 app.get('/', function (req: Request, res : Response) {
