@@ -1,19 +1,12 @@
 import {Request, Response} from "express";
+import {Data} from "./data/data";
 
 export class HttpsHandler{
 
     static app = null ;
 
-    static init(app){
-
+    static init(app) {
         HttpsHandler.app = app ;
-        app.get('/test', function (req: Request, res : Response) {
-            res.setHeader('Content-Type', 'text/plain');
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send('test');
-        });
-
-
     }
 
 }

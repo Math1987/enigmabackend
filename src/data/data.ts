@@ -29,9 +29,10 @@ export class Data{
     static initAccount(callBack){
         Data.CONNECTION.query(`
         create table if not exists ${Data.ACCOUNT}(
-        id INT PRIMARY KEY,
+        id INT PRIMARY KEY AUTO_INCREMENT,
         email varchar(154),
         password text,
+        name varchar(154),
         admin INT
         )
         `, function (err, res) {
@@ -42,6 +43,72 @@ export class Data{
                 callBack(res);
             }
 
+        });
+    }
+    static checkAccount(email:string, callBack){
+        Data.CONNECTION.query(`
+        SELECT email from ${Data.ACCOUNT}
+        WHERE email = "${email}"
+        `, function (err, res) {
+            if ( err ){
+                console.error(err);
+                callBack(null);
+            }else{
+                if ( res && res.length > 0 ){
+                    callBack(true);
+                }else{
+                    callBack(false);
+                }
+            }
+        });
+    }
+    static checkAccountName(name:string, callBack){
+        Data.CONNECTION.query(`
+        SELECT email from ${Data.ACCOUNT}
+        WHERE name = "${name}"
+        `, function (err, res) {
+            if ( err ){
+                console.error(err);
+                callBack(null);
+            }else{
+                if ( res && res.length > 0 ){
+                    callBack(true);
+                }else{
+                    callBack(false);
+                }
+            }
+        });
+    }
+    static createAccount(email:string, password:string, name: string, admin:number, callBack){
+        Data.CONNECTION.query(`
+        INSERT INTO ${Data.ACCOUNT}
+        (id, email, password, name, admin)
+        VALUES (0, "${email}", MD5("${password}"), "${name}", ${admin})
+        `, function (err, res) {
+            if (err){
+                console.error(err);
+                callBack(null);
+            }else{
+                callBack({email: email, password: password});
+            }
+        })
+    }
+    static readAccount(email, password, callBack){
+        Data.CONNECTION.query(`
+        SELECT * FROM ${Data.ACCOUNT} 
+        WHERE email = "${email}" AND password = MD5("${password}")
+        `, function (err, res) {
+           if ( err ){
+               console.error(err);
+               callBack(null);
+           }else{
+               if ( res && res.length > 0 ){
+                   delete res[0]['password'];
+                   callBack(res[0]);
+               }else{
+                   callBack(null)
+               }
+           }
         });
     }
 

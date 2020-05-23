@@ -7,12 +7,17 @@ const express_1 = __importDefault(require("express"));
 const socket_handler_1 = require("./socket.handler");
 const https_handler_1 = require("./https.handler");
 const data_1 = require("./data/data");
+const account_1 = require("./services/account");
+var bodyParser = require("body-parser");
 const PORT = 4040;
 const app = express_1.default();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.set("port", PORT);
 const http = require("http").Server(app);
 https_handler_1.HttpsHandler.init(app);
 socket_handler_1.SocketHandler.init(http);
+account_1.AccountService.init();
 data_1.Data.init(function (data) {
 });
 app.get('/', function (req, res) {
