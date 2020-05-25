@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
-import {Data} from "./data/data";
-
+/**
+ * Just give a static environement express for services
+ */
 export class HttpsHandler{
 
     static app = null ;

@@ -1,4 +1,6 @@
-import * as SocketIO from "socket.io";
+/**
+ * Just give a static environement socket.io for services
+ */
 import {HttpBase} from "http";
 import {Socket} from "socket.io";
 

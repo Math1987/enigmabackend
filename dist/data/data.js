@@ -1,5 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Manage DataBase with mysql/mysqljs
+ *
+ * create tables in enigma_db (for dev mode)
+ * handling Account informations (email, name, admin rights etc...),
+ * and worlds informations.
+ */
 class Data {
     static init(callBack) {
         let mysql = require('mysql');
@@ -12,6 +19,12 @@ class Data {
         Data.initAccount(function (account) {
         });
     }
+    /**
+     * Manage Account :
+     * give back infromations form request.
+     * Note that the attributes used in informations must be correct
+     * (if possible not null or wrong types)
+     */
     static initAccount(callBack) {
         Data.CONNECTION.query(`
         create table if not exists ${Data.ACCOUNT}(
@@ -96,7 +109,8 @@ class Data {
             else {
                 if (res && res.length > 0) {
                     delete res[0]['password'];
-                    callBack(res[0]);
+                    let json = JSON.parse(JSON.stringify(res[0]));
+                    callBack(json);
                 }
                 else {
                     callBack(null);
