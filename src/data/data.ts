@@ -17,7 +17,7 @@ export class Data{
     private static ACCOUNT = 'account' ;
     private static WORLDS = 'worlds' ;
 
-    static init(callBack){
+    static init(callBack:CallableFunction){
 
         let mysql = require('mysql');
         Data.CONNECTION = mysql.createConnection({
@@ -40,60 +40,39 @@ export class Data{
      * Note that the attributes used in informations must be correct
      * (if possible not null or wrong types)
      */
-    static initAccount(callBack){
-        Data.CONNECTION.query(`
-        create table if not exists ${Data.ACCOUNT}(
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        email varchar(154),
-        password text,
-        name varchar(154),
-        admin INT
-        )
-        `, function (err, res) {
-            if( err ){
-                console.error(err);
-                callBack(null);
-            }else{
-                callBack(res);
-            }
+    static initAccount(callBack:CallableFunction){
+        let sql = `
+            CREATE TABLE IF NOT EXISTS ${Data.ACCOUNT}(
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            email VARCHAR(154),
+            password text,
+            name VARCHAR(154),
+            admin INT
+            )
+        `
 
-        });
+        Data.successOrFail(sql, callBack)
     }
-    static checkAccount(email:string, callBack){
-        Data.CONNECTION.query(`
-        SELECT email from ${Data.ACCOUNT}
-        WHERE email = "${email}"
-        `, function (err, res) {
-            if ( err ){
-                console.error(err);
-                callBack(null);
-            }else{
-                if ( res && res.length > 0 ){
-                    callBack(true);
-                }else{
-                    callBack(false);
-                }
-            }
-        });
+
+    static checkAccount(email:String, callBack:CallableFunction){
+        let sql = `
+            SELECT email from ${Data.ACCOUNT}
+            WHERE email = "${email}"
+        `
+
+        Data.findOrFail(sql, callBack)
     }
-    static checkAccountName(name:string, callBack){
-        Data.CONNECTION.query(`
-        SELECT email from ${Data.ACCOUNT}
-        WHERE name = "${name}"
-        `, function (err, res) {
-            if ( err ){
-                console.error(err);
-                callBack(null);
-            }else{
-                if ( res && res.length > 0 ){
-                    callBack(true);
-                }else{
-                    callBack(false);
-                }
-            }
-        });
+
+    static checkAccountName(name:String, callBack:CallableFunction){
+        let sql = `
+            SELECT email from ${Data.ACCOUNT}
+            WHERE name = "${name}"
+        `
+
+        Data.findOrFail(sql, callBack)
     }
-    static createAccount(email:string, password:string, name: string, admin:number, callBack){
+
+    static createAccount(email:String, password:String, name:String, admin:Number, callBack:CallableFunction){
         Data.CONNECTION.query(`
         INSERT INTO ${Data.ACCOUNT}
         (id, email, password, name, admin)
@@ -107,7 +86,8 @@ export class Data{
             }
         })
     }
-    static readAccount(email, password, callBack){
+
+    static readAccount(email:String, password:String, callBack:CallableFunction){
         Data.CONNECTION.query(`
         SELECT * FROM ${Data.ACCOUNT} 
         WHERE email = "${email}" AND password = MD5("${password}")
@@ -124,6 +104,45 @@ export class Data{
                    callBack(null)
                }
            }
+        });
+    }
+
+    /**
+     * Query SQL or fail in console
+     * @param sql
+     * @param callBack
+     */
+    protected static successOrFail(sql:String, callBack:CallableFunction){
+        Data.CONNECTION.query(sql
+        , function (err, res) {
+            if( err ){
+                console.error(err);
+                callBack(null);
+            }else{
+                callBack(res);
+            }
+
+        })
+    }
+
+    /**
+     * Find at least one occurrence from SQL statement or fail in console
+     * @param sql
+     * @param callBack
+     */
+    protected static findOrFail(sql:String, callBack:CallableFunction){
+        Data.CONNECTION.query(sql,
+            function (err, res) {
+            if ( err ){
+                console.error(err);
+                callBack(null);
+            }else{
+                if ( res && res.length > 0 ){
+                    callBack(true);
+                }else{
+                    callBack(false);
+                }
+            }
         });
     }
 
