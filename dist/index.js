@@ -14,6 +14,7 @@ const socket_handler_1 = require("./socket.handler");
 const https_handler_1 = require("./https.handler");
 const data_1 = require("./data/data");
 const account_1 = require("./services/account");
+const worlds_1 = require("./services/worlds");
 var bodyParser = require("body-parser");
 const PORT = 4040;
 const app = express_1.default();
@@ -42,6 +43,8 @@ account_1.AccountService.init();
  * Init dataBase using mysqljs
  */
 data_1.Data.init(function (data) {
+    worlds_1.Worlds.init(function (worlds) {
+    });
 });
 /**
  * Set informations in main route.

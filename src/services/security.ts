@@ -2,6 +2,7 @@
  * Security manage token usage with JWT,
  * using a private key write in rsa folder
  */
+import {HttpsHandler} from "../https.handler";
 
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
@@ -10,6 +11,11 @@ const TOKEN_TIME = '900s';
 
 
 export class Security{
+
+
+    static checkSecurity(){
+
+    }
 
     /**
      * createTOken send back a new token from informations (as email, id etc...)

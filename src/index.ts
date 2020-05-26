@@ -10,6 +10,7 @@ import {SocketHandler} from "./socket.handler";
 import {HttpsHandler} from "./https.handler";
 import {Data} from "./data/data";
 import {AccountService} from "./services/account";
+import {Worlds} from "./services/worlds";
 var bodyParser = require("body-parser");
 const PORT = 4040 ;
 
@@ -43,7 +44,9 @@ AccountService.init();
  * Init dataBase using mysqljs
  */
 Data.init(function (data) {
-
+    Worlds.init(function (worlds) {
+        
+    })
 });
 /**
  * Set informations in main route.

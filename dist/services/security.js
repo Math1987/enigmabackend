@@ -1,14 +1,12 @@
 "use strict";
-/**
- * Security manage token usage with JWT,
- * using a private key write in rsa folder
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const RSA_KEY_PRIVATE = fs.readFileSync('dist/rsa/key');
 const TOKEN_TIME = '900s';
 class Security {
+    static checkSecurity() {
+    }
     /**
      * createTOken send back a new token from informations (as email, id etc...)
      */

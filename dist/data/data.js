@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const world_data_1 = require("./world.data");
 /**
  * Manage DataBase with mysql/mysqljs
  *
@@ -8,15 +9,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * and worlds informations.
  */
 class Data {
+    constructor() { }
+    /**
+     * First, create enigma_accounts database if not exist with a main mysql connection db.
+     * Create an account_connection used for the first connection from backend (give back email, id and name)
+     * Check all the enigma's worlds database and create a connection for each stored in WORLDS_CO object
+     * @param callBack: when init finish confirm it with callBack
+     */
     static init(callBack) {
         let mysql = require('mysql');
-        Data.CONNECTION = mysql.createConnection({
+        Data.MAIN_CO = mysql.createConnection({
+            host: Data.HOST,
+            user: Data.USER,
+            password: Data.PASSWORD
+        });
+        Data.MAIN_CO.query(`create database if not exists enigma_accounts`, function (err, res) { });
+        Data.ACCOUNT_CO = mysql.createConnection({
             host: Data.HOST,
             user: Data.USER,
             password: Data.PASSWORD,
-            database: Data.DB_NAME
+            database: Data.ACCOUNT_NAME
         });
         Data.initAccount(function (account) {
+            callBack('init');
+        });
+        world_data_1.WorldData.readWorldsDbs(function (worlds) {
+            if (worlds) {
+                for (let world of worlds) {
+                    Data.WORLDS_CO[world] = mysql.createConnection({
+                        host: Data.HOST,
+                        user: Data.USER,
+                        password: Data.PASSWORD,
+                        database: world
+                    });
+                }
+            }
         });
     }
     /**
@@ -26,65 +53,34 @@ class Data {
      * (if possible not null or wrong types)
      */
     static initAccount(callBack) {
-        Data.CONNECTION.query(`
-        create table if not exists ${Data.ACCOUNT}(
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        email varchar(154),
-        password text,
-        name varchar(154),
-        admin INT
-        )
-        `, function (err, res) {
-            if (err) {
-                console.error(err);
-                callBack(null);
-            }
-            else {
-                callBack(res);
-            }
-        });
+        let sql = `
+            CREATE TABLE IF NOT EXISTS ${Data.ACCOUNT_TABLE}(
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            email VARCHAR(154),
+            password text,
+            name VARCHAR(154),
+            admin INT
+            )
+        `;
+        Data.successOrFail(Data.ACCOUNT_CO, sql, callBack);
     }
     static checkAccount(email, callBack) {
-        Data.CONNECTION.query(`
-        SELECT email from ${Data.ACCOUNT}
-        WHERE email = "${email}"
-        `, function (err, res) {
-            if (err) {
-                console.error(err);
-                callBack(null);
-            }
-            else {
-                if (res && res.length > 0) {
-                    callBack(true);
-                }
-                else {
-                    callBack(false);
-                }
-            }
-        });
+        let sql = `
+            SELECT email from ${Data.ACCOUNT_TABLE}
+            WHERE email = "${email}"
+        `;
+        Data.findOrFail(sql, callBack);
     }
     static checkAccountName(name, callBack) {
-        Data.CONNECTION.query(`
-        SELECT email from ${Data.ACCOUNT}
-        WHERE name = "${name}"
-        `, function (err, res) {
-            if (err) {
-                console.error(err);
-                callBack(null);
-            }
-            else {
-                if (res && res.length > 0) {
-                    callBack(true);
-                }
-                else {
-                    callBack(false);
-                }
-            }
-        });
+        let sql = `
+            SELECT email from ${Data.ACCOUNT_TABLE}
+            WHERE name = "${name}"
+        `;
+        Data.findOrFail(sql, callBack);
     }
     static createAccount(email, password, name, admin, callBack) {
-        Data.CONNECTION.query(`
-        INSERT INTO ${Data.ACCOUNT}
+        Data.ACCOUNT_CO.query(`
+        INSERT INTO ${Data.ACCOUNT_TABLE}
         (id, email, password, name, admin)
         VALUES (0, "${email}", MD5("${password}"), "${name}", ${admin})
         `, function (err, res) {
@@ -98,8 +94,8 @@ class Data {
         });
     }
     static readAccount(email, password, callBack) {
-        Data.CONNECTION.query(`
-        SELECT * FROM ${Data.ACCOUNT} 
+        Data.ACCOUNT_CO.query(`
+        SELECT * FROM ${Data.ACCOUNT_TABLE} 
         WHERE email = "${email}" AND password = MD5("${password}")
         `, function (err, res) {
             if (err) {
@@ -118,11 +114,65 @@ class Data {
             }
         });
     }
+    /**
+     * Query SQL or fail in console
+     * @param sql
+     * @param callBack
+     */
+    static successOrFail(co, sql, callBack) {
+        co.query(sql, function (err, res) {
+            if (err) {
+                callBack(null);
+            }
+            else {
+                callBack(res);
+            }
+        });
+    }
+    /**
+     * Find at least one occurrence from SQL statement or fail in console
+     * @param sql
+     * @param callBack
+     */
+    static findOrFail(sql, callBack) {
+        Data.ACCOUNT_CO.query(sql, function (err, res) {
+            if (err) {
+                console.error(err);
+                callBack(null);
+            }
+            else {
+                if (res && res.length > 0) {
+                    callBack(true);
+                }
+                else {
+                    callBack(false);
+                }
+            }
+        });
+    }
 }
 exports.Data = Data;
+/**
+ * main informations to access to mysql
+ */
 Data.HOST = 'localhost';
 Data.USER = "root";
 Data.PASSWORD = '';
-Data.DB_NAME = "enigma_db";
-Data.ACCOUNT = 'account';
-Data.WORLDS = 'worlds';
+Data.MAIN_CO = null;
+/**
+ * global database informations and conection
+ * about Accounts. Store email, password etc...
+ */
+Data.ACCOUNT_NAME = `enigma_accounts`;
+Data.ACCOUNT_CO = null;
+Data.ACCOUNT_TABLE = 'account';
+/**
+ * All databases concerning worlds.
+ * Each one contain the world "enigma"
+ * and all the tables below.
+ * The table players contain commons informations
+ * with main account database as id and name.
+ */
+Data.WORLDS_CO = {};
+Data.WORLD_TABLE_NAME = `world`;
+Data.PLAYER_TABLE_NAME = `players`;
