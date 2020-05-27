@@ -1,162 +1,72 @@
 import {WorldData} from "./world.data";
+import {AccountData} from "./account.data";
 
 /**
- * Manage DataBase with mysql/mysqljs
- *
- * create tables in enigma_db (for dev mode)
- * handling Account informations (email, name, admin rights etc...),
- * and worlds informations.
+ * Data manage the only database of the game.
+ * There are to kinds of tables: global tables,
+ * as accounts, worlds, containing globals informations,
+ * and world's tables, as world1_players, world1_positions,
+ * world2_players etc... Each world got him tables.
  */
 export class Data{
 
     constructor(){}
+
     /**
-     * main informations to access to mysql
+     * the mysqljs informations to create a connection
+     * when server launched
      */
     private static HOST = 'localhost' ;
     private static USER = "root" ;
     private static PASSWORD = '' ;
-    private static MAIN_CO = null ;
+    private static DB_NAME = 'enigma_db' ;
+    private static CONNECTION = null ;
+
 
     /**
-     * global database informations and conection
-     * about Accounts. Store email, password etc...
+     * Here are the global tables
      */
-    private static ACCOUNT_NAME = `enigma_accounts`;
-    private static ACCOUNT_CO = null ;
-    private static ACCOUNT_TABLE = 'account' ;
+    private static TABLE_ACCOUNTS = `accounts`;
+    private static TABLE_WORLDS = `worlds` ;
 
     /**
-     * All databases concerning worlds.
-     * Each one contain the world "enigma"
-     * and all the tables below.
-     * The table players contain commons informations
-     * with main account database as id and name.
-     */
-    static WORLDS_CO : Object = {} ;
-    static WORLD_TABLE_NAME = `world` ;
-    static PLAYER_TABLE_NAME = `players` ;
-
-    /**
-     * First, create enigma_accounts database if not exist with a main mysql connection db.
-     * Create an account_connection used for the first connection from backend (give back email, id and name)
-     * Check all the enigma's worlds database and create a connection for each stored in WORLDS_CO object
-     * @param callBack: when init finish confirm it with callBack
+     * init data create the game's database as "enigma_db"
+     * if not exist,
+     * then lauchn the initialisation of all datas
+     * divised by categories ( as account, world etc...)
+     * @param callBack
      */
     static init(callBack:CallableFunction){
 
         let mysql = require('mysql');
-        Data.MAIN_CO = mysql.createConnection({
+        let connection = mysql.createConnection({
             host: Data.HOST,
             user: Data.USER,
             password: Data.PASSWORD
         });
-        Data.MAIN_CO.query( `create database if not exists enigma_accounts`, function (err,res) {});
+        connection.query( `create database if not exists ${Data.DB_NAME}`, function (err,res) {});
 
-
-        Data.ACCOUNT_CO = mysql.createConnection({
+        Data.CONNECTION = mysql.createConnection({
             host: Data.HOST,
             user: Data.USER,
             password: Data.PASSWORD,
-            database: Data.ACCOUNT_NAME
+            database: Data.DB_NAME
         });
-        Data.initAccount(function (account) {
-            callBack('init');
+        AccountData.initAccount(function (account) {
+            WorldData.init(function (worldInit) {
+                callBack('init');
+            });
         });
 
-
-        WorldData.readWorldsDbs(function (worlds: Array<string>) {
-            if ( worlds ) {
-                for (let world of worlds) {
-                    Data.WORLDS_CO[world] = mysql.createConnection({
-                        host: Data.HOST,
-                        user: Data.USER,
-                        password: Data.PASSWORD,
-                        database: world
-                    });
-                }
-            }
-        })
-
     }
-
-    /**
-     * Manage Account :
-     * give back infromations form request.
-     * Note that the attributes used in informations must be correct
-     * (if possible not null or wrong types)
-     */
-    static initAccount(callBack:CallableFunction){
-        let sql = `
-            CREATE TABLE IF NOT EXISTS ${Data.ACCOUNT_TABLE}(
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            email VARCHAR(154),
-            password text,
-            name VARCHAR(154),
-            admin INT
-            )
-        `
-
-        Data.successOrFail(Data.ACCOUNT_CO, sql, callBack)
-    }
-    static checkAccount(email:String, callBack:CallableFunction){
-        let sql = `
-            SELECT email from ${Data.ACCOUNT_TABLE}
-            WHERE email = "${email}"
-        `
-        Data.findOrFail(sql, callBack)
-    }
-    static checkAccountName(name:String, callBack:CallableFunction){
-        let sql = `
-            SELECT email from ${Data.ACCOUNT_TABLE}
-            WHERE name = "${name}"
-        `
-
-        Data.findOrFail(sql, callBack)
-    }
-    static createAccount(email:String, password:String, name:String, admin:Number, callBack:CallableFunction){
-        Data.ACCOUNT_CO.query(`
-        INSERT INTO ${Data.ACCOUNT_TABLE}
-        (id, email, password, name, admin)
-        VALUES (0, "${email}", MD5("${password}"), "${name}", ${admin})
-        `, function (err, res) {
-            if (err){
-                console.error(err);
-                callBack(null);
-            }else{
-                callBack({email: email, password: password});
-            }
-        })
-    }
-    static readAccount(email:String, password:String, callBack:CallableFunction){
-        Data.ACCOUNT_CO.query(`
-        SELECT * FROM ${Data.ACCOUNT_TABLE} 
-        WHERE email = "${email}" AND password = MD5("${password}")
-        `, function (err, res) {
-           if ( err ){
-               console.error(err);
-               callBack(null);
-           }else{
-               if ( res && res.length > 0 ){
-                   delete res[0]['password'];
-                   let json = JSON.parse(JSON.stringify(res[0]));
-                   callBack(json);
-               }else{
-                   callBack(null)
-               }
-           }
-        });
-    }
-
-
 
     /**
      * Query SQL or fail in console
      * @param sql
      * @param callBack
      */
-    public static successOrFail(co, sql:String, callBack:CallableFunction){
-        co.query(sql
+    public static successOrFail(sql:String, callBack:CallableFunction){
+        Data.CONNECTION.query(sql
         , function (err, res) {
             if( err ){
                 callBack(null);
@@ -172,7 +82,7 @@ export class Data{
      * @param callBack
      */
     public static findOrFail(sql:String, callBack:CallableFunction){
-        Data.ACCOUNT_CO.query(sql,
+        Data.CONNECTION.query(sql,
             function (err, res) {
             if ( err ){
                 console.error(err);

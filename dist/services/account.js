@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const https_handler_1 = require("../https.handler");
-const data_1 = require("../data/data");
 const security_1 = require("./security");
+const account_data_1 = require("../data/account.data");
 /**
  * The account service manage all the requests about user's account,
  * as singin, singup, geting user informations etc...
@@ -18,7 +18,7 @@ class AccountService {
          */
         https_handler_1.HttpsHandler.app.get('/checkEmail', function (req, res) {
             if (req.query.email) {
-                data_1.Data.checkAccount(req.query.email, function (accountRes) {
+                account_data_1.AccountData.checkAccount(req.query.email, function (accountRes) {
                     res.send(accountRes);
                 });
             }
@@ -32,7 +32,7 @@ class AccountService {
          */
         https_handler_1.HttpsHandler.app.get('/checkAccountName', function (req, res) {
             if (req.query.name) {
-                data_1.Data.checkAccountName(req.query.name, function (accountRes) {
+                account_data_1.AccountData.checkAccountName(req.query.name, function (accountRes) {
                     res.send(accountRes);
                 });
             }
@@ -48,10 +48,10 @@ class AccountService {
          */
         https_handler_1.HttpsHandler.app.post('/signup', function (req, res) {
             if (req.body && req.body.email && req.body.password && req.body.name) {
-                data_1.Data.checkAccount(req.query.email, function (accountRes) {
-                    data_1.Data.checkAccountName(req.query.email, function (nameRes) {
+                account_data_1.AccountData.checkAccount(req.query.email, function (accountRes) {
+                    account_data_1.AccountData.checkAccountName(req.query.email, function (nameRes) {
                         if (!accountRes && !nameRes) {
-                            data_1.Data.createAccount(req.body.email, req.body.password, req.body.name, 0, function (account) {
+                            account_data_1.AccountData.createAccount(req.body.email, req.body.password, req.body.name, 0, function (account) {
                                 res.status(200).json(account);
                             });
                         }
@@ -72,7 +72,7 @@ class AccountService {
          */
         https_handler_1.HttpsHandler.app.post('/signIn', function (req, res) {
             if (req.body && req.body.email && req.body.password) {
-                data_1.Data.readAccount(req.body.email, req.body.password, function (accountRes) {
+                account_data_1.AccountData.readAccount(req.body.email, req.body.password, function (accountRes) {
                     if (accountRes) {
                         var token = security_1.Security.createToken(accountRes);
                         res.status(200).json(token);

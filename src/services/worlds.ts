@@ -18,24 +18,12 @@ export class Worlds{
      */
     static init(callBack){
 
-        WorldData.readWorldsDbs(function (dbs:Array<string>) {
-            if ( dbs ){
-                function initWorld(i){
-                    if ( i < dbs.length ){
-                        WorldData.buildWorld( dbs[i], {width:100,height:100},function (world) {
-                            initWorld(i+1);
-                        });
-                    }else{
-                        callBack('done');
-                    }
-                }
-                initWorld(0);
-            }else{
-                WorldData.buildWorld('enigma_1', {width:100,height:100},function (world) {
+        WorldData.readWorlds(function (worlds:Array<string>) {
+            if ( !(worlds && worlds.length > 0) ){
+                WorldData.buildWorld({name:'world1',width:100,height:100},function (world) {
                     callBack('done');
                 });
             }
-
         });
     }
 

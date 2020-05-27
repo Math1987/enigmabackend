@@ -3,110 +3,88 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
- * Each world got him own database named as "enigma_" + nameOfMap
+ * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
 class WorldData {
     /**
-     * To get all the active worlds of enigma,
-     * read all the database and select only those
-     * containing "enigma" (without enigma_accounts)
-     * @param callBack: send a string array of worlds
+     * Init worlds dataas create the main world table if not exist,
+     * and check all the existing worlds written in this main table,
+     * build them. It's mean than the tables of each world will
+     * be created if they not exists.
+     * @param callBack: whatever...just say when work is finish.
      */
-    static readWorldsDbs(callBack) {
-        data_1.Data.successOrFail(data_1.Data.MAIN_CO, 'show databases', function (res) {
-            if (res) {
-                let enigmaDbs = [];
-                for (let row of res) {
-                    if (row['Database'] && row['Database'].includes('enigma') && row['Database'] !== data_1.Data.ACCOUNT_NAME) {
-                        enigmaDbs.push(row['Database']);
-                    }
-                }
-                if (enigmaDbs.length > 0) {
-                    callBack(JSON.parse(JSON.stringify(enigmaDbs)));
-                }
-                else {
-                    callBack(null);
-                }
-            }
-            else {
-                callBack(null);
-            }
-        });
-    }
-    /**
-     * buildWorld is called each time server launched.
-     * If a table in a world db doesn't exist, create it.
-     * @param worldName: the database world name
-     * @param datas: the datas of world as width, height, squeletons etc...
-     * @param callBack: send back null if fail
-     */
-    static buildWorld(worldName, datas, callBack) {
-        data_1.Data.successOrFail(data_1.Data.MAIN_CO, `create database if not exists ${worldName}`, function (res) {
-            let mysql = require('mysql');
-            data_1.Data.WORLDS_CO[`${worldName}`] = mysql.createConnection({
-                host: data_1.Data.HOST,
-                user: data_1.Data.USER,
-                password: data_1.Data.PASSWORD,
-                database: `${worldName}`
-            });
-            WorldData.createWorld_WorldTable(`${worldName}`, datas, function (playsersRes) {
-                WorldData.createWorld_playerTable(`${worldName}`, function (playsersRes) {
-                    callBack(res);
-                });
-            });
-        });
-    }
-    /**
-     *
-     * @param db_name
-     * @param datas: used to initialize a row in world table if not exist
-     * @param callBack: send null if fail ;
-     */
-    static createWorld_WorldTable(db_name, datas, callBack) {
-        data_1.Data.successOrFail(data_1.Data.WORLDS_CO[db_name], `
-            CREATE TABLE IF NOT EXISTS ${data_1.Data.WORLD_TABLE_NAME}(
-            name VARCHAR(36),
-            width INT,
-            height INT,
-            round INT,
-            squeletons FLOAT,
-            trees FLOAT
+    static init(callBack) {
+        data_1.Data.successOrFail(`
+        CREATE TABLE IF NOT EXISTS ${data_1.Data.TABLE_WORLDS}
+        (
+        name VARCHAR(36) primary key,
+        width INT,
+        height INT,
+        rounds INT
         )
         `, function (res) {
-            data_1.Data.successOrFail(data_1.Data.WORLDS_CO[db_name], `SELECT * FROM ${data_1.Data.WORLD_TABLE_NAME}`, function (dataRes) {
-                if (!(dataRes && dataRes.length > 0)) {
-                    data_1.Data.successOrFail(data_1.Data.WORLDS_CO[db_name], `
-                    INSERT INTO ${data_1.Data.WORLD_TABLE_NAME}
-                    (name, width, height, round, squeletons, trees)
-                    VALUES ("${db_name}",${datas.width},${datas.height},1,0.01,0.01)
-                    `, function (end) {
+            WorldData.readWorlds(function (worlds) {
+                function buildWorld(i) {
+                    if (i < worlds.length) {
+                        WorldData.buildWorld(worlds[i], function (worldRes) {
+                            buildWorld(i + 1);
+                        });
+                    }
+                    else {
                         callBack('done');
-                    });
+                    }
                 }
-                else {
-                    callBack('done');
-                }
+                buildWorld(0);
             });
         });
     }
     /**
-     * This table contain all user information in world.
-     * As name, id (to get more information of account, you must call
-     * the global account db),
-     * and character infos as race, religion etc...
-     * @param db_name
-     * @param callBack: whatever...we don't care. Just tell when work is finish
+     * Read all actived worlds written in the main global world table.
+     * eatch row contain infos as name, width, height, rounds etc...
+     * @param callBack: send back and arrays of worlds
      */
-    static createWorld_playerTable(db_name, callBack) {
-        data_1.Data.successOrFail(data_1.Data.WORLDS_CO[db_name], `
-            CREATE TABLE IF NOT EXISTS ${data_1.Data.PLAYER_TABLE_NAME}(
-            user_id VARCHAR(36),
-            user_name VARCHAR(36),
-            chara_id VARCHAR(36),
-            chara_name VARCHAR(36),
-            race VARCHAR(36),
-            xp INT,
-            life FLOAT
+    static readWorlds(callBack) {
+        data_1.Data.successOrFail(`
+        SELECT * FROM ${data_1.Data.TABLE_WORLDS}
+        `, function (res) {
+            if (res) {
+                callBack(JSON.parse(JSON.stringify(res)));
+            }
+            else {
+                callBack([]);
+            }
+        });
+    }
+    /**
+     * buildWorld: this function is called with a World model interface
+     * to check world already exist (create all the necessary tables if not exists)
+     * or create a new world, adding the name, width, height etc...
+     * in the main global worlds table, then create all
+     * the tables as the nameOfWorld + "_" + nameOfTable
+     * @param datas
+     * @param callBack
+     */
+    static buildWorld(datas, callBack) {
+        data_1.Data.successOrFail(`
+        INSERT INTO ${data_1.Data.TABLE_WORLDS}
+        (name, width, height)
+        VALUES ("${datas.name}", ${datas.width}, ${datas.height})
+        `, function (worldInsert) {
+            WorldData.buildPlayerTable(datas, function (playerRes) {
+                callBack(playerRes);
+            });
+        });
+    }
+    static buildPlayerTable(datas, callBack) {
+        data_1.Data.successOrFail(`
+        CREATE TABLE IF NOT EXISTS ${datas.name}_${WorldData.TABLE_PLAYERS}
+        ( 
+        id VARCHAR(36) primary key,
+        name VARCHAR(36),
+        race VARCHAR(36),
+        religion VARCHAR(36),
+        life FLOAT,
+        xp INT
         )
         `, function (res) {
             callBack(res);
@@ -114,3 +92,5 @@ class WorldData {
     }
 }
 exports.WorldData = WorldData;
+WorldData.TABLE_PLAYERS = `players`;
+WorldData.TABLE_POSITIONS = `positions`;

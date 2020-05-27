@@ -1,123 +1,101 @@
 import {Data} from "./data";
+import {World} from "../models/world";
 
 /**
  * This object manage all the world data.
- * Each world got him own database named as "enigma_" + nameOfMap
+ * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
 export class WorldData{
 
+
+    static TABLE_PLAYERS = `players`;
+    static TABLE_POSITIONS = `positions`;
+
     /**
-     * To get all the active worlds of enigma,
-     * read all the database and select only those
-     * containing "enigma" (without enigma_accounts)
-     * @param callBack: send a string array of worlds
+     * Init worlds dataas create the main world table if not exist,
+     * and check all the existing worlds written in this main table,
+     * build them. It's mean than the tables of each world will
+     * be created if they not exists.
+     * @param callBack: whatever...just say when work is finish.
      */
-    static readWorldsDbs(callBack: CallableFunction){
-        Data.successOrFail(Data.MAIN_CO,'show databases', function (res) {
-            if ( res ){
-                let enigmaDbs = [] ;
-                for ( let row of res ){
-                    if ( row['Database'] && row['Database'].includes('enigma') && row['Database'] !== Data.ACCOUNT_NAME){
-                        enigmaDbs.push(row['Database']);
+    static init(callBack:CallableFunction){
+        Data.successOrFail(`
+        CREATE TABLE IF NOT EXISTS ${Data.TABLE_WORLDS}
+        (
+        name VARCHAR(36) primary key,
+        width INT,
+        height INT,
+        rounds INT
+        )
+        `, function (res) {
+            WorldData.readWorlds(function (worlds : Array<World>) {
+                function buildWorld(i){
+                    if ( i < worlds.length ){
+                        WorldData.buildWorld(worlds[i], function (worldRes) {
+                            buildWorld(i+1);
+                        });
+                    }else{
+                        callBack('done');
                     }
                 }
-                if ( enigmaDbs.length > 0 ){
-                    callBack(JSON.parse(JSON.stringify(enigmaDbs)));
-                }else{
-                    callBack(null);
-                }
+                buildWorld(0);
+            });
+        });
+    }
+
+    /**
+     * Read all actived worlds written in the main global world table.
+     * eatch row contain infos as name, width, height, rounds etc...
+     * @param callBack: send back and arrays of worlds
+     */
+    static readWorlds(callBack: CallableFunction): Array<World>{
+        Data.successOrFail(`
+        SELECT * FROM ${Data.TABLE_WORLDS}
+        `, function (res) {
+            if ( res ){
+                callBack(JSON.parse(JSON.stringify(res));
             }else{
-                callBack(null);
+                callBack([]);
             }
         });
     }
 
     /**
-     * buildWorld is called each time server launched.
-     * If a table in a world db doesn't exist, create it.
-     * @param worldName: the database world name
-     * @param datas: the datas of world as width, height, squeletons etc...
-     * @param callBack: send back null if fail
+     * buildWorld: this function is called with a World model interface
+     * to check world already exist (create all the necessary tables if not exists)
+     * or create a new world, adding the name, width, height etc...
+     * in the main global worlds table, then create all
+     * the tables as the nameOfWorld + "_" + nameOfTable
+     * @param datas
+     * @param callBack
      */
-    static buildWorld(worldName:string, datas : {width:number, height:number}, callBack ){
-        Data.successOrFail( Data.MAIN_CO, `create database if not exists ${worldName}`, function (res) {
+    static buildWorld( datas: World, callBack: CallableFunction){
 
-            let mysql = require('mysql');
-            Data.WORLDS_CO[`${worldName}`] = mysql.createConnection({
-                host: Data.HOST,
-                user: Data.USER,
-                password: Data.PASSWORD,
-                database: `${worldName}`
+        Data.successOrFail(`
+        INSERT INTO ${Data.TABLE_WORLDS}
+        (name, width, height)
+        VALUES ("${datas.name}", ${datas.width}, ${datas.height})
+        `, function (worldInsert) {
+            WorldData.buildPlayerTable(datas, function (playerRes) {
+                callBack(playerRes);
             });
-            WorldData.createWorld_WorldTable(`${worldName}`,datas,function (playsersRes) {
-                WorldData.createWorld_playerTable(`${worldName}`,function (playsersRes) {
-                    callBack(res);
-                });
-            });
-
-        })
-    }
-
-    /**
-     *
-     * @param db_name
-     * @param datas: used to initialize a row in world table if not exist
-     * @param callBack: send null if fail ;
-     */
-    static createWorld_WorldTable( db_name:string, datas, callBack:CallableFunction){
-        Data.successOrFail(Data.WORLDS_CO[db_name], `
-            CREATE TABLE IF NOT EXISTS ${Data.WORLD_TABLE_NAME}(
-            name VARCHAR(36),
-            width INT,
-            height INT,
-            round INT,
-            squeletons FLOAT,
-            trees FLOAT
-        )
-        `, function (res) {
-
-            Data.successOrFail(Data.WORLDS_CO[db_name],`SELECT * FROM ${Data.WORLD_TABLE_NAME}`, function (dataRes) {
-                if ( !(dataRes && dataRes.length > 0) ){
-                    Data.successOrFail(Data.WORLDS_CO[db_name],`
-                    INSERT INTO ${Data.WORLD_TABLE_NAME}
-                    (name, width, height, round, squeletons, trees)
-                    VALUES ("${db_name}",${datas.width},${datas.height},1,0.01,0.01)
-                    `, function (end){
-                        callBack('done');
-                    });
-                }else{
-                    callBack('done');
-                }
-            });
-
         });
-    }
 
-    /**
-     * This table contain all user information in world.
-     * As name, id (to get more information of account, you must call
-     * the global account db),
-     * and character infos as race, religion etc...
-     * @param db_name
-     * @param callBack: whatever...we don't care. Just tell when work is finish
-     */
-    static createWorld_playerTable( db_name:string, callBack:CallableFunction){
-        Data.successOrFail(Data.WORLDS_CO[db_name], `
-            CREATE TABLE IF NOT EXISTS ${Data.PLAYER_TABLE_NAME}(
-            user_id VARCHAR(36),
-            user_name VARCHAR(36),
-            chara_id VARCHAR(36),
-            chara_name VARCHAR(36),
-            race VARCHAR(36),
-            xp INT,
-            life FLOAT
+    }
+    static buildPlayerTable( datas:World, callBack: CallableFunction){
+        Data.successOrFail(`
+        CREATE TABLE IF NOT EXISTS ${datas.name}_${WorldData.TABLE_PLAYERS}
+        ( 
+        id VARCHAR(36) primary key,
+        name VARCHAR(36),
+        race VARCHAR(36),
+        religion VARCHAR(36),
+        life FLOAT,
+        xp INT
         )
         `, function (res) {
             callBack(res);
         });
-
     }
-
-
 
 }

@@ -15,22 +15,9 @@ class Worlds {
      * @param callBack
      */
     static init(callBack) {
-        world_data_1.WorldData.readWorldsDbs(function (dbs) {
-            if (dbs) {
-                function initWorld(i) {
-                    if (i < dbs.length) {
-                        world_data_1.WorldData.buildWorld(dbs[i], { width: 100, height: 100 }, function (world) {
-                            initWorld(i + 1);
-                        });
-                    }
-                    else {
-                        callBack('done');
-                    }
-                }
-                initWorld(0);
-            }
-            else {
-                world_data_1.WorldData.buildWorld('enigma_1', { width: 100, height: 100 }, function (world) {
+        world_data_1.WorldData.readWorlds(function (worlds) {
+            if (!(worlds && worlds.length > 0)) {
+                world_data_1.WorldData.buildWorld({ name: 'world1', width: 100, height: 100 }, function (world) {
                     callBack('done');
                 });
             }

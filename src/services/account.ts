@@ -1,6 +1,7 @@
 import {HttpsHandler} from "../https.handler";
 import {Data} from "../data/data";
 import {Security} from "./security";
+import {AccountData} from "../data/account.data";
 
 /**
  * The account service manage all the requests about user's account,
@@ -19,7 +20,7 @@ export class AccountService{
          */
         HttpsHandler.app.get('/checkEmail', function (req: Request, res : Response) {
             if ( req.query.email ){
-                Data.checkAccount(req.query.email,function (accountRes) {
+                AccountData.checkAccount(req.query.email,function (accountRes) {
                     res.send(accountRes);
                 });
             }else{
@@ -32,7 +33,7 @@ export class AccountService{
          */
         HttpsHandler.app.get('/checkAccountName', function (req: Request, res : Response) {
             if ( req.query.name ){
-                Data.checkAccountName(req.query.name,function (accountRes) {
+                AccountData.checkAccountName(req.query.name,function (accountRes) {
                     res.send(accountRes);
                 });
             }else{
@@ -49,10 +50,10 @@ export class AccountService{
          */
         HttpsHandler.app.post('/signup', function (req: Request, res : Response) {
             if ( req.body && req.body.email && req.body.password && req.body.name ){
-                Data.checkAccount(req.query.email,function (accountRes) {
-                    Data.checkAccountName(req.query.email,function (nameRes) {
+                AccountData.checkAccount(req.query.email,function (accountRes) {
+                    AccountData.checkAccountName(req.query.email,function (nameRes) {
                         if ( !accountRes && !nameRes ){
-                            Data.createAccount(req.body.email, req.body.password, req.body.name, 0, function (account) {
+                            AccountData.createAccount(req.body.email, req.body.password, req.body.name, 0, function (account) {
                                 res.status(200).json(account);
                             });
                         }else{
@@ -71,7 +72,7 @@ export class AccountService{
          */
         HttpsHandler.app.post('/signIn', function (req: Request, res : Response) {
             if ( req.body && req.body.email && req.body.password ){
-                Data.readAccount(req.body.email, req.body.password, function (accountRes) {
+                AccountData.readAccount(req.body.email, req.body.password, function (accountRes) {
                     if ( accountRes ){
                         var token = Security.createToken(accountRes) ;
                         res.status(200).json(token);
