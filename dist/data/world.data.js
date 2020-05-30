@@ -90,6 +90,47 @@ class WorldData {
             callBack(res);
         });
     }
+    static readChara(world_name, player, callBack) {
+        data_1.Data.successOrFail(`
+        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
+        WHERE id = ${player.id}
+        `, function (charaRes) {
+            callBack(charaRes);
+        });
+    }
+    static createCharacter(world_name, character, callBack) {
+        data_1.Data.successOrFail(`
+        INSERT INTO ${world_name}_${WorldData.TABLE_PLAYERS}
+        (id, name, race, religion)
+        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
+        `, function (playerRes) {
+            if (playerRes) {
+                data_1.Data.successOrFail(`
+                UPDATE ${data_1.Data.TABLE_ACCOUNTS}
+                set world = "${world_name}"
+                WHERE id = "${character.id}"
+                `, function (updateWorld) {
+                    callBack(playerRes);
+                });
+            }
+            else {
+                callBack(null);
+            }
+        });
+    }
+    static readCharacter(world_name, id, callBack) {
+        data_1.Data.successOrFail(`
+        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
+        WHERE id = "${id}"
+        `, function (playerRes) {
+            if (playerRes && playerRes.length > 0) {
+                callBack(JSON.parse(JSON.stringify(playerRes[0])));
+            }
+            else {
+                callBack(null);
+            }
+        });
+    }
 }
 exports.WorldData = WorldData;
 WorldData.TABLE_PLAYERS = `players`;

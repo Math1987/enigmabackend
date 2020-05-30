@@ -1,5 +1,7 @@
 import {Data} from "./data";
 import {World} from "../models/world";
+import {Player} from "../models/player";
+import {AccountData} from "./account.data";
 
 /**
  * This object manage all the world data.
@@ -53,7 +55,7 @@ export class WorldData{
         SELECT * FROM ${Data.TABLE_WORLDS}
         `, function (res) {
             if ( res ){
-                callBack(JSON.parse(JSON.stringify(res));
+                callBack(JSON.parse(JSON.stringify(res)));
             }else{
                 callBack([]);
             }
@@ -95,6 +97,49 @@ export class WorldData{
         )
         `, function (res) {
             callBack(res);
+        });
+    }
+
+
+    static readChara(world_name:string, player:Player, callBack: CallableFunction){
+        Data.successOrFail(`
+        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
+        WHERE id = ${player.id}
+        `, function (charaRes) {
+            callBack(charaRes);
+        });
+    }
+
+    static createCharacter( world_name:string, character:{id:string,name:string,race:string,religion:string}, callBack: CallableFunction){
+        Data.successOrFail(`
+        INSERT INTO ${world_name}_${WorldData.TABLE_PLAYERS}
+        (id, name, race, religion)
+        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
+        `, function (playerRes) {
+            if ( playerRes ){
+                Data.successOrFail(`
+                UPDATE ${Data.TABLE_ACCOUNTS}
+                set world = "${world_name}"
+                WHERE id = "${character.id}"
+                `, function(updateWorld){
+                    callBack(playerRes);
+                }
+            }else{
+                callBack(null);
+            }
+
+        });
+    }
+    static readCharacter( world_name:string, id:string, callBack: CallableFunction){
+        Data.successOrFail(`
+        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
+        WHERE id = "${id}"
+        `, function (playerRes) {
+            if ( playerRes && playerRes.length > 0 ){
+                callBack(JSON.parse(JSON.stringify(playerRes[0])));
+            }else{
+                callBack(null);
+            }
         });
     }
 

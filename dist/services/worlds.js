@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const world_data_1 = require("../data/world.data");
+const chara_1 = require("./chara");
 /**
  * Manage all worlds functions
  * 1 world = 1 database
@@ -21,9 +22,11 @@ class Worlds {
                     callBack('done');
                 });
             }
+            else {
+                callBack('done');
+            }
         });
-    }
-    static createCharacter(character, callBack) {
+        chara_1.Chara.init();
     }
 }
 exports.Worlds = Worlds;

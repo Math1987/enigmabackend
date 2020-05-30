@@ -1,6 +1,8 @@
 import {Data} from "../data/data";
 import {Player} from "../models/player";
 import {WorldData} from "../data/world.data";
+import {HttpsHandler} from "../https.handler";
+import {Chara} from "./chara";
 
 /**
  * Manage all worlds functions
@@ -23,12 +25,16 @@ export class Worlds{
                 WorldData.buildWorld({name:'world1',width:100,height:100},function (world) {
                     callBack('done');
                 });
+            }else{
+                callBack('done');
             }
         });
+
+        Chara.init();
+
+
     }
 
-    static createCharacter(character: Player, callBack: CallableFunction){
 
-    }
 
 }

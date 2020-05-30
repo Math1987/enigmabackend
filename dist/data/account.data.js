@@ -5,10 +5,11 @@ class AccountData {
     static initAccount(callBack) {
         let sql = `
             CREATE TABLE IF NOT EXISTS ${data_1.Data.TABLE_ACCOUNTS}(
-            id INT PRIMARY KEY AUTO_INCREMENT,
+            id VARCHAR(36) PRIMARY KEY,
             email VARCHAR(154),
             password text,
             name VARCHAR(154),
+            world VARCHAR(36),
             admin INT
             )
         `;
@@ -32,7 +33,7 @@ class AccountData {
         data_1.Data.CONNECTION.query(`
         INSERT INTO ${data_1.Data.TABLE_ACCOUNTS}
         (id, email, password, name, admin)
-        VALUES (0, "${email}", MD5("${password}"), "${name}", ${admin})
+        VALUES (uuid(), "${email}", MD5("${password}"), "${name}", ${admin})
         `, function (err, res) {
             if (err) {
                 console.error(err);

@@ -5,14 +5,14 @@ export class AccountData{
     static initAccount(callBack:CallableFunction){
         let sql = `
             CREATE TABLE IF NOT EXISTS ${Data.TABLE_ACCOUNTS}(
-            id INT PRIMARY KEY AUTO_INCREMENT,
+            id VARCHAR(36) PRIMARY KEY,
             email VARCHAR(154),
             password text,
             name VARCHAR(154),
+            world VARCHAR(36),
             admin INT
             )
         `
-
         Data.successOrFail( sql, callBack)
     }
     static checkAccount(email:String, callBack:CallableFunction){
@@ -34,7 +34,7 @@ export class AccountData{
         Data.CONNECTION.query(`
         INSERT INTO ${Data.TABLE_ACCOUNTS}
         (id, email, password, name, admin)
-        VALUES (0, "${email}", MD5("${password}"), "${name}", ${admin})
+        VALUES (uuid(), "${email}", MD5("${password}"), "${name}", ${admin})
         `, function (err, res) {
             if (err){
                 console.error(err);
