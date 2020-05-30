@@ -16,6 +16,7 @@ const data_1 = require("./data/data");
 const account_1 = require("./services/account");
 const worlds_1 = require("./services/worlds");
 const security_1 = require("./services/security");
+const meta_service_1 = require("./services/meta.service");
 var bodyParser = require("body-parser");
 const PORT = 4040;
 const app = express_1.default();
@@ -48,7 +49,9 @@ account_1.AccountService.init();
  * Init dataBase using mysqljs
  */
 data_1.Data.init(function (data) {
-    worlds_1.Worlds.init(function (worlds) {
+    meta_service_1.MetaService.init(function (metaServiceRes) {
+        worlds_1.Worlds.init(function (worlds) {
+        });
     });
 });
 /**

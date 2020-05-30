@@ -1,5 +1,6 @@
 import {WorldData} from "./world.data";
 import {AccountData} from "./account.data";
+import {MetaData} from "./meta.data";
 
 /**
  * Data manage the only database of the game.
@@ -52,9 +53,11 @@ export class Data{
             password: Data.PASSWORD,
             database: Data.DB_NAME
         });
-        AccountData.initAccount(function (account) {
-            WorldData.init(function (worldInit) {
-                callBack('init');
+        MetaData.init(function (metaDatasInit) {
+            AccountData.initAccount(function (account) {
+                WorldData.init(function (worldInit) {
+                    callBack('init');
+                });
             });
         });
 

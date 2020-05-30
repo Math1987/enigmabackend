@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const world_data_1 = require("./world.data");
 const account_data_1 = require("./account.data");
+const meta_data_1 = require("./meta.data");
 /**
  * Data manage the only database of the game.
  * There are to kinds of tables: global tables,
@@ -32,9 +33,11 @@ class Data {
             password: Data.PASSWORD,
             database: Data.DB_NAME
         });
-        account_data_1.AccountData.initAccount(function (account) {
-            world_data_1.WorldData.init(function (worldInit) {
-                callBack('init');
+        meta_data_1.MetaData.init(function (metaDatasInit) {
+            account_data_1.AccountData.initAccount(function (account) {
+                world_data_1.WorldData.init(function (worldInit) {
+                    callBack('init');
+                });
             });
         });
     }

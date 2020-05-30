@@ -12,6 +12,7 @@ import {Data} from "./data/data";
 import {AccountService} from "./services/account";
 import {Worlds} from "./services/worlds";
 import {Security} from "./services/security";
+import {MetaService} from "./services/meta.service";
 var bodyParser = require("body-parser");
 const PORT = 4040 ;
 
@@ -50,8 +51,10 @@ AccountService.init();
  * Init dataBase using mysqljs
  */
 Data.init(function (data) {
-    Worlds.init(function (worlds) {
+    MetaService.init(function (metaServiceRes) {
+        Worlds.init(function (worlds) {
 
+        });
     });
 });
 /**
