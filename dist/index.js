@@ -10,53 +10,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const socket_handler_1 = require("./socket.handler");
-const https_handler_1 = require("./https.handler");
 const data_1 = require("./data/data");
-const account_1 = require("./services/account");
 const worlds_1 = require("./services/worlds");
-const security_1 = require("./services/security");
-const meta_service_1 = require("./services/meta.service");
-var bodyParser = require("body-parser");
-const PORT = 4040;
+const index_router_1 = require("./routes/index.router");
+const api_router_1 = require("./routes/api.router");
+const user_router_1 = require("./routes/user.router");
+const world_router_1 = require("./routes/world.router");
+const chara_router_1 = require("./routes/chara.router");
 const app = express_1.default();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express_1.default.json());
+const PORT = 4040;
 app.set("port", PORT);
-const http = require("http").Server(app);
-/**
- * set the global Access-Control-Allow-Origin for all request by default
- */
-app.use(function (req, res, next) {
+const path = require('path');
+var bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const mime = require('mime');
+const fs = require('fs');
+const http = require("http");
+const https = require("https");
+app.use(cookieParser());
+app.use(express_1.default.urlencoded({ extended: false }));
+app.use(express_1.default.json());
+app.use(bodyParser.json());
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
     res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     next();
 });
-app.use('/u', function (req, res, next) {
-    security_1.Security.checkSecurity(req, res, next);
-});
-/**
- * init statics objects containing express app and socket to allow usage from every-where in services
- */
-https_handler_1.HttpsHandler.init(app);
-socket_handler_1.SocketHandler.init(http);
-/**
- * init services who will manages request corresponding to them specificityes
- */
-account_1.AccountService.init();
-/**
- * Init dataBase using mysqljs
- */
+app.use(express_1.default.static(path.join(__dirname, 'public')));
+app.use('/api', api_router_1.routerApi);
+app.use('/api/world', world_router_1.routerWorld);
+app.use('/api/u', user_router_1.routerUser);
+app.use('/api/u/chara', chara_router_1.routerChara);
+app.use('/', index_router_1.indexRouter);
 data_1.Data.init(function (data) {
-    meta_service_1.MetaService.init(function (metaServiceRes) {
-        worlds_1.Worlds.init(function (worlds) {
-        });
+    worlds_1.Worlds.init(function (worlds) {
     });
 });
-/**
- * Set informations in main route.
- */
-const server = http.listen(PORT, function () {
-    console.log("listening on : http://localhost:" + PORT);
-});
+/*http.createServer((req, res) =>{
+    console.log('http server');
+    console.log({
+        host: req.headers.host,
+        url : req.url
+    });
+    res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
+    res.end();
+}).listen(4000);*/
+const server = https.createServer({
+    key: fs.readFileSync(path.join(__dirname, '/ssl/localhost.key')),
+    cert: fs.readFileSync(path.join(__dirname, '/ssl/localhost.crt')),
+}, app);
+server.listen(PORT);

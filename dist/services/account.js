@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const https_handler_1 = require("../https.handler");
 const security_1 = require("./security");
-const account_data_1 = require("../data/account.data");
 /**
  * The account service manage all the requests about user's account,
  * as singin, singup, geting user informations etc...
@@ -12,33 +11,29 @@ class AccountService {
      * The initiation use HttpsHandle static app as express with bodyparser
      */
     static init() {
-        /**
-         * echeckEmail request check if mail exist or not.
-         * send true or false
-         */
-        https_handler_1.HttpsHandler.app.get('/checkEmail', function (req, res) {
-            if (req.query.email) {
-                account_data_1.AccountData.checkAccount(req.query.email, function (accountRes) {
-                    res.send(accountRes);
-                });
-            }
-            else {
-                res.send(false);
-            }
-        });
-        /**
-         * checkAccountName request check if name exist or not.
-         * send true or false
-         */
-        https_handler_1.HttpsHandler.app.get('/checkAccountName', function (req, res) {
-            if (req.query.name) {
-                account_data_1.AccountData.checkAccountName(req.query.name, function (accountRes) {
-                    res.send(accountRes);
-                });
-            }
-            else {
-                res.send(false);
-            }
+        https_handler_1.HttpsHandler.getBackend('/test', function (req, res) {
+            const nodeMailer = require('nodemailer');
+            const transporter = nodeMailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: 'admin@math17api.com',
+                    pass: '-CJNG@&G9,N['
+                }
+            });
+            const mailOptions = {
+                from: 'admin@math17api.com',
+                to: 'mathieucolla@gmail.com',
+                subject: "test de email envoyé depuis le backend",
+                text: 'That was easy?'
+            };
+            transporter.sendMail(mailOptions, function (err, info) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+
+                }
+            });
         });
         /**
          * signup request try to create a new account in database.
@@ -46,52 +41,20 @@ class AccountService {
          * then check if the email and name are free, (if not, send error 403)
          * then create account and send the user informations as json
          */
-        https_handler_1.HttpsHandler.app.post('/signup', function (req, res) {
-            if (req.body && req.body.email && req.body.password && req.body.name) {
-                account_data_1.AccountData.checkAccount(req.query.email, function (accountRes) {
-                    account_data_1.AccountData.checkAccountName(req.query.email, function (nameRes) {
-                        if (!accountRes && !nameRes) {
-                            account_data_1.AccountData.createAccount(req.body.email, req.body.password, req.body.name, 0, function (account) {
-                                res.status(200).json(account);
-                            });
-                        }
-                        else {
-                            res.status(403).json('email or name incorrect');
-                        }
-                    });
-                });
-            }
-            else {
-                res.status(403).json('body request incorrect');
-            }
+        https_handler_1.HttpsHandler.postBackend('testPost', function (req, res) {
+            res.send('post ok');
         });
         /**
          * signin create a token if email and password
          * send the token back if correct,
          * send error 401 if not, or 403 if body invalid
          */
-        https_handler_1.HttpsHandler.app.post('/signIn', function (req, res) {
-            if (req.body && req.body.email && req.body.password) {
-                account_data_1.AccountData.readAccount(req.body.email, req.body.password, function (accountRes) {
-                    if (accountRes) {
-                        var token = security_1.Security.createToken(accountRes);
-                        res.status(200).json(token);
-                    }
-                    else {
-                        res.status(401).json('error');
-                    }
-                });
-            }
-            else {
-                res.status(403).json('body invalid');
-            }
-        });
         /**
          * user send the user informations as email, name, admin rights etc...
          * only if the token in the header is valid,
          * else send 401 if not or 403 if body invalid
          */
-        https_handler_1.HttpsHandler.app.get('/user', function (req, res) {
+        https_handler_1.HttpsHandler.getBackend('user', function (req, res) {
             const token = req.headers.authorization;
             if (token) {
                 security_1.Security.checkToken(token, function (userRes) {
@@ -111,7 +74,7 @@ class AccountService {
          * RefreshToken create a new token from an other token if valid
          * if not, send error 401, or 403 if no token in header
          */
-        https_handler_1.HttpsHandler.app.get('/refreshToken', function (req, res) {
+        https_handler_1.HttpsHandler.getBackend('refreshToken', function (req, res) {
             const token = req.headers.authorization;
             if (token) {
                 security_1.Security.checkToken(token, function (userRes) {

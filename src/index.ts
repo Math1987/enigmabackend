@@ -6,63 +6,63 @@
  */
 
 import express, {NextFunction, Request, Response} from 'express';
-import {SocketHandler} from "./socket.handler";
-import {HttpsHandler} from "./https.handler";
 import {Data} from "./data/data";
-import {AccountService} from "./services/account";
 import {Worlds} from "./services/worlds";
-import {Security} from "./services/security";
-import {MetaService} from "./services/meta.service";
-var bodyParser = require("body-parser");
-const PORT = 4040 ;
-
+import {indexRouter} from './routes/index.router';
+import {routerApi} from "./routes/api.router";
+import {routerUser} from "./routes/user.router";
+import {routerWorld} from "./routes/world.router";
+import {routerChara} from "./routes/chara.router";
 const app = express();
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
-app.use(express.json());
+const PORT = 4040 ;
 app.set("port", PORT);
-const http = require("http").Server(app);
+const path = require('path');
+var bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const mime = require('mime');
+const fs = require('fs');
+const http = require("http") ;
+const https = require("https") ;
 
-/**
- * set the global Access-Control-Allow-Origin for all request by default
- */
 
-app.use(function (req: Request, res : Response, next : NextFunction) {
+
+app.use(cookieParser());
+app.use(express.urlencoded({extended:false}));
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(  (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
     res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     next();
 });
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/u', function (req: Request, res : Response, next : NextFunction) {
-    Security.checkSecurity(req,res,next);
-});
-/**
- * init statics objects containing express app and socket to allow usage from every-where in services
- */
-HttpsHandler.init(app);
-SocketHandler.init(http);
-/**
- * init services who will manages request corresponding to them specificityes
- */
+app.use('/api', routerApi);
+app.use('/api/world',routerWorld);
+app.use('/api/u',routerUser);
+app.use('/api/u/chara',routerChara);
+app.use('/',indexRouter);
 
-
-AccountService.init();
-/**
- * Init dataBase using mysqljs
- */
 Data.init(function (data) {
-    MetaService.init(function (metaServiceRes) {
-        Worlds.init(function (worlds) {
-
-        });
+    Worlds.init(function (worlds) {
     });
 });
-/**
- * Set informations in main route.
- */
 
-const server = http.listen(PORT, function () {
-    console.log("listening on : http://localhost:" + PORT);
-});
 
+/*http.createServer((req, res) =>{
+    console.log('http server');
+    console.log({
+        host: req.headers.host,
+        url : req.url
+    });
+    res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
+    res.end();
+}).listen(4000);*/
+
+const server = https.createServer({
+    key : fs.readFileSync(path.join(__dirname, '/ssl/localhost.key')),
+    cert: fs.readFileSync(path.join(__dirname, '/ssl/localhost.crt')),
+},app);
+server.listen(PORT);
 

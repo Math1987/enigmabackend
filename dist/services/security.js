@@ -4,9 +4,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Security manage token usage with JWT,
  * using a private key write in rsa folder
  */
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const RSA_KEY_PRIVATE = fs.readFileSync('dist/rsa/key');
+const RSA_KEY_PRIVATE = fs.readFileSync(path.join(__dirname, '..', 'rsa', 'key')); //'dist/rsa/key');
 const TOKEN_TIME = '900s';
 class Security {
     static checkSecurity(req, res, next) {
@@ -45,6 +46,7 @@ class Security {
         if (token) {
             jwt.verify(token, RSA_KEY_PRIVATE, (err, decoded) => {
                 if (err) {
+                    console.log(err);
                     callBack(null);
                 }
                 else {

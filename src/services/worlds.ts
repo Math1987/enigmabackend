@@ -1,8 +1,5 @@
-import {Data} from "../data/data";
-import {Player} from "../models/player";
 import {WorldData} from "../data/world.data";
-import {HttpsHandler} from "../https.handler";
-import {Chara} from "./chara";
+
 
 /**
  * Manage all worlds functions
@@ -20,6 +17,7 @@ export class Worlds{
      */
     static init(callBack){
 
+
         WorldData.readWorlds(function (worlds:Array<string>) {
             if ( !(worlds && worlds.length > 0) ){
                 WorldData.buildWorld({name:'world1',width:100,height:100},function (world) {
@@ -30,7 +28,7 @@ export class Worlds{
             }
         });
 
-        Chara.init();
+        //Chara.init();
 
 
     }

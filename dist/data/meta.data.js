@@ -13,12 +13,35 @@ class MetaData {
         img TEXT
         )
         `, function (res) {
-            console.log(res);
             MetaData.initValues(callBack);
         });
     }
     static initValues(callBack) {
         let values = [
+            {
+                type: "water",
+                name: "water",
+                name_fr: "eau",
+                description_fr: "resource en eau",
+            },
+            {
+                type: "food",
+                name: "food",
+                name_fr: "nourriture",
+                description_fr: "resource en nourriture",
+            },
+            {
+                type: "wood",
+                name: "wood",
+                name_fr: "bois",
+                description_fr: "resource en bois",
+            },
+            {
+                type: "faith",
+                name: "faith",
+                name_fr: "foi",
+                description_fr: "spiritualité",
+            },
             {
                 type: "sexes",
                 name: "masculin",
@@ -63,10 +86,31 @@ class MetaData {
             },
             {
                 type: 'religions',
-                name: 'water',
-                name_fr: `déesse de l'eau`,
+                name: 'godWater',
+                name_fr: `Déesse de l'eau`,
                 description_fr: `déesse de l'eau`,
-                img: '/assets/images/elfe.png'
+                img: '/assets/images/eau.png'
+            },
+            {
+                type: 'religions',
+                name: 'godFire',
+                name_fr: `Dieu du feu`,
+                description_fr: `Dieu du feu`,
+                img: '/assets/images/feu.png'
+            },
+            {
+                type: 'religions',
+                name: 'godLight',
+                name_fr: `Déesse de la lumière`,
+                description_fr: `Déesse de la lumière`,
+                img: '/assets/images/lumiere.png'
+            },
+            {
+                type: 'religions',
+                name: 'godShadow',
+                name_fr: `Dieu des ombres`,
+                description_fr: `Dieu des ombres`,
+                img: '/assets/images/ombre.png'
             }
         ];
         let valString = '';

@@ -1,7 +1,9 @@
-const express = require('express');
-export const index = express.Router();
+import * as path from "path";
 
-index.get('/', (req, res) =>{
-    console.log('get index');
-    res.send('geting index');
+const express = require('express');
+export const indexRouter = express.Router();
+
+
+indexRouter.get('*', function (req, res) {-
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });

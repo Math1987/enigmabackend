@@ -2,6 +2,9 @@ import {Data} from "./data";
 import {World} from "../models/world";
 import {Player} from "../models/player";
 import {AccountData} from "./account.data";
+import {SkillsData} from "./skills.data";
+import {PlayerData} from "./player.data";
+import {ResourceData} from "./resource.data";
 
 /**
  * This object manage all the world data.
@@ -72,75 +75,21 @@ export class WorldData{
      * @param callBack
      */
     static buildWorld( datas: World, callBack: CallableFunction){
-
         Data.successOrFail(`
         INSERT INTO ${Data.TABLE_WORLDS}
         (name, width, height)
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {
-            WorldData.buildPlayerTable(datas, function (playerRes) {
-                callBack(playerRes);
+            PlayerData.buildPlayerTable(datas, function (playerRes) {
+                ResourceData.buildTable(datas, function (resourceCB) {
+                    SkillsData.buildTable(datas, function (skillsCB) {
+                        callBack('done');
+                    })
+                });
             });
         });
 
     }
-    static buildPlayerTable( datas:World, callBack: CallableFunction){
-        Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${WorldData.TABLE_PLAYERS}
-        ( 
-        id VARCHAR(36) primary key,
-        name VARCHAR(36),
-        race VARCHAR(36),
-        religion VARCHAR(36),
-        life FLOAT,
-        xp INT
-        )
-        `, function (res) {
-            callBack(res);
-        });
-    }
 
-
-    static readChara(world_name:string, player:Player, callBack: CallableFunction){
-        Data.successOrFail(`
-        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
-        WHERE id = ${player.id}
-        `, function (charaRes) {
-            callBack(charaRes);
-        });
-    }
-
-    static createCharacter( world_name:string, character:{id:string,name:string,race:string,religion:string}, callBack: CallableFunction){
-        Data.successOrFail(`
-        INSERT INTO ${world_name}_${WorldData.TABLE_PLAYERS}
-        (id, name, race, religion)
-        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
-        `, function (playerRes) {
-            if ( playerRes ){
-                Data.successOrFail(`
-                UPDATE ${Data.TABLE_ACCOUNTS}
-                set world = "${world_name}"
-                WHERE id = "${character.id}"
-                `, function(updateWorld){
-                    callBack(playerRes);
-                }
-            }else{
-                callBack(null);
-            }
-
-        });
-    }
-    static readCharacter( world_name:string, id:string, callBack: CallableFunction){
-        Data.successOrFail(`
-        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
-        WHERE id = "${id}"
-        `, function (playerRes) {
-            if ( playerRes && playerRes.length > 0 ){
-                callBack(JSON.parse(JSON.stringify(playerRes[0])));
-            }else{
-                callBack(null);
-            }
-        });
-    }
 
 }

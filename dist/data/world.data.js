@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
+const skills_data_1 = require("./skills.data");
+const player_data_1 = require("./player.data");
+const resource_data_1 = require("./resource.data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
@@ -70,65 +73,13 @@ class WorldData {
         (name, width, height)
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {
-            WorldData.buildPlayerTable(datas, function (playerRes) {
-                callBack(playerRes);
-            });
-        });
-    }
-    static buildPlayerTable(datas, callBack) {
-        data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${WorldData.TABLE_PLAYERS}
-        ( 
-        id VARCHAR(36) primary key,
-        name VARCHAR(36),
-        race VARCHAR(36),
-        religion VARCHAR(36),
-        life FLOAT,
-        xp INT
-        )
-        `, function (res) {
-            callBack(res);
-        });
-    }
-    static readChara(world_name, player, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
-        WHERE id = ${player.id}
-        `, function (charaRes) {
-            callBack(charaRes);
-        });
-    }
-    static createCharacter(world_name, character, callBack) {
-        data_1.Data.successOrFail(`
-        INSERT INTO ${world_name}_${WorldData.TABLE_PLAYERS}
-        (id, name, race, religion)
-        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
-        `, function (playerRes) {
-            if (playerRes) {
-                data_1.Data.successOrFail(`
-                UPDATE ${data_1.Data.TABLE_ACCOUNTS}
-                set world = "${world_name}"
-                WHERE id = "${character.id}"
-                `, function (updateWorld) {
-                    callBack(playerRes);
+            player_data_1.PlayerData.buildPlayerTable(datas, function (playerRes) {
+                resource_data_1.ResourceData.buildTable(datas, function (resourceCB) {
+                    skills_data_1.SkillsData.buildTable(datas, function (skillsCB) {
+                        callBack('done');
+                    });
                 });
-            }
-            else {
-                callBack(null);
-            }
-        });
-    }
-    static readCharacter(world_name, id, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${WorldData.TABLE_PLAYERS}
-        WHERE id = "${id}"
-        `, function (playerRes) {
-            if (playerRes && playerRes.length > 0) {
-                callBack(JSON.parse(JSON.stringify(playerRes[0])));
-            }
-            else {
-                callBack(null);
-            }
+            });
         });
     }
 }

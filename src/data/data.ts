@@ -1,6 +1,7 @@
 import {WorldData} from "./world.data";
 import {AccountData} from "./account.data";
 import {MetaData} from "./meta.data";
+import {ResourcePatternsData} from "./resourcePatterns.data";
 
 /**
  * Data manage the only database of the game.
@@ -54,9 +55,11 @@ export class Data{
             database: Data.DB_NAME
         });
         MetaData.init(function (metaDatasInit) {
-            AccountData.initAccount(function (account) {
-                WorldData.init(function (worldInit) {
-                    callBack('init');
+            ResourcePatternsData.init(function (patternData) {
+                AccountData.initAccount(function (account) {
+                    WorldData.init(function (worldInit) {
+                        callBack('init');
+                    });
                 });
             });
         });
