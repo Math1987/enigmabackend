@@ -5,12 +5,22 @@ export const routerChara = express.Router();
 
 
 routerChara.get('/values', function (req: Request, res : Response) {
-    console.log('getting values');
-    console.log(req.headers['userTokenValues']);
+
     const tokenDatas = req.headers['userTokenValues'] ;
     ValuesData.readResources(tokenDatas.id,tokenDatas.world, (resValues)=>{
-        console.log(resValues);
+
         res.status(200).send(resValues);
     });
+
+});
+
+routerChara.post('/addvalue', function (req: Request, res : Response) {
+
+    console.log(req.body);
+    const tokenDatas = req.headers['userTokenValues'] ;
+    ValuesData.addValue(tokenDatas.id, tokenDatas.world, req.body.key_, req.body.adder).then( res =>{
+        console.log(res);
+    });
+    res.status(200).send(null);
 
 });

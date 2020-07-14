@@ -1,7 +1,5 @@
 import {Data} from "./data";
 import {World} from "../models/world";
-import {Player} from "../models/player";
-import {AccountData} from "./account.data";
 import {SkillsData} from "./skills.data";
 import {PlayerData} from "./player.data";
 import {ValuesData} from "./values.data";
@@ -82,9 +80,7 @@ export class WorldData{
         `, function (worldInsert) {
             PlayerData.buildPlayerTable(datas, function (playerRes) {
                 ValuesData.buildTable(datas, function (resourceCB) {
-                    SkillsData.buildTable(datas, function (skillsCB) {
-                        callBack('done');
-                    })
+                    callBack('done');
                 });
             });
         });

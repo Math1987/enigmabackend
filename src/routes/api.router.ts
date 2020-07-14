@@ -3,6 +3,7 @@ import {HttpsHandler} from "../https.handler";
 import {MetaData} from "../data/meta.data";
 import {Security} from "../services/security";
 import {routerUser} from "./user.router";
+import {ValuesPatternsData} from "../data/valuesPatterns.data";
 
 const express = require('express');
 export const routerApi = express.Router();
@@ -17,7 +18,11 @@ routerApi.get(`/metadatas`,function (req, res){
         res.status(200).json(metadatas);
     });
 });
-
+routerApi.get(`/metavalues`,function (req, res){
+    ValuesPatternsData.readAll(function (metavalues) {
+        res.status(200).json(metavalues);
+    });
+});
 
 routerApi.get('/checkEmail', (req, res) =>{
     if (req &&  req.query.email ){

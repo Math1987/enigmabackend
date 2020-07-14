@@ -9,12 +9,11 @@ const valuesPatterns_data_1 = require("./valuesPatterns.data");
 class ValuesData {
     static buildTable(datas, callBack) {
         data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${ValuesData.TABLE_RESOURCE}
+        CREATE TABLE IF NOT EXISTS ${datas.name}_${ValuesData.TABLE_VALUES}
         ( 
         id VARCHAR(36),
         key_ VARCHAR(36),
         value FLOAT,
-        skill FLOAT,
         primary key (id, key_)
         )
         `, function (res) {
@@ -23,17 +22,15 @@ class ValuesData {
     }
     static createFromPattern(id, pattern, world_name, callBack) {
         valuesPatterns_data_1.ValuesPatternsData.read('player', (resourcePattern) => {
-            console.log('read resources pattenrs');
-            console.log(resourcePattern);
             let reqString = '';
             for (let resource of resourcePattern) {
-                reqString += `("${id}","${resource.name}", ${resource.start})`;
+                reqString += `("${id}","${resource.key_}", ${resource.start})`;
                 if (resourcePattern[resourcePattern.length - 1] !== resource) {
                     reqString += ", ";
                 }
             }
             data_1.Data.successOrFail(`
-            INSERT INTO ${world_name}_${this.TABLE_RESOURCE}
+            INSERT INTO ${world_name}_${this.TABLE_VALUES}
             (id, key_, value)
             VALUES
             ${reqString}
@@ -44,12 +41,25 @@ class ValuesData {
     }
     static readResources(id, world_name, callBack) {
         data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${ValuesData.TABLE_RESOURCE}
+        SELECT * FROM ${world_name}_${ValuesData.TABLE_VALUES}
         WHERE id = "${id}"
         `, function (res) {
             callBack(JSON.parse(JSON.stringify(res)));
         });
     }
+    static addValue(id, world_name, key_, adder) {
+        return new Promise((resolve, reject) => {
+            data_1.Data.successOrFail(`
+            
+           UPDATE ${world_name}_${ValuesData.TABLE_VALUES}
+           SET value = value + ${adder}
+           WHERE id = "${id}" AND key_ = "${key_}"
+            `, res => {
+                console.log(res);
+                resolve('ok');
+            });
+        });
+    }
 }
 exports.ValuesData = ValuesData;
-ValuesData.TABLE_RESOURCE = `values`;
+ValuesData.TABLE_VALUES = `values`;

@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
-const skills_data_1 = require("./skills.data");
 const player_data_1 = require("./player.data");
 const values_data_1 = require("./values.data");
 /**
@@ -75,9 +74,7 @@ class WorldData {
         `, function (worldInsert) {
             player_data_1.PlayerData.buildPlayerTable(datas, function (playerRes) {
                 values_data_1.ValuesData.buildTable(datas, function (resourceCB) {
-                    skills_data_1.SkillsData.buildTable(datas, function (skillsCB) {
-                        callBack('done');
-                    });
+                    callBack('done');
                 });
             });
         });

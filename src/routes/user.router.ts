@@ -6,6 +6,7 @@ const express = require('express');
 export const routerUser = express.Router();
 
 routerUser.use((req, res, next)=>{
+    console.log('user call ' + req.method + ' ' + req.url );
     if ( req.method === "OPTIONS"){
         res.status(200).send('');
     }else{
@@ -16,10 +17,12 @@ routerUser.use((req, res, next)=>{
                     req.headers['userTokenValues'] = userRes ;
                     next();
                 }else{
+                    console.log('token invalid');
                     res.status(401).json('token invalid');
                 }
             })
         }else{
+            console.log('no token here');
             res.status(401).send('need token');
         }
     }
@@ -55,11 +58,12 @@ routerUser.post('/createChara', function (req: Request, res : Response) {
 });
 
 routerUser.post('/chara', function (req: Request, res : Response) {
-    PlayerData.readCharacter('world1', req.body.id, function (chara) {
+    const tokenDatas = req.headers['userTokenValues'] ;
+    PlayerData.readCharacter(tokenDatas.world, req.body.id, function (chara) {
         if ( chara ){
             res.status(200).json(chara) ;
         }else{
-            res.status(401).json('chara non trouvé');
+            res.status(204).json('chara non trouvé');
         }
     });
 });

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const account_data_1 = require("../data/account.data");
 const meta_data_1 = require("../data/meta.data");
 const security_1 = require("../services/security");
+const valuesPatterns_data_1 = require("../data/valuesPatterns.data");
 const express = require('express');
 exports.routerApi = express.Router();
 exports.routerApi.get(`/`, function (req, res) {
@@ -11,6 +12,11 @@ exports.routerApi.get(`/`, function (req, res) {
 exports.routerApi.get(`/metadatas`, function (req, res) {
     meta_data_1.MetaData.readMetaDatas(function (metadatas) {
         res.status(200).json(metadatas);
+    });
+});
+exports.routerApi.get(`/metavalues`, function (req, res) {
+    valuesPatterns_data_1.ValuesPatternsData.readAll(function (metavalues) {
+        res.status(200).json(metavalues);
     });
 });
 exports.routerApi.get('/checkEmail', (req, res) => {

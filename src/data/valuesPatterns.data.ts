@@ -9,10 +9,11 @@ export class ValuesPatternsData{
         Data.successOrFail(`
         CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
         (
-        name VARCHAR(36),
+        key_ VARCHAR(36),
+        icon INT,
         user VARCHAR(36),
         start FLOAT,
-        PRIMARY KEY (name, user)
+        PRIMARY KEY (key_, user)
         )
         `, function (res) {
             ValuesPatternsData.initValues(function (end) {
@@ -27,54 +28,64 @@ export class ValuesPatternsData{
         let values = [
 
             {
-                name: "water",
+                key_: "water",
+                icon: 53,
                 user : "player",
                 start : 10
             },
             {
-                name: "food",
+                key_: "food",
+                icon: 55,
                 user : "player",
                 start : 10
             },
             {
-                name: "faith",
+                key_: "faith",
+                icon : 7,
                 user : "player",
                 start : 10
             },
             {
-                name: "wood",
-                user : "player",
-                start : 10
-            },
-
-            {
-                name: "attack",
-                user : "player",
-                start : 10
-            },
-            {
-                name: "defense",
+                key_: "wood",
+                icon: 18,
                 user : "player",
                 start : 10
             },
 
             {
-                name: "hunter",
+                key_: "attack",
+                icon: 32,
                 user : "player",
                 start : 10
             },
             {
-                name: "dowser",
+                key_: "defense",
+                icon: 34,
+                user : "player",
+                start : 10
+            },
+
+            {
+                key_: "hunter",
+                icon: 32,
                 user : "player",
                 start : 10
             },
             {
-                name: "priest",
+                key_: "dowser",
+                icon: 17,
                 user : "player",
                 start : 10
             },
             {
-                name: "woodcutter",
+                key_: "priest",
+                icon: 8,
+                user : "player",
+                start : 10
+            },
+            {
+                key_: "woodcutter",
+                icon: 35,
                 user : "player",
                 start : 10
             }
@@ -87,12 +98,12 @@ export class ValuesPatternsData{
             if ( valString.length > 0 ){
                 valString += ', ' ;
             }
-            valString += `("${row.name}","${row.user}","${row.start}")`
+            valString += `("${row.key_}",${row.icon},"${row.user}","${row.start}")`
         }
 
         Data.successOrFail(`
             INSERT INTO ${ValuesPatternsData.TABLE_NAME}
-            (name, user, start)
+            (key_, icon, user, start)
             VALUES ${valString}
         `, function (res ) {
             callBack(res);
@@ -109,6 +120,15 @@ export class ValuesPatternsData{
             callback(JSON.parse(JSON.stringify(res)));
         })
 
+
+    }
+    static readAll(callBack:CallableFunction){
+
+        Data.successOrFail(`
+            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
+        `, (res) =>{
+            callBack(JSON.parse(JSON.stringify(res)));
+        })
 
     }
 
