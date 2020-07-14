@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
-class ResourcePatternsData {
+class ValuesPatternsData {
     static init(callBack) {
         data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${ResourcePatternsData.TABLE_NAME}
+        CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
         (
         name VARCHAR(36),
         user VARCHAR(36),
@@ -12,7 +12,7 @@ class ResourcePatternsData {
         PRIMARY KEY (name, user)
         )
         `, function (res) {
-            ResourcePatternsData.initValues(function (end) {
+            ValuesPatternsData.initValues(function (end) {
                 callBack(end);
             });
         });
@@ -50,7 +50,22 @@ class ResourcePatternsData {
                 start: 10
             },
             {
+                name: "hunter",
+                user: "player",
+                start: 10
+            },
+            {
+                name: "dowser",
+                user: "player",
+                start: 10
+            },
+            {
                 name: "priest",
+                user: "player",
+                start: 10
+            },
+            {
+                name: "woodcutter",
                 user: "player",
                 start: 10
             }
@@ -63,7 +78,7 @@ class ResourcePatternsData {
             valString += `("${row.name}","${row.user}","${row.start}")`;
         }
         data_1.Data.successOrFail(`
-            INSERT INTO ${ResourcePatternsData.TABLE_NAME}
+            INSERT INTO ${ValuesPatternsData.TABLE_NAME}
             (name, user, start)
             VALUES ${valString}
         `, function (res) {
@@ -72,12 +87,12 @@ class ResourcePatternsData {
     }
     static read(key, callback) {
         data_1.Data.successOrFail(`
-            SELECT * FROM ${ResourcePatternsData.TABLE_NAME}
+            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
             WHERE user = "${key}"
         `, (res) => {
             callback(JSON.parse(JSON.stringify(res)));
         });
     }
 }
-exports.ResourcePatternsData = ResourcePatternsData;
-ResourcePatternsData.TABLE_NAME = "ressourcePatterns";
+exports.ValuesPatternsData = ValuesPatternsData;
+ValuesPatternsData.TABLE_NAME = "valuesPatterns";

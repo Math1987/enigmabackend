@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const resource_data_1 = require("../data/resource.data");
+const values_data_1 = require("../data/values.data");
 const express = require('express');
 exports.routerChara = express.Router();
-exports.routerChara.get('/resources', function (req, res) {
-    console.log('getting resources');
+exports.routerChara.get('/values', function (req, res) {
+    console.log('getting values');
     console.log(req.headers['userTokenValues']);
     const tokenDatas = req.headers['userTokenValues'];
-    resource_data_1.ResourceData.readResources(tokenDatas.id, tokenDatas.world, (resResources) => {
-        console.log(resResources);
-        res.status(200).send(resResources);
+    values_data_1.ValuesData.readResources(tokenDatas.id, tokenDatas.world, (resValues) => {
+        console.log(resValues);
+        res.status(200).send(resValues);
     });
 });

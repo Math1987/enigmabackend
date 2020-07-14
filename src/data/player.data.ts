@@ -3,8 +3,8 @@ import {World} from "../models/world";
 import {Player} from "../models/player";
 import {SkillsData} from "./skills.data";
 import {WorldData} from "./world.data";
-import {ResourceData} from "./resource.data";
-import {ResourcePatternsData} from "./resourcePatterns.data";
+import {ValuesData} from "./values.data";
+import {ValuesPatternsData} from "./valuesPatterns.data";
 
 /**
  * This object manage all the world data.
@@ -57,7 +57,7 @@ export class PlayerData{
                 WHERE id = "${character.id}"
                 `, function(updateWorld){
 
-                    ResourceData.createFromPattern(character.id, 'player',world_name, (res) =>{
+                    ValuesData.createFromPattern(character.id,'player' ,world_name ,(res) =>{
                         callBack(playerRes);
                     })
 

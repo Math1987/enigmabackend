@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
-const resource_data_1 = require("./resource.data");
+const values_data_1 = require("./values.data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
@@ -43,7 +43,7 @@ class PlayerData {
                 set world = "${world_name}"
                 WHERE id = "${character.id}"
                 `, function (updateWorld) {
-                    resource_data_1.ResourceData.createFromPattern(character.id, 'player', world_name, (res) => {
+                    values_data_1.ValuesData.createFromPattern(character.id, 'player', world_name, (res) => {
                         callBack(playerRes);
                     });
                 });

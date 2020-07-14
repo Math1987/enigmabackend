@@ -9,7 +9,7 @@ export class MetaData{
         Data.successOrFail(`
         CREATE TABLE IF NOT EXISTS ${MetaData.TABLE_NAME}
         (
-        name VARCHAR(36) PRIMARY KEY,
+        key_ VARCHAR(36) PRIMARY KEY,
         type VARCHAR(36),
         name_fr VARCHAR(36),
         description_fr TEXT,
@@ -25,99 +25,150 @@ export class MetaData{
         let values = [
 
             {
-                type: "water",
-                name : "water",
+                key_ : "water",
+                type: "resource",
                 name_fr : "eau",
                 description_fr : "resource en eau",
+                img : ''
             },
             {
-                type: "food",
-                name : "food",
+                key_ : "food",
+                type: "resource",
                 name_fr : "nourriture",
                 description_fr : "resource en nourriture",
+                img : ''
             },
             {
-                type: "wood",
-                name : "wood",
+                key_ : "wood",
+                type: "resource",
                 name_fr : "bois",
                 description_fr : "resource en bois",
+                img : ''
             },
             {
-                type: "faith",
-                name : "faith",
+                key_ : "faith",
+                type: "resource",
                 name_fr : "foi",
                 description_fr : "spiritualité",
+                img : ''
             },
 
 
+
             {
+                key_ : "attack",
+                type: "skill",
+                name_fr : "attaque",
+                description_fr : "compétence d'attaque",
+                img : ''
+            },
+            {
+                key_ : "defense",
+                type: "skill",
+                name_fr : "défense",
+                description_fr : "compétence de défense",
+                img : ''
+            },
+            {
+                key_ : "dowser",
+                type: "skill",
+                name_fr : "sourcier",
+                description_fr : "compétence de sourcier",
+                img : ''
+            },
+            {
+                key_ : "priest",
+                type: "skill",
+                name_fr : "prêtre",
+                description_fr : "compétence de prêtre",
+                img : ''
+            },
+            {
+                key_ : "woodcutter",
+                type: "skill",
+                name_fr : "bûcheron",
+                description_fr : "compétence de bûcheron",
+                img : ''
+            },
+            {
+                key_ : "hunter",
+                type: "skill",
+                name_fr : "chasseur",
+                description_fr : "compétence de chasseur",
+                img : ''
+            },
+
+
+
+
+            {
+                key_ : "masculin",
                 type: "sexes",
-                name : "masculin",
                 name_fr : "masculin",
                 description_fr : "",
                 img : '/assets/images/homme.png'
             },
             {
+                key_ : "feminine",
                 type : 'sexes',
-                name : "feminine",
                 name_fr : 'féminin',
                 description_fr : '',
                 img : '/assets/images/femme.png'
             },
 
             {
+                key_ : 'human',
                 type : 'races',
-                name : 'human',
                 name_fr : 'humain',
                 description_fr : 'Je suis de taille moyenne, blablabla....',
                 img : '/assets/images/humain.png'
             },
             {
+                key_ : 'dwarf',
                 type : 'races',
-                name : 'dwarf',
                 name_fr : 'nain',
                 description_fr : 'description_fr',
                 img : '/assets/images/nain.png'
             },
             {
+                key_ : 'vampire',
                 type : 'races',
-                name : 'vampire',
                 name_fr : 'vampire',
                 description_fr : 'description_fr',
                 img : '/assets/images/vampire.png'
             },
             {
+                key_ : 'elf',
                 type : 'races',
-                name : 'elf',
                 name_fr : 'elfe',
                 description_fr : 'description_fr',
                 img : '/assets/images/elfe.png'
             },
 
             {
+                key_ : 'godWater',
                 type : 'religions',
-                name : 'godWater',
                 name_fr : `Déesse de l'eau`,
                 description_fr : `déesse de l'eau`,
                 img : '/assets/images/eau.png'
             },
             {
+                key_ : 'godFire',
                 type : 'religions',
-                name : 'godFire',
                 name_fr : `Dieu du feu`,
                 description_fr : `Dieu du feu`,
                 img : '/assets/images/feu.png'
             },
             {
+                key_ : 'godLight',
                 type : 'religions',
-                name : 'godLight',
                 name_fr : `Déesse de la lumière`,
                 description_fr : `Déesse de la lumière`,
                 img : '/assets/images/lumiere.png'
             },
             {
+                key_ : 'godShadow',
                 type : 'religions',
-                name : 'godShadow',
                 name_fr : `Dieu des ombres`,
                 description_fr : `Dieu des ombres`,
                 img : '/assets/images/ombre.png'
@@ -129,12 +180,12 @@ export class MetaData{
             if ( valString.length > 0 ){
                 valString += ', ' ;
             }
-            valString += `("${row.name}","${row.type}","${row.name_fr}","${row.description_fr}","${row.img}")`
+            valString += `("${row.key_}","${row.type}","${row.name_fr}","${row.description_fr}","${row.img}")`
         }
 
         Data.successOrFail(`
             INSERT INTO ${MetaData.TABLE_NAME}
-            (name, type, name_fr, description_fr, img)
+            (key_, type, name_fr, description_fr, img)
             VALUES ${valString}
         `, function (res ) {
             callBack(res);

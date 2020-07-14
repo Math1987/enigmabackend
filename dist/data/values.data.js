@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
-const resourcePatterns_data_1 = require("./resourcePatterns.data");
+const valuesPatterns_data_1 = require("./valuesPatterns.data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
-class ResourceData {
+class ValuesData {
     static buildTable(datas, callBack) {
         data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${ResourceData.TABLE_RESOURCE}
+        CREATE TABLE IF NOT EXISTS ${datas.name}_${ValuesData.TABLE_RESOURCE}
         ( 
         id VARCHAR(36),
         key_ VARCHAR(36),
@@ -22,7 +22,7 @@ class ResourceData {
         });
     }
     static createFromPattern(id, pattern, world_name, callBack) {
-        resourcePatterns_data_1.ResourcePatternsData.read('player', (resourcePattern) => {
+        valuesPatterns_data_1.ValuesPatternsData.read('player', (resourcePattern) => {
             console.log('read resources pattenrs');
             console.log(resourcePattern);
             let reqString = '';
@@ -44,12 +44,12 @@ class ResourceData {
     }
     static readResources(id, world_name, callBack) {
         data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${ResourceData.TABLE_RESOURCE}
+        SELECT * FROM ${world_name}_${ValuesData.TABLE_RESOURCE}
         WHERE id = "${id}"
         `, function (res) {
             callBack(JSON.parse(JSON.stringify(res)));
         });
     }
 }
-exports.ResourceData = ResourceData;
-ResourceData.TABLE_RESOURCE = `resources`;
+exports.ValuesData = ValuesData;
+ValuesData.TABLE_RESOURCE = `values`;

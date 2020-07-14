@@ -1,19 +1,19 @@
 import {Data} from "./data";
 import {World} from "../models/world";
-import {ResourcePatternsData} from "./resourcePatterns.data";
+import {ValuesPatternsData} from "./valuesPatterns.data";
 
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
-export class ResourceData{
+export class ValuesData{
 
 
-    static TABLE_RESOURCE = `resources`;
+    static TABLE_RESOURCE = `values`;
 
     static buildTable( datas:World, callBack: CallableFunction){
         Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${ResourceData.TABLE_RESOURCE}
+        CREATE TABLE IF NOT EXISTS ${datas.name}_${ValuesData.TABLE_RESOURCE}
         ( 
         id VARCHAR(36),
         key_ VARCHAR(36),
@@ -29,11 +29,14 @@ export class ResourceData{
     static createFromPattern(id:string, pattern:string, world_name:string, callBack: CallableFunction){
 
 
-        ResourcePatternsData.read('player',(resourcePattern) =>{
+        ValuesPatternsData.read('player',(resourcePattern) =>{
+
+            console.log('read resources pattenrs')
+            console.log(resourcePattern);
 
             let reqString = '' ;
             for ( let resource of resourcePattern ){
-                reqString += `("${id}","${resource.name}", ${resource.start}, ${resource.skill_start})` ;
+                reqString += `("${id}","${resource.name}", ${resource.start})` ;
                 if ( resourcePattern[resourcePattern.length-1] !== resource ){
                     reqString += ", " ;
                 }
@@ -41,7 +44,7 @@ export class ResourceData{
 
             Data.successOrFail(`
             INSERT INTO ${world_name}_${this.TABLE_RESOURCE}
-            (id, key_, value, skill)
+            (id, key_, value)
             VALUES
             ${reqString}
             `, function ( res) {
@@ -55,7 +58,7 @@ export class ResourceData{
     static readResources(id:string, world_name: string, callBack: CallableFunction){
 
         Data.successOrFail(`
-        SELECT * FROM ${world_name}_${ResourceData.TABLE_RESOURCE}
+        SELECT * FROM ${world_name}_${ValuesData.TABLE_RESOURCE}
         WHERE id = "${id}"
         `, function (res) {
            callBack(JSON.parse(JSON.stringify(res)));

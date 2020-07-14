@@ -4,7 +4,7 @@ import {Player} from "../models/player";
 import {AccountData} from "./account.data";
 import {SkillsData} from "./skills.data";
 import {PlayerData} from "./player.data";
-import {ResourceData} from "./resource.data";
+import {ValuesData} from "./values.data";
 
 /**
  * This object manage all the world data.
@@ -81,7 +81,7 @@ export class WorldData{
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {
             PlayerData.buildPlayerTable(datas, function (playerRes) {
-                ResourceData.buildTable(datas, function (resourceCB) {
+                ValuesData.buildTable(datas, function (resourceCB) {
                     SkillsData.buildTable(datas, function (skillsCB) {
                         callBack('done');
                     })

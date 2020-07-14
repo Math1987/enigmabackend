@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const data_1 = require("./data");
 const skills_data_1 = require("./skills.data");
 const player_data_1 = require("./player.data");
-const resource_data_1 = require("./resource.data");
+const values_data_1 = require("./values.data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
@@ -74,7 +74,7 @@ class WorldData {
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {
             player_data_1.PlayerData.buildPlayerTable(datas, function (playerRes) {
-                resource_data_1.ResourceData.buildTable(datas, function (resourceCB) {
+                values_data_1.ValuesData.buildTable(datas, function (resourceCB) {
                     skills_data_1.SkillsData.buildTable(datas, function (skillsCB) {
                         callBack('done');
                     });
