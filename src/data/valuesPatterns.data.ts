@@ -26,7 +26,7 @@ export class ValuesPatternsData{
     static initValues(callBack: CallableFunction){
 
         let values = [
-
+            //RESOURCES
             {
                 key_: "water",
                 icon: 53,
@@ -52,6 +52,8 @@ export class ValuesPatternsData{
                 start : 10
             },
 
+
+            //SKILLS
             {
                 key_: "attack",
                 icon: 32,
@@ -64,7 +66,6 @@ export class ValuesPatternsData{
                 user : "player",
                 start : 10
             },
-
             {
                 key_: "hunter",
                 icon: 32,
@@ -88,8 +89,27 @@ export class ValuesPatternsData{
                 icon: 35,
                 user : "player",
                 start : 10
-            }
+            },
 
+            //STOCK
+            {
+                key_ : "moves",
+                icon : 10,
+                user : "player",
+                start : 20
+            },
+            {
+                key_ : "actions",
+                icon : 10,
+                user : "player",
+                start : 8
+            },
+            {
+                key_ : "addskills",
+                icon : 5,
+                user : "player",
+                start : 50
+            }
 
         ];
 

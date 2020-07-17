@@ -6,13 +6,15 @@ const express = require('express');
 export const routerUser = express.Router();
 
 routerUser.use((req, res, next)=>{
-    console.log('user call ' + req.method + ' ' + req.url );
+    //console.log('user call ' + req.method + ' ' + req.url );
     if ( req.method === "OPTIONS"){
         res.status(200).send('');
     }else{
         const token = req.headers.authorization ;
         if ( token ){
             Security.checkToken(token, function (userRes) {
+                console.log('values in token');
+                console.log(userRes);
                 if ( userRes ){
                     req.headers['userTokenValues'] = userRes ;
                     next();
@@ -46,6 +48,7 @@ routerUser.get('/datas', function (req: Request, res : Response) {
 
 
 routerUser.post('/createChara', function (req: Request, res : Response) {
+    console.log(req.body);
     PlayerData.createCharacter('world1', req.body, function (chara) {
         if ( chara ){
             chara = req.body ;
@@ -57,7 +60,7 @@ routerUser.post('/createChara', function (req: Request, res : Response) {
     });
 });
 
-routerUser.post('/chara', function (req: Request, res : Response) {
+/*routerUser.post('/chara', function (req: Request, res : Response) {
     const tokenDatas = req.headers['userTokenValues'] ;
     PlayerData.readCharacter(tokenDatas.world, req.body.id, function (chara) {
         if ( chara ){
@@ -66,4 +69,4 @@ routerUser.post('/chara', function (req: Request, res : Response) {
             res.status(204).json('chara non trouvé');
         }
     });
-});
+});*/

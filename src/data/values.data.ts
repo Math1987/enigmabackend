@@ -57,7 +57,11 @@ export class ValuesData{
         SELECT * FROM ${world_name}_${ValuesData.TABLE_VALUES}
         WHERE id = "${id}"
         `, function (res) {
-           callBack(JSON.parse(JSON.stringify(res)));
+            if ( res && res.length > 0 ){
+                callBack(JSON.parse(JSON.stringify(res)));
+            }else{
+                callBack(null);
+            }
         });
 
     }
@@ -71,11 +75,36 @@ export class ValuesData{
            SET value = value + ${adder}
            WHERE id = "${id}" AND key_ = "${key_}"
             `, res => {
-                console.log(res);
-                resolve('ok');
+                if ( res ){
+                    resolve(true);
+                }else{
+                    reject();
+                }
             });
 
+        } );
+    }
+    static updateValues(id:string, world_name:string, keysAdds : {key_:string, value:number}[] ){
 
+        let vals = `` ;
+        for ( let row of keysAdds ){
+            vals += `("${id}","${row.key_}", ${row.value})` ;
+            if ( row !== keysAdds[keysAdds.length-1]){
+                vals += ',' ;
+            }
+        }
+        return new Promise<any>( (resolve, reject) =>{
+            Data.successOrFail(`
+               INSERT INTO ${world_name}_${ValuesData.TABLE_VALUES} (id, key_, value)
+               VALUES ${vals}
+               ON DUPLICATE KEY UPDATE value=VALUES(value) 
+            `, res => {
+                if ( res ){
+                    resolve(true);
+                }else{
+                    reject();
+                }
+            });
 
         } );
     }

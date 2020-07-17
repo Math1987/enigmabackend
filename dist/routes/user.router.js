@@ -5,7 +5,7 @@ const player_data_1 = require("../data/player.data");
 const express = require('express');
 exports.routerUser = express.Router();
 exports.routerUser.use((req, res, next) => {
-    console.log('user call ' + req.method + ' ' + req.url);
+    //console.log('user call ' + req.method + ' ' + req.url );
     if (req.method === "OPTIONS") {
         res.status(200).send('');
     }
@@ -13,6 +13,8 @@ exports.routerUser.use((req, res, next) => {
         const token = req.headers.authorization;
         if (token) {
             security_1.Security.checkToken(token, function (userRes) {
+                console.log('values in token');
+                console.log(userRes);
                 if (userRes) {
                     req.headers['userTokenValues'] = userRes;
                     next();
@@ -46,6 +48,7 @@ exports.routerUser.get('/datas', function (req, res) {
     }
 });
 exports.routerUser.post('/createChara', function (req, res) {
+    console.log(req.body);
     player_data_1.PlayerData.createCharacter('world1', req.body, function (chara) {
         if (chara) {
             chara = req.body;
@@ -57,14 +60,13 @@ exports.routerUser.post('/createChara', function (req, res) {
         }
     });
 });
-exports.routerUser.post('/chara', function (req, res) {
-    const tokenDatas = req.headers['userTokenValues'];
-    player_data_1.PlayerData.readCharacter(tokenDatas.world, req.body.id, function (chara) {
-        if (chara) {
-            res.status(200).json(chara);
-        }
-        else {
+/*routerUser.post('/chara', function (req: Request, res : Response) {
+    const tokenDatas = req.headers['userTokenValues'] ;
+    PlayerData.readCharacter(tokenDatas.world, req.body.id, function (chara) {
+        if ( chara ){
+            res.status(200).json(chara) ;
+        }else{
             res.status(204).json('chara non trouvé');
         }
     });
-});
+});*/

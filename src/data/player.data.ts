@@ -58,7 +58,10 @@ export class PlayerData{
                 `, function(updateWorld){
 
                     ValuesData.createFromPattern(character.id,'player' ,world_name ,(res) =>{
-                        callBack(playerRes);
+
+                        character['world'] = world_name ;
+
+                        callBack(character);
                     })
 
                 });

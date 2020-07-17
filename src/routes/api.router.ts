@@ -101,6 +101,33 @@ routerApi.get('/refreshToken', function (req: Request, res : Response) {
                 Reflect.deleteProperty(userRes,'exp');
                 Reflect.deleteProperty(userRes,'iat');
                 const newToken = Security.createToken(userRes) ;
+                console.log(newToken);
+                console.log(userRes);
+                res.status(200).json(newToken);
+            } else{
+                res.status(401).json('wrong token');
+            }
+        });
+    }else{
+        res.status(403).json('no token to refresh!');
+    }
+});
+
+routerApi.post('/newToken', function (req: Request, res : Response) {
+    console.log('new token');
+    console.log(req.body);
+    const token = req.headers.authorization ;
+    if ( token ){
+        Security.checkToken(token, function (userRes) {
+            if ( userRes ){
+                if ( req.body.world ){
+                    userRes['world'] = req.body.world ;
+                }
+                Reflect.deleteProperty(userRes,'exp');
+                Reflect.deleteProperty(userRes,'iat');
+                const newToken = Security.createToken(userRes) ;
+                console.log(newToken);
+                console.log(userRes);
                 res.status(200).json(newToken);
             } else{
                 res.status(401).json('wrong token');
