@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/Math1987/enigmabackend/compare/v0.0.5...v0.0.6) (2020-07-17)
+
+
+### Features
+
+* create Ãmeta.datas & meta.service with sexes, religions, races ([e28883f](https://github.com/Math1987/enigmabackend/commit/e28883fd5085b9bac6d7fde4da54a55e123a00df))
+* implement addValue route & dbÃ ([3e9b9ea](https://github.com/Math1987/enigmabackend/commit/3e9b9ea53e06d84cd9b56fb63efbe95e99d00f8a))
+* newToken route created in api.routes.ts with worldName added if exist => correction of bad connection when create new character ([942f685](https://github.com/Math1987/enigmabackend/commit/942f6853f74d266e2ca7e82c0e23a9cc523fe40a))
+
 ### [0.0.5](https://github.com/Math1987/enigmabackend/compare/v0.0.4...v0.0.5) (2020-05-30)
 
 ### [0.0.4](https://github.com/Math1987/enigmabackend/compare/v0.0.3...v0.0.4) (2020-05-27)
