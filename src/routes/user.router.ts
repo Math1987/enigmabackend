@@ -1,3 +1,4 @@
+import { MobilesData } from './../data/mobile.data';
 import { Chara } from './../../../enigmafrontend/src/app/shared/models/chara.model';
 import { localStorage } from './../services/localstorage';
 import {Security} from "../services/security";
@@ -50,15 +51,28 @@ routerUser.get('/datas', function (req: Request, res : Response) {
 
 routerUser.post('/createChara', function (req: Request, res : Response) {
 
-    PlayerData.createCharacter('world1', req.body, function (chara) {
-        if ( chara ){
-            chara = req.body ;
-            chara['world'] = 'world1';
-            res.status(200).json(chara);localStorage
-        }else{
-            res.status(401).json('erreur de création du personnage');
-        }
-    });
+
+    if ( req.body && req.body.name && req.body.race && req.body.religion && req.body.id ){
+
+        console.log(req.body);
+
+        PlayerData.createCharacter('world1', req.body, function (chara) {
+            if ( chara ){
+                console.log('chara created:')
+                console.log(chara);
+                MobilesData.createMobile('world1',chara.id, 'elf', 0,0, (resMobile)=>{
+                    chara = req.body ;
+                    chara['world'] = 'world1';
+                    res.status(200).send(chara);          
+                });
+
+            }else{
+                res.status(401).json('erreur de création du personnage');
+            }
+        });
+    }else{
+        res.status(401).send('need correct datas');
+    }
 });
 
 
@@ -75,20 +89,29 @@ routerUser.post('/getViews', (req:Request, res: Response) =>{
 
             let cash = [] ;
 
-            Chara.find()
-
-            for ( let pos of req.body.cases ){
-                if ( pos.x >= -worldDatas.width/2 
-                    && pos.x <= worldDatas.width/2 
-                    && pos.y >= -worldDatas.height/2 
-                    && pos.y <= worldDatas.height/2 ){
-                    
-                    cash.push({key:"floor", x : pos.x, y : pos.y, z : 0});
-
+            MobilesData.readByPositions(datas['world'], req.body.cases, (resMobile)=>{
+                console.log(resMobile);
+                for ( let pos of req.body.cases ){
+                    if ( pos.x >= -worldDatas.width/2 
+                        && pos.x <= worldDatas.width/2 
+                        && pos.y >= -worldDatas.height/2 
+                        && pos.y <= worldDatas.height/2 ){
+                        
+                        cash.push({key:"floor", x : pos.x, y : pos.y, z : 0});
+    
+                    }
                 }
-            }
+                for ( let mob of resMobile ){
+                    let mobToDraw = {key: mob.image_key, x : mob.position.x, y : mob.position.y, z : 2};
+                    cash.push(mobToDraw);
+                    console.log(mobToDraw);
+                }
+                res.status(200).send(cash);
+            });
 
-            res.status(200).send(cash);
+
+
+
         }else{
             res.status(401).send('no world data found');
         }
