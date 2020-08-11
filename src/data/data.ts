@@ -1,3 +1,4 @@
+import { MobilesData } from './mobile.data';
 import {WorldData} from "./world.data";
 import {AccountData} from "./account.data";
 import {MetaData} from "./meta.data";
@@ -39,7 +40,7 @@ export class Data{
      * @param callBack
      */
     static init(callBack:CallableFunction){
-
+        console.log('---------------------->world init')
         let mysql = require('mysql');
         let connection = mysql.createConnection({
             host: Data.HOST,
@@ -58,7 +59,10 @@ export class Data{
             ValuesPatternsData.init(function (patternData) {
                 AccountData.initAccount(function (account) {
                     WorldData.init(function (worldInit) {
-                        callBack('init');
+                    
+                            callBack('init');
+                   
+              
                     });
                 });
             });

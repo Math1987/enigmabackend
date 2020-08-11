@@ -1,3 +1,5 @@
+import { localStorage } from './services/localstorage';
+
 /**
  * Index.ts is the presentation page
  * init static handlers for exress and socket
@@ -13,6 +15,11 @@ import {routerApi} from "./routes/api.router";
 import {routerUser} from "./routes/user.router";
 import {routerWorld} from "./routes/world.router";
 import {routerChara} from "./routes/chara.router";
+
+//const LocalStorage = require('node-localstorage').LocalStorage ;
+import {localStorage} from "./services/localstorage" ;
+localStorage.setItem('test', "bonjour");
+
 const app = express();
 const PORT = 4040 ;
 app.set("port", PORT);
@@ -44,6 +51,7 @@ app.use('/api/u',routerUser);
 app.use('/api/u/chara',routerChara);
 app.use('/',indexRouter);
 
+console.log('---------------------->world init')
 Data.init(function (data) {
     Worlds.init(function (worlds) {
     });

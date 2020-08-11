@@ -1,3 +1,4 @@
+import { MobilesData } from './mobile.data';
 import {Data} from "./data";
 import {World} from "../models/world";
 import {SkillsData} from "./skills.data";
@@ -22,6 +23,7 @@ export class WorldData{
      * @param callBack: whatever...just say when work is finish.
      */
     static init(callBack:CallableFunction){
+
         Data.successOrFail(`
         CREATE TABLE IF NOT EXISTS ${Data.TABLE_WORLDS}
         (
@@ -73,6 +75,7 @@ export class WorldData{
      * @param callBack
      */
     static buildWorld( datas: World, callBack: CallableFunction){
+
         Data.successOrFail(`
         INSERT INTO ${Data.TABLE_WORLDS}
         (name, width, height)
@@ -80,7 +83,9 @@ export class WorldData{
         `, function (worldInsert) {
             PlayerData.buildPlayerTable(datas, function (playerRes) {
                 ValuesData.buildTable(datas, function (resourceCB) {
-                    callBack('done');
+                    MobilesData.buildMobileDatas(datas, (resMObiles) =>{
+                        callBack('done');
+                    });
                 });
             });
         });

@@ -101,8 +101,7 @@ routerApi.get('/refreshToken', function (req: Request, res : Response) {
                 Reflect.deleteProperty(userRes,'exp');
                 Reflect.deleteProperty(userRes,'iat');
                 const newToken = Security.createToken(userRes) ;
-                console.log(newToken);
-                console.log(userRes);
+
                 res.status(200).json(newToken);
             } else{
                 res.status(401).json('wrong token');
@@ -114,8 +113,7 @@ routerApi.get('/refreshToken', function (req: Request, res : Response) {
 });
 
 routerApi.post('/newToken', function (req: Request, res : Response) {
-    console.log('new token');
-    console.log(req.body);
+
     const token = req.headers.authorization ;
     if ( token ){
         Security.checkToken(token, function (userRes) {
@@ -126,8 +124,7 @@ routerApi.post('/newToken', function (req: Request, res : Response) {
                 Reflect.deleteProperty(userRes,'exp');
                 Reflect.deleteProperty(userRes,'iat');
                 const newToken = Security.createToken(userRes) ;
-                console.log(newToken);
-                console.log(userRes);
+
                 res.status(200).json(newToken);
             } else{
                 res.status(401).json('wrong token');

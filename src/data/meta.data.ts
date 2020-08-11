@@ -6,8 +6,10 @@ export class MetaData{
 
     static init(callBack: CallableFunction){
 
+        Data.successOrFail(` DROP TABLE IF EXISTS ${MetaData.TABLE_NAME}`, ()=>{});
+
         Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${MetaData.TABLE_NAME}
+        CREATE TABLE ${MetaData.TABLE_NAME}
         (
         key_ VARCHAR(36) PRIMARY KEY,
         type VARCHAR(36),
@@ -52,6 +54,31 @@ export class MetaData{
                 description_fr : "spiritualité",
                 img : ''
             },
+
+
+            {
+                key_ : "moves",
+                type: "resourceAction",
+                name_fr : "déplacement",
+                description_fr : "permet de se déplacer",
+                img : ''
+            },
+            {
+                key_ : "actions",
+                type: "resourceAction",
+                name_fr : "actions",
+                description_fr : "actions a utiliser",
+                img : ''
+            },
+            {
+                key_ : "addskills",
+                type: "addskill",
+                name_fr : "ajout de compétences",
+                description_fr : "ajouter des compétences",
+                img : ''
+            },
+
+
 
 
 

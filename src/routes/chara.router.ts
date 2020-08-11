@@ -44,7 +44,7 @@ routerChara.post('/addvalue', function (req: Request, res : Response) {
 
     const tokenDatas = req.headers['userTokenValues'] ;
     ValuesData.addValue(tokenDatas.id, tokenDatas.world, req.body.key_, req.body.adder).then( addValueRes =>{
-        console.log(' value added successfully ' + addValueRes )
+
         res.status(200).send(addValueRes);
     });
 
@@ -68,7 +68,7 @@ routerChara.post('/addSkill', function (req: Request, res : Response) {
                     {key_:req.body.key_, value: valNewVal}
                     ]
                     ).then(addValueRes => {
-                console.log(' value added successfully ' + addValueRes)
+   
 
                 let obj = {addskills: skillVal};
                 obj[req.body.key_] = valNewVal ;

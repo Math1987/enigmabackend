@@ -1,4 +1,7 @@
+import { localStorage } from './localstorage';
+
 import {WorldData} from "../data/world.data";
+import {localStorage} from "./localstorage";
 
 
 /**
@@ -24,6 +27,9 @@ export class Worlds{
                     callBack('done');
                 });
             }else{
+                for ( let world of worlds ){
+                    localStorage.setItem(world['name'], JSON.stringify(world));
+                }
                 callBack('done');
             }
         });

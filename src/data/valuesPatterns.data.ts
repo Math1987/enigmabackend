@@ -7,6 +7,11 @@ export class ValuesPatternsData{
     static init(callBack: CallableFunction){
 
         Data.successOrFail(`
+        DROP TABLE ${ValuesPatternsData.TABLE_NAME}
+        `, function (res) {
+        });
+
+        Data.successOrFail(`
         CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
         (
         key_ VARCHAR(36),
@@ -94,13 +99,13 @@ export class ValuesPatternsData{
             //STOCK
             {
                 key_ : "moves",
-                icon : 10,
+                icon : 36,
                 user : "player",
                 start : 20
             },
             {
                 key_ : "actions",
-                icon : 10,
+                icon : 16,
                 user : "player",
                 start : 8
             },
