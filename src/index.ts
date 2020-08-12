@@ -1,4 +1,4 @@
-import { localStorage } from './services/localstorage';
+import { localStorage } from "./services/localstorage";
 
 /**
  * Index.ts is the presentation page
@@ -7,56 +7,60 @@ import { localStorage } from './services/localstorage';
  * init the database with Data
  */
 
-import express, {NextFunction, Request, Response} from 'express';
-import {Data} from "./data/data";
-import {Worlds} from "./services/worlds";
-import {indexRouter} from './routes/index.router';
-import {routerApi} from "./routes/api.router";
-import {routerUser} from "./routes/user.router";
-import {routerWorld} from "./routes/world.router";
-import {routerChara} from "./routes/chara.router";
+import express, { NextFunction, Request, Response } from "express";
+import { Data } from "./data/data";
+import { Worlds } from "./services/worlds";
+import { indexRouter } from "./routes/index.router";
+import { routerApi } from "./routes/api.router";
+import { routerUser } from "./routes/user.router";
+import { routerWorld } from "./routes/world.router";
+import { routerChara } from "./routes/chara.router";
 
-//const LocalStorage = require('node-localstorage').LocalStorage ;
-import {localStorage} from "./services/localstorage" ;
-localStorage.setItem('test', "bonjour");
+import { UserSocket } from "./socket/user.socket";
 
 const app = express();
-const PORT = 4040 ;
+const PORT = 4040;
 app.set("port", PORT);
-const path = require('path');
+const path = require("path");
 var bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-const mime = require('mime');
-const fs = require('fs');
-const http = require("http") ;
-const https = require("https") ;
+const cookieParser = require("cookie-parser");
+const mime = require("mime");
+const fs = require("fs");
+const http = require("http");
+const https = require("https");
 
-
+const server = https.createServer(
+  {
+    key: fs.readFileSync(path.join(__dirname, "/ssl/localhost.key")),
+    cert: fs.readFileSync(path.join(__dirname, "/ssl/localhost.crt")),
+  },
+  app
+);
+new UserSocket().init(server);
 
 app.use(cookieParser());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(  (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-    res.header("Access-Control-Allow-Headers", "*");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-    next();
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+  next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/api', routerApi);
-app.use('/api/world',routerWorld);
-app.use('/api/u',routerUser);
-app.use('/api/u/chara',routerChara);
-app.use('/',indexRouter);
+app.use("/api", routerApi);
+app.use("/api/world", routerWorld);
+app.use("/api/u", routerUser);
+app.use("/api/u/chara", routerChara);
+app.use("/", indexRouter);
 
-console.log('---------------------->world init')
 Data.init(function (data) {
-    Worlds.init(function (worlds) {
-    });
+  Worlds.init(function (worlds) {
+    server.listen(PORT);
+  });
 });
-
 
 /*http.createServer((req, res) =>{
     console.log('http server');
@@ -67,10 +71,3 @@ Data.init(function (data) {
     res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
     res.end();
 }).listen(4000);*/
-
-const server = https.createServer({
-    key : fs.readFileSync(path.join(__dirname, '/ssl/localhost.key')),
-    cert: fs.readFileSync(path.join(__dirname, '/ssl/localhost.crt')),
-},app);
-server.listen(PORT);
-

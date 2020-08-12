@@ -22,25 +22,24 @@ class Data {
      * @param callBack
      */
     static init(callBack) {
-        console.log('---------------------->world init');
-        let mysql = require('mysql');
+        let mysql = require("mysql");
         let connection = mysql.createConnection({
             host: Data.HOST,
             user: Data.USER,
-            password: Data.PASSWORD
+            password: Data.PASSWORD,
         });
         connection.query(`create database if not exists ${Data.DB_NAME}`, function (err, res) { });
         Data.CONNECTION = mysql.createConnection({
             host: Data.HOST,
             user: Data.USER,
             password: Data.PASSWORD,
-            database: Data.DB_NAME
+            database: Data.DB_NAME,
         });
         meta_data_1.MetaData.init(function (metaDatasInit) {
             valuesPatterns_data_1.ValuesPatternsData.init(function (patternData) {
                 account_data_1.AccountData.initAccount(function (account) {
                     world_data_1.WorldData.init(function (worldInit) {
-                        callBack('init');
+                        callBack("init");
                     });
                 });
             });
@@ -88,10 +87,10 @@ exports.Data = Data;
  * the mysqljs informations to create a connection
  * when server launched
  */
-Data.HOST = 'localhost';
+Data.HOST = "localhost";
 Data.USER = "root";
-Data.PASSWORD = '';
-Data.DB_NAME = 'enigma_db';
+Data.PASSWORD = "";
+Data.DB_NAME = "enigma_db";
 Data.CONNECTION = null;
 /**
  * Here are the global tables

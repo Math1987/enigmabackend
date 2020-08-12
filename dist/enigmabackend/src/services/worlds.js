@@ -19,15 +19,15 @@ class Worlds {
     static init(callBack) {
         world_data_1.WorldData.readWorlds(function (worlds) {
             if (!(worlds && worlds.length > 0)) {
-                world_data_1.WorldData.buildWorld({ name: 'world1', width: 100, height: 100 }, function (world) {
-                    callBack('done');
+                world_data_1.WorldData.buildWorld({ name: "world1", width: 100, height: 100 }, function (world) {
+                    callBack("done");
                 });
             }
             else {
                 for (let world of worlds) {
-                    localstorage_1.localStorage.setItem(world['name'], JSON.stringify(world));
+                    localstorage_1.localStorage.setItem(world["name"], JSON.stringify(world));
                 }
-                callBack('done');
+                callBack("done");
             }
         });
         //Chara.init();
