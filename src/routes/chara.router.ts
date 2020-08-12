@@ -1,6 +1,6 @@
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "../data/values.data";
-import { getChara } from "./../controllers/chara.controller";
+import { getChara, moveChara } from "./../controllers/chara.controller";
 
 const express = require("express");
 export const routerChara = express.Router();
@@ -15,6 +15,7 @@ routerChara.use("/", (req: Request, res: Response, next) => {
       req.headers["userTokenValues"]["world"],
       req.headers["userTokenValues"]["id"],
       (chara) => {
+        req["chara"] = chara;
         req.headers["characterValuesAsObj"] = chara;
         next();
       }
@@ -34,6 +35,29 @@ routerChara.use("/", (req: Request, res: Response, next) => {
 
     //   next();
     // });
+  }
+});
+
+routerChara.post("/move", (req: Request, res: Response) => {
+  if (
+    req.body &&
+    req.body["x"] !== null &&
+    req.body["y"] !== null &&
+    req["user"] &&
+    req["user"]["world"] &&
+    req["chara"]
+  ) {
+    moveChara(
+      req["user"]["world"],
+      req["chara"],
+      req.body["x"],
+      req.body["y"],
+      (resMover) => {
+        res.status(200).send(resMover);
+      }
+    );
+  } else {
+    res.status(404).send("need datas");
   }
 });
 

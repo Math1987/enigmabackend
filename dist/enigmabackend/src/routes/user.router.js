@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routerUser = void 0;
+const chara_controller_1 = require("./../controllers/chara.controller");
 const mobile_data_1 = require("./../data/mobile.data");
 const localstorage_1 = require("./../services/localstorage");
 const security_1 = require("../services/security");
-const player_data_1 = require("../data/player.data");
 const express = require("express");
 exports.routerUser = express.Router();
 exports.routerUser.use((req, res, next) => {
@@ -17,6 +17,7 @@ exports.routerUser.use((req, res, next) => {
             security_1.Security.checkToken(token, function (userRes) {
                 if (userRes) {
                     req.headers["userTokenValues"] = userRes;
+                    req["user"] = userRes;
                     next();
                 }
                 else {
@@ -51,18 +52,36 @@ exports.routerUser.post("/createChara", function (req, res) {
         req.body.race &&
         req.body.religion &&
         req.body.id) {
-        player_data_1.PlayerData.createCharacter("world1", req.body, function (chara) {
+        console.log("createChara");
+        chara_controller_1.createChara("world1", req.body, (chara) => {
             if (chara) {
-                mobile_data_1.MobilesData.createMobile("world1", chara.id, "elf", 0, 0, 100, (resMobile) => {
-                    chara = req.body;
-                    chara["world"] = "world1";
-                    res.status(200).send(chara);
-                });
+                console.log(chara);
+                res.status(200).send(chara);
             }
             else {
+                console.log("err");
                 res.status(401).json("erreur de création du personnage");
             }
         });
+        // PlayerData.createCharacter("world1", req.body, function (chara) {
+        //   if (chara) {
+        //     MobilesData.createMobile(
+        //       "world1",
+        //       chara.id,
+        //       "elf",
+        //       0,
+        //       0,
+        //       100,
+        //       (resMobile) => {
+        //         chara = req.body;
+        //         chara["world"] = "world1";
+        //         res.status(200).send(chara);
+        //       }
+        //     );
+        //   } else {
+        //     res.status(401).json("erreur de création du personnage");
+        //   }
+        // });
     }
     else {
         res.status(401).send("need correct datas");

@@ -1,3 +1,4 @@
+import { createChara } from "./../controllers/chara.controller";
 import { MobilesData } from "./../data/mobile.data";
 import { Chara } from "./../../../enigmafrontend/src/app/shared/models/chara.model";
 import { localStorage } from "./../services/localstorage";
@@ -17,6 +18,7 @@ routerUser.use((req, res, next) => {
       Security.checkToken(token, function (userRes) {
         if (userRes) {
           req.headers["userTokenValues"] = userRes;
+          req["user"] = userRes;
           next();
         } else {
           res.status(401).json("token invalid");
@@ -51,25 +53,36 @@ routerUser.post("/createChara", function (req: Request, res: Response) {
     req.body.religion &&
     req.body.id
   ) {
-    PlayerData.createCharacter("world1", req.body, function (chara) {
+    console.log("createChara");
+    createChara("world1", req.body, (chara) => {
       if (chara) {
-        MobilesData.createMobile(
-          "world1",
-          chara.id,
-          "elf",
-          0,
-          0,
-          100,
-          (resMobile) => {
-            chara = req.body;
-            chara["world"] = "world1";
-            res.status(200).send(chara);
-          }
-        );
+        console.log(chara);
+        res.status(200).send(chara);
       } else {
+        console.log("err");
         res.status(401).json("erreur de création du personnage");
       }
     });
+
+    // PlayerData.createCharacter("world1", req.body, function (chara) {
+    //   if (chara) {
+    //     MobilesData.createMobile(
+    //       "world1",
+    //       chara.id,
+    //       "elf",
+    //       0,
+    //       0,
+    //       100,
+    //       (resMobile) => {
+    //         chara = req.body;
+    //         chara["world"] = "world1";
+    //         res.status(200).send(chara);
+    //       }
+    //     );
+    //   } else {
+    //     res.status(401).json("erreur de création du personnage");
+    //   }
+    // });
   } else {
     res.status(401).send("need correct datas");
   }
