@@ -7,8 +7,4 @@ export class Player extends ModelPattern {
   readKey() {
     return "player";
   }
-
-  pops() {
-    console.log("pops");
-  }
 }

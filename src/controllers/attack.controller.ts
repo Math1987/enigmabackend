@@ -101,7 +101,7 @@ export const attackProba = (user, userPattern, target, targetPattern, callBack) 
   }
 };
 
-export const makeAttack = (world_name, user, target, power, callback) => {
+export const makeAttack = (world_name, user, patternUser, target, patternTarget, power, callback) => {
   MobilesData.addValue(
     world_name,
     target["id"],
@@ -111,8 +111,13 @@ export const makeAttack = (world_name, user, target, power, callback) => {
       if (resTarget) {
         if (target["life"] - power <= 0) {
           console.log("kill");
+          patternTarget.pops(world_name, target, ( resPops)=>{
+            callback("kill");
+          });
+        }else{
+          callback("hurt")
         }
-        callback("done");
+
       } else {
         callback(null);
       }
@@ -140,7 +145,9 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
         makeAttack(
           worldName,
           user,
+          patternUser,
           target,
+          patternTarget,
           dammage,
           (attackRes) => {
             getSocketsNear(
@@ -171,7 +178,9 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
         makeAttack(
           worldName,
           target,
+          patternTarget,
           user,
+          patternUser,
           dammage * 0.5,
           (attackRes) => {
             getSocketsNear(

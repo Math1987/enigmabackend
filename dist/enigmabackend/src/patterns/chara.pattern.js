@@ -9,8 +9,5 @@ class Player extends model_pattern_1.ModelPattern {
     readKey() {
         return "player";
     }
-    pops() {
-        console.log("pops");
-    }
 }
 exports.Player = Player;

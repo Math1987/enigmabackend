@@ -76,6 +76,24 @@ class MobilesData {
             callBack(res);
         });
     }
+    static updateLife(world_name, id, life, callBack) {
+        data_1.Data.successOrFail(`
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET life = ${life}
+      WHERE id = "${id}"
+    `, (res) => {
+            callBack(res);
+        });
+    }
+    static updateLifeAndPosition(world_name, id, life, x, y, callBack) {
+        data_1.Data.successOrFail(`
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET life = ${life}, position = POINT(${x},${y})
+      WHERE id = "${id}"
+    `, (res) => {
+            callBack(res);
+        });
+    }
     static addValue(world_name, id, key_, adder, callBack) {
         data_1.Data.successOrFail(`
       UPDATE ${world_name}_${TABLE_NAME}

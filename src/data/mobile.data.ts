@@ -109,6 +109,39 @@ export class MobilesData {
       }
     );
   }
+
+  static updateLife(world_name: string, id: string, life: number, callBack) {
+    Data.successOrFail(
+      `
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET life = ${life}
+      WHERE id = "${id}"
+    `,
+      (res) => {
+        callBack(res);
+      }
+    );
+  }
+  static updateLifeAndPosition(
+    world_name: string,
+    id: string,
+    life: number,
+    x: number,
+    y: number,
+    callBack
+  ) {
+    Data.successOrFail(
+      `
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET life = ${life}, position = POINT(${x},${y})
+      WHERE id = "${id}"
+    `,
+      (res) => {
+        callBack(res);
+      }
+    );
+  }
+
   static addValue(
     world_name: string,
     id: string,

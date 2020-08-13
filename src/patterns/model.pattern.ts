@@ -1,3 +1,5 @@
+import { MobilesData } from "./../data/mobile.data";
+import { ValuesData } from "./../data/values.data";
 import { ValuesPatternsData } from "./../data/valuesPatterns.data";
 
 export class ModelPattern {
@@ -13,5 +15,25 @@ export class ModelPattern {
   }
   readKey() {
     return "";
+  }
+  pops(world_name, user, callBack) {
+    if (this.values["life"]) {
+      MobilesData.updateLifeAndPosition(
+        world_name,
+        user["id"],
+        this.values["life"],
+        0,
+        0,
+        (resLife) => {
+          if (resLife) {
+            callBack(this.values["life"]);
+          } else {
+            callBack(null);
+          }
+        }
+      );
+    } else {
+      callBack(null);
+    }
   }
 }

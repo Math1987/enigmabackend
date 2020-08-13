@@ -76,13 +76,18 @@ exports.attackProba = (user, userPattern, target, targetPattern, callBack) => {
         callBack(1);
     }
 };
-exports.makeAttack = (world_name, user, target, power, callback) => {
+exports.makeAttack = (world_name, user, patternUser, target, patternTarget, power, callback) => {
     mobile_data_1.MobilesData.addValue(world_name, target["id"], "life", -power, (resTarget) => {
         if (resTarget) {
             if (target["life"] - power <= 0) {
                 console.log("kill");
+                patternTarget.pops(world_name, target, (resPops) => {
+                    callback("kill");
+                });
             }
-            callback("done");
+            else {
+                callback("hurt");
+            }
         }
         else {
             callback(null);
@@ -97,7 +102,7 @@ exports.attack = (worldName, user, target, callBack) => {
         if (attackType == "attack") {
             exports.attackPower(user, target, D100, (dammage) => {
                 console.log("attack " + dammage);
-                exports.makeAttack(worldName, user, target, dammage, (attackRes) => {
+                exports.makeAttack(worldName, user, patternUser, target, patternTarget, dammage, (attackRes) => {
                     socket_controller_1.getSocketsNear(worldName, user["position"].x, user["position"].y, 5, (sockets) => {
                         for (let socket in sockets) {
                             sockets[socket].emit("attack", user, target, "attack", D100, dammage);
@@ -109,7 +114,7 @@ exports.attack = (worldName, user, target, callBack) => {
         }
         else {
             exports.attackPower(target, user, D100, (dammage) => {
-                exports.makeAttack(worldName, target, user, dammage * 0.5, (attackRes) => {
+                exports.makeAttack(worldName, target, patternTarget, user, patternUser, dammage * 0.5, (attackRes) => {
                     socket_controller_1.getSocketsNear(worldName, user["position"].x, user["position"].y, 5, (sockets) => {
                         for (let socket in sockets) {
                             sockets[socket].emit("attack", user, target, "counter", D100, dammage);
