@@ -7,20 +7,30 @@ import { io } from "./../socket/user.socket";
 export const getChara = (world_name, id, callBack) => {
   let chara = {};
 
-  ValuesData.readAsObject(world_name, id, (values) => {
-    if (values) {
-      chara = values;
+  PlayerData.readCharaAsObj(world_name, id, (player)=>{
 
-      MobilesData.readById(world_name, id, (mobile) => {
-        for (let key in mobile) {
-          chara[key] = mobile[key];
+
+    if ( player ){
+  
+    ValuesData.readAsObject(world_name, id, (values) => {
+      if (values) {
+    
+          MobilesData.readById(world_name, id, (mobile) => {
+
+            Object.assign(chara, player, values, mobile);
+            
+            console.log(chara);
+            callBack(chara);
+          });
+        } else {
+          callBack(null);
         }
-        callBack(chara);
       });
-    } else {
+    }else{
       callBack(null);
     }
   });
+
 };
 
 export const createChara = (world_name:string, datas : {}, callBack )=>{
@@ -106,9 +116,66 @@ export const moveChara = (world_name: string, chara : {}, x:number, y:number,cal
       }
     });
   }
-
-
-
 }
 
-export const move = (id, x, y) => {};
+export const addSkill = ((req: Request, res: Response) => {
+
+  const user = req["user"];
+  const values = req["chara"];
+
+  if (user && values && req.body['adder'] && req.body['key_']) {
+    console.log('value add');
+    if (
+      values[req.body['key_']] &&
+      values["addskills"] &&
+      values["addskills"] &&
+      values["addskills"] >= req.body['adder']
+    ) {
+      console.log('value add2');
+      let skillVal = values["addskills"] - req.body['adder'];
+      let valNewVal = values[req.body['key_']] + req.body['adder'];
+
+      ValuesData.updateValues(user.id, user.world, [
+        { key_: "addskills", value: skillVal },
+        { key_: req.body['key_'], value: valNewVal },
+      ]).then((addValueRes) => {
+        console.log(addValueRes);
+        let obj = { addskills: skillVal };
+        obj[req.body['key_']] = valNewVal;
+
+        res.status(200).send(obj);
+      });
+    }
+  } else {
+    res.status(204).send("not found");
+  }
+}
+
+
+// routerChara.post("/addSkill", function (req: Request, res: Response) {
+//   const tokenDatas = req.headers["userTokenValues"];
+//   const values = req.headers["characterValuesAsObj"];
+//   if (tokenDatas && values && req.body.adder && req.body.key_) {
+//     if (
+//       values[req.body.key_] &&
+//       values["addskills"] &&
+//       values["addskills"].value &&
+//       values["addskills"].value >= req.body.adder
+//     ) {
+//       let skillVal = values["addskills"].value - req.body.adder;
+//       let valNewVal = values[req.body.key_].value + req.body.adder;
+
+//       ValuesData.updateValues(tokenDatas.id, tokenDatas.world, [
+//         { key_: "addskills", value: skillVal },
+//         { key_: req.body.key_, value: valNewVal },
+//       ]).then((addValueRes) => {
+//         let obj = { addskills: skillVal };
+//         obj[req.body.key_] = valNewVal;
+
+//         res.status(200).send(obj);
+//       });
+//     }
+//   } else {
+//     res.status(204).send("not found");
+//   }
+// });

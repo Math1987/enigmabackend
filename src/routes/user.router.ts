@@ -63,26 +63,6 @@ routerUser.post("/createChara", function (req: Request, res: Response) {
         res.status(401).json("erreur de création du personnage");
       }
     });
-
-    // PlayerData.createCharacter("world1", req.body, function (chara) {
-    //   if (chara) {
-    //     MobilesData.createMobile(
-    //       "world1",
-    //       chara.id,
-    //       "elf",
-    //       0,
-    //       0,
-    //       100,
-    //       (resMobile) => {
-    //         chara = req.body;
-    //         chara["world"] = "world1";
-    //         res.status(200).send(chara);
-    //       }
-    //     );
-    //   } else {
-    //     res.status(401).json("erreur de création du personnage");
-    //   }
-    // });
   } else {
     res.status(401).send("need correct datas");
   }

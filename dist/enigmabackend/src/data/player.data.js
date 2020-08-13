@@ -32,6 +32,19 @@ class PlayerData {
             callBack(charaRes);
         });
     }
+    static readCharaAsObj(world_name, id, callBack) {
+        data_1.Data.successOrFail(`
+        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+        WHERE id = "${id}"
+        `, function (charaRes) {
+            if (charaRes && charaRes.length > 0) {
+                callBack(JSON.parse(JSON.stringify(charaRes[0])));
+            }
+            else {
+                callBack(null);
+            }
+        });
+    }
     static createCharacter(world_name, character, callBack) {
         data_1.Data.successOrFail(`
         INSERT INTO ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
@@ -44,8 +57,8 @@ class PlayerData {
                 set world = "${world_name}"
                 WHERE id = "${character.id}"
                 `, function (updateWorld) {
-                    values_data_1.ValuesData.createFromPattern(character.id, 'player', world_name, (res) => {
-                        character['world'] = world_name;
+                    values_data_1.ValuesData.createFromPattern(character.id, "player", world_name, (res) => {
+                        character["world"] = world_name;
                         callBack(character);
                     });
                 });

@@ -1,6 +1,10 @@
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "../data/values.data";
-import { getChara, moveChara } from "./../controllers/chara.controller";
+import {
+  getChara,
+  moveChara,
+  addSkill,
+} from "./../controllers/chara.controller";
 
 const express = require("express");
 export const routerChara = express.Router();
@@ -85,30 +89,4 @@ routerChara.post("/addvalue", function (req: Request, res: Response) {
   });
 });
 
-routerChara.post("/addSkill", function (req: Request, res: Response) {
-  const tokenDatas = req.headers["userTokenValues"];
-  const values = req.headers["characterValuesAsObj"];
-  if (tokenDatas && values && req.body.adder && req.body.key_) {
-    if (
-      values[req.body.key_] &&
-      values["addskills"] &&
-      values["addskills"].value &&
-      values["addskills"].value >= req.body.adder
-    ) {
-      let skillVal = values["addskills"].value - req.body.adder;
-      let valNewVal = values[req.body.key_].value + req.body.adder;
-
-      ValuesData.updateValues(tokenDatas.id, tokenDatas.world, [
-        { key_: "addskills", value: skillVal },
-        { key_: req.body.key_, value: valNewVal },
-      ]).then((addValueRes) => {
-        let obj = { addskills: skillVal };
-        obj[req.body.key_] = valNewVal;
-
-        res.status(200).send(obj);
-      });
-    }
-  } else {
-    res.status(204).send("not found");
-  }
-});
+routerChara.post("/addSkill", addSkill);
