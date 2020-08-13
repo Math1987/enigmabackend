@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/Math1987/enigmabackend/compare/v0.0.6...v0.0.7) (2020-08-13)
+
+
+### Features
+
+* add calculation ([8e95ef0](https://github.com/Math1987/enigmabackend/commit/8e95ef0a86a4d348c81d197b479cbf4f3dc5b8a2))
+* add data mobile system for creation and read position of mobile objects as players. Use it to send back datas in getViews request ([4823d4c](https://github.com/Math1987/enigmabackend/commit/4823d4cb17dadf60bda587b80637efd6fa9b42ae))
+* add node-localstorage for datas as world, create getView function in user to send drawables ([aaef3f8](https://github.com/Math1987/enigmabackend/commit/aaef3f8de68f43ce9a53f6d2a32a785f11ecc2b5))
+* create deplacement ([a9869ed](https://github.com/Math1987/enigmabackend/commit/a9869edd707781a41aa06b13923ea88fd3d257e5))
+* finalize attack with repops with pattern if killed ([5eb2b0c](https://github.com/Math1987/enigmabackend/commit/5eb2b0c29786298946fe0f6e2f342f384e04efd8))
+* finalize implement attack ([2ed0006](https://github.com/Math1987/enigmabackend/commit/2ed0006aee84c9751417142bdfb2c95a8e1800c0))
+* implement pattern system ([d8b87dd](https://github.com/Math1987/enigmabackend/commit/d8b87dd9e9f89294d1d4d969a13bdf9c961c77bc))
+* use controllers for chara, end move function for players (need clean and comments) ([e598362](https://github.com/Math1987/enigmabackend/commit/e5983627876603f360b4dabf0aae48ee609c4582))
+
+
+### Bug Fixes
+
+* add name in mobile instead of player (all mobiles values can be shared for every players) ([cab07b7](https://github.com/Math1987/enigmabackend/commit/cab07b75fc3c27382405d402d6eab8f2080b6aba))
+* update addSkillFunction with obj value instead of array, update getChara in https request puting alswow player's value (as race, religion etc...) in chara object ([8d42f34](https://github.com/Math1987/enigmabackend/commit/8d42f34b47a812717c9a6428e5eff2529ad703e1))
+
 ### [0.0.6](https://github.com/Math1987/enigmabackend/compare/v0.0.5...v0.0.6) (2020-07-17)
 
 
