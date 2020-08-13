@@ -14,6 +14,7 @@ class MobilesData {
         ( 
         id VARCHAR(36) primary key,
         key_ VARCHAR(36), 
+        name VARCHAR(36),
         position POINT,
         life FLOAT,
         life_max FLOAT
@@ -22,13 +23,13 @@ class MobilesData {
             callBack(res);
         });
     }
-    static createMobile(world_name, id, draw_key, x, y, life, callBack) {
+    static createMobile(world_name, id, draw_key, name, x, y, life, callBack) {
         const position = `POINT(${x},${y})`;
         data_1.Data.successOrFail(`
         INSERT INTO ${world_name}_${TABLE_NAME}
-        (id, key_, position, life, life_max)
+        (id, key_, name, position, life, life_max)
         VALUES
-        ("${id}", "${draw_key}", ${position}, ${life}, ${life})
+        ("${id}", "${draw_key}", "${name}", ${position}, ${life}, ${life})
         `, function (res) {
             callBack(res);
         });

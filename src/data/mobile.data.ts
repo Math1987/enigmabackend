@@ -14,6 +14,7 @@ export class MobilesData {
         ( 
         id VARCHAR(36) primary key,
         key_ VARCHAR(36), 
+        name VARCHAR(36),
         position POINT,
         life FLOAT,
         life_max FLOAT
@@ -28,6 +29,7 @@ export class MobilesData {
     world_name: string,
     id: string,
     draw_key: string,
+    name: string,
     x,
     y,
     life,
@@ -38,9 +40,9 @@ export class MobilesData {
     Data.successOrFail(
       `
         INSERT INTO ${world_name}_${TABLE_NAME}
-        (id, key_, position, life, life_max)
+        (id, key_, name, position, life, life_max)
         VALUES
-        ("${id}", "${draw_key}", ${position}, ${life}, ${life})
+        ("${id}", "${draw_key}", "${name}", ${position}, ${life}, ${life})
         `,
       function (res) {
         callBack(res);

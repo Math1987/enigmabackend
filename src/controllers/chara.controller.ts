@@ -18,7 +18,6 @@ export const getChara = (world_name, id, callBack) => {
           MobilesData.readById(world_name, id, (mobile) => {
 
             Object.assign(chara, player, values, mobile);
-            
             console.log(chara);
             callBack(chara);
           });
@@ -35,12 +34,18 @@ export const getChara = (world_name, id, callBack) => {
 
 export const createChara = (world_name:string, datas : {}, callBack )=>{
 
+  if ( datas['sexe'] && datas['race'] ){
+    datas['key_'] = `${datas['race']}${datas['sexe']}`;
+  }
+  console.log(datas);
+
   PlayerData.createCharacter("world1", datas, function (chara) {
     if (chara) {
       MobilesData.createMobile(
         "world1",
         chara.id,
-        "elf",
+        `${datas['key_']}`,
+        `${datas['name']}`,
         0,
         0,
         100,

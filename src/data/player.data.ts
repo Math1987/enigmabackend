@@ -20,11 +20,8 @@ export class PlayerData {
         CREATE TABLE IF NOT EXISTS ${datas.name}_${PlayerData.TABLE_PLAYERS_NAME}
         ( 
         id VARCHAR(36) primary key,
-        name VARCHAR(36),
-        race VARCHAR(36),
+        key_ VARCHAR(36),
         religion VARCHAR(36),
-        life FLOAT,
-        life_max FLOAT,
         xp INT
         )
         `,
@@ -71,14 +68,14 @@ export class PlayerData {
 
   static createCharacter(
     world_name: string,
-    character: { id: string; name: string; race: string; religion: string },
+    character: { id: string; name: string; key_: string; religion: string },
     callBack: CallableFunction
   ) {
     Data.successOrFail(
       `
         INSERT INTO ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        (id, name, race, religion)
-        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
+        (id, religion, xp)
+        VALUES ( "${character.id}", "${character.religion}", 0)
         `,
       function (playerRes) {
         if (playerRes) {

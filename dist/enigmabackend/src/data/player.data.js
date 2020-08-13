@@ -13,11 +13,8 @@ class PlayerData {
         CREATE TABLE IF NOT EXISTS ${datas.name}_${PlayerData.TABLE_PLAYERS_NAME}
         ( 
         id VARCHAR(36) primary key,
-        name VARCHAR(36),
-        race VARCHAR(36),
+        key_ VARCHAR(36),
         religion VARCHAR(36),
-        life FLOAT,
-        life_max FLOAT,
         xp INT
         )
         `, function (res) {
@@ -48,8 +45,8 @@ class PlayerData {
     static createCharacter(world_name, character, callBack) {
         data_1.Data.successOrFail(`
         INSERT INTO ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        (id, name, race, religion)
-        VALUES ( "${character.id}", "${character.name}","${character.race}","${character.religion}")
+        (id, religion, xp)
+        VALUES ( "${character.id}", "${character.religion}", 0)
         `, function (playerRes) {
             if (playerRes) {
                 data_1.Data.successOrFail(`

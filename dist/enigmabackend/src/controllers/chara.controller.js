@@ -29,9 +29,13 @@ exports.getChara = (world_name, id, callBack) => {
     });
 };
 exports.createChara = (world_name, datas, callBack) => {
+    if (datas['sexe'] && datas['race']) {
+        datas['key_'] = `${datas['race']}${datas['sexe']}`;
+    }
+    console.log(datas);
     player_data_1.PlayerData.createCharacter("world1", datas, function (chara) {
         if (chara) {
-            mobile_data_1.MobilesData.createMobile("world1", chara.id, "elf", 0, 0, 100, (resMobile) => {
+            mobile_data_1.MobilesData.createMobile("world1", chara.id, `${datas['key_']}`, `${datas['name']}`, 0, 0, 100, (resMobile) => {
                 chara = datas;
                 chara["world"] = world_name;
                 console.log(chara);
