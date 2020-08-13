@@ -4,6 +4,7 @@ import {
   getChara,
   moveChara,
   addSkill,
+  attack,
 } from "./../controllers/chara.controller";
 
 const express = require("express");
@@ -90,3 +91,5 @@ routerChara.post("/addvalue", function (req: Request, res: Response) {
 });
 
 routerChara.post("/addSkill", addSkill);
+
+routerChara.post("/attack", attack);

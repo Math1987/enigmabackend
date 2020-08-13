@@ -3,6 +3,7 @@ import { WorldData } from "./world.data";
 import { AccountData } from "./account.data";
 import { MetaData } from "./meta.data";
 import { ValuesPatternsData } from "./valuesPatterns.data";
+import { Calculation } from "./calcul.data";
 
 /**
  * Data manage the only database of the game.
@@ -22,7 +23,7 @@ export class Data {
   private static USER = "root";
   private static PASSWORD = "";
   private static DB_NAME = "enigma_db";
-  private static CONNECTION = null;
+  public static CONNECTION = null;
 
   /**
    * Here are the global tables
@@ -56,10 +57,12 @@ export class Data {
       database: Data.DB_NAME,
     });
     MetaData.init(function (metaDatasInit) {
-      ValuesPatternsData.init(function (patternData) {
-        AccountData.initAccount(function (account) {
-          WorldData.init(function (worldInit) {
-            callBack("init");
+      Calculation.initCalculation((calculation) => {
+        ValuesPatternsData.init(function (patternData) {
+          AccountData.initAccount(function (account) {
+            WorldData.init(function (worldInit) {
+              callBack("init");
+            });
           });
         });
       });

@@ -3,6 +3,7 @@ import { PlayerData } from './../data/player.data';
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "./../data/values.data";
 import { io } from "./../socket/user.socket";
+import { Calculation } from '../data/calcul.data';
 
 export const getChara = (world_name, id, callBack) => {
   let chara = {};
@@ -18,7 +19,6 @@ export const getChara = (world_name, id, callBack) => {
           MobilesData.readById(world_name, id, (mobile) => {
 
             Object.assign(chara, player, values, mobile);
-            console.log(chara);
             callBack(chara);
           });
         } else {
@@ -37,7 +37,7 @@ export const createChara = (world_name:string, datas : {}, callBack )=>{
   if ( datas['sexe'] && datas['race'] ){
     datas['key_'] = `${datas['race']}${datas['sexe']}`;
   }
-  console.log(datas);
+
 
   PlayerData.createCharacter("world1", datas, function (chara) {
     if (chara) {
@@ -53,10 +53,8 @@ export const createChara = (world_name:string, datas : {}, callBack )=>{
 
           chara = datas ;
           chara["world"] = world_name;
-          console.log(chara);
           getChara(world_name, chara['id'], ( charaRes )=>{
             if ( charaRes ){
-              console.log(charaRes);
               moveChara(world_name, charaRes, 0,0, (moveRes) => {
               });
             }
@@ -90,7 +88,6 @@ export const moveChara = (world_name: string, chara : {}, x:number, y:number,cal
           for ( let socketID of clients ){
             let targetSocket = io['sockets']['connected'][socketID] ;
               if ( targetSocket['chara']){
-                console.log(targetSocket['chara']);
             
               let targetPos = {x: targetSocket['chara']['position'].x, y: targetSocket['chara']['position'].y} ;
 
@@ -112,7 +109,6 @@ export const moveChara = (world_name: string, chara : {}, x:number, y:number,cal
                 }
               }
             }                      
-          }
 
         });
 
@@ -123,20 +119,20 @@ export const moveChara = (world_name: string, chara : {}, x:number, y:number,cal
   }
 }
 
-export const addSkill = ((req: Request, res: Response) => {
+export const addSkill = (req: Request, res: Response) => {
 
   const user = req["user"];
   const values = req["chara"];
 
   if (user && values && req.body['adder'] && req.body['key_']) {
-    console.log('value add');
+
     if (
       values[req.body['key_']] &&
       values["addskills"] &&
       values["addskills"] &&
       values["addskills"] >= req.body['adder']
     ) {
-      console.log('value add2');
+
       let skillVal = values["addskills"] - req.body['adder'];
       let valNewVal = values[req.body['key_']] + req.body['adder'];
 
@@ -144,7 +140,7 @@ export const addSkill = ((req: Request, res: Response) => {
         { key_: "addskills", value: skillVal },
         { key_: req.body['key_'], value: valNewVal },
       ]).then((addValueRes) => {
-        console.log(addValueRes);
+
         let obj = { addskills: skillVal };
         obj[req.body['key_']] = valNewVal;
 
@@ -156,31 +152,26 @@ export const addSkill = ((req: Request, res: Response) => {
   }
 }
 
+export const attack = (req: Request, res: Response) => {
 
-// routerChara.post("/addSkill", function (req: Request, res: Response) {
-//   const tokenDatas = req.headers["userTokenValues"];
-//   const values = req.headers["characterValuesAsObj"];
-//   if (tokenDatas && values && req.body.adder && req.body.key_) {
-//     if (
-//       values[req.body.key_] &&
-//       values["addskills"] &&
-//       values["addskills"].value &&
-//       values["addskills"].value >= req.body.adder
-//     ) {
-//       let skillVal = values["addskills"].value - req.body.adder;
-//       let valNewVal = values[req.body.key_].value + req.body.adder;
 
-//       ValuesData.updateValues(tokenDatas.id, tokenDatas.world, [
-//         { key_: "addskills", value: skillVal },
-//         { key_: req.body.key_, value: valNewVal },
-//       ]).then((addValueRes) => {
-//         let obj = { addskills: skillVal };
-//         obj[req.body.key_] = valNewVal;
+  const user = req["user"];
+  const values = req["chara"];
 
-//         res.status(200).send(obj);
-//       });
-//     }
-//   } else {
-//     res.status(204).send("not found");
-//   }
-// });
+  if ( req.body && req.body['target'] ){
+
+
+      getChara(user['world'], req.body['target']['id'], ( target ) =>{
+
+        Calculation.readCalculs((calcul)=>{
+          console.log(calcul['attack']);
+        })
+
+      });
+
+      res.status(200).send('ok');
+
+  } else {
+    res.status(204).send("not found");
+  }
+}

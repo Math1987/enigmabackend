@@ -64,3 +64,4 @@ exports.routerChara.post("/addvalue", function (req, res) {
     });
 });
 exports.routerChara.post("/addSkill", chara_controller_1.addSkill);
+exports.routerChara.post("/attack", chara_controller_1.attack);

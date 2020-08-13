@@ -52,14 +52,11 @@ exports.routerUser.post("/createChara", function (req, res) {
         req.body.race &&
         req.body.religion &&
         req.body.id) {
-        console.log("createChara");
         chara_controller_1.createChara("world1", req.body, (chara) => {
             if (chara) {
-                console.log(chara);
                 res.status(200).send(chara);
             }
             else {
-                console.log("err");
                 res.status(401).json("erreur de création du personnage");
             }
         });
@@ -80,14 +77,17 @@ exports.routerUser.post("/getViews", (req, res) => {
                         pos.x <= worldDatas.width / 2 &&
                         pos.y >= -worldDatas.height / 2 &&
                         pos.y <= worldDatas.height / 2) {
-                        cash.push({ key: "floor", x: pos.x, y: pos.y, z: 0 });
+                        cash.push({ key_: "floor", x: pos.x, y: pos.y, z: 0 });
                     }
                 }
                 if (resMobile && resMobile.length > 0) {
                     for (let mob of resMobile) {
                         let mobToDraw = {
                             id: mob.id,
-                            key: mob.key_,
+                            key_: mob.key_,
+                            name: mob.name,
+                            life: mob.life,
+                            life_max: mob.life_max,
                             x: mob.position.x,
                             y: mob.position.y,
                             z: 2,
