@@ -1,10 +1,13 @@
-import { getChara } from './chara.controller';
+import { getMobile } from './mobile.controler';
+import { ValuesPatternsData } from './../data/valuesPatterns.data';
+import { getSocketsNear } from './socket.controller';
 import { PlayerData } from './../data/player.data';
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "./../data/values.data";
 import { io } from "./../socket/user.socket";
 import { Calculation } from '../data/calcul.data';
-
+import {attack} from "./attack.controller";
+ 
 export const getChara = (world_name, id, callBack) => {
   let chara = {};
 
@@ -152,26 +155,38 @@ export const addSkill = (req: Request, res: Response) => {
   }
 }
 
-export const attack = (req: Request, res: Response) => {
+export const popsChara = (world_name, chara, callBack)=>{
+
+  ValuesPatternsData.read('player', (playerPattern) =>{
+
+  
+  });
+}
 
 
+export const httpAttack = (req: Request, res: Response) => {
   const user = req["user"];
-  const values = req["chara"];
+  const chara = req["chara"];
+  const userFinal = {};
+  Object.assign(userFinal, user, chara);
 
-  if ( req.body && req.body['target'] ){
+  if (req.body && req.body["target"]) {
+
+    getMobile(user["world"], req.body["target"]["id"], (target) => {
 
 
-      getChara(user['world'], req.body['target']['id'], ( target ) =>{
+      attack(user['world'], userFinal, target, (resAttack) =>{
 
-        Calculation.readCalculs((calcul)=>{
-          console.log(calcul['attack']);
-        })
+          if ( resAttack ){
+            res.status(200).send(resAttack);
+          }
 
       });
+    });
 
-      res.status(200).send('ok');
+
 
   } else {
     res.status(204).send("not found");
   }
-}
+};

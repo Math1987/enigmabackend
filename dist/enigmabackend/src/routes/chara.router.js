@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.routerChara = void 0;
 const values_data_1 = require("../data/values.data");
 const chara_controller_1 = require("./../controllers/chara.controller");
+const chara_controller_2 = require("./../controllers/chara.controller");
 const express = require("express");
 exports.routerChara = express.Router();
 exports.routerChara.use("/", (req, res, next) => {
@@ -64,4 +65,4 @@ exports.routerChara.post("/addvalue", function (req, res) {
     });
 });
 exports.routerChara.post("/addSkill", chara_controller_1.addSkill);
-exports.routerChara.post("/attack", chara_controller_1.attack);
+exports.routerChara.post("/attack", chara_controller_2.httpAttack);

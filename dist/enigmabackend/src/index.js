@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const main_patterns_1 = require("./patterns/main.patterns");
 /**
  * Index.ts is the presentation page
  * init static handlers for exress and socket
@@ -50,8 +51,10 @@ app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
 app.use("/", index_router_1.indexRouter);
 data_1.Data.init(function (data) {
-    worlds_1.Worlds.init(function (worlds) {
-        server.listen(PORT);
+    main_patterns_1.MainPatterns.init((patterns) => {
+        worlds_1.Worlds.init(function (worlds) {
+            server.listen(PORT);
+        });
     });
 });
 /*http.createServer((req, res) =>{

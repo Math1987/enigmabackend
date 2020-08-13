@@ -109,4 +109,22 @@ export class MobilesData {
       }
     );
   }
+  static addValue(
+    world_name: string,
+    id: string,
+    key_: string,
+    adder: number,
+    callBack
+  ) {
+    Data.successOrFail(
+      `
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET ${key_} = ${key_} + ${adder}
+      WHERE id = "${id}"
+    `,
+      (res) => {
+        callBack(res);
+      }
+    );
+  }
 }

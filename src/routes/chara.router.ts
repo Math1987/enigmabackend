@@ -4,8 +4,8 @@ import {
   getChara,
   moveChara,
   addSkill,
-  attack,
 } from "./../controllers/chara.controller";
+import {httpAttack} from "./../controllers/chara.controller",
 
 const express = require("express");
 export const routerChara = express.Router();
@@ -92,4 +92,4 @@ routerChara.post("/addvalue", function (req: Request, res: Response) {
 
 routerChara.post("/addSkill", addSkill);
 
-routerChara.post("/attack", attack);
+routerChara.post("/attack", httpAttack);

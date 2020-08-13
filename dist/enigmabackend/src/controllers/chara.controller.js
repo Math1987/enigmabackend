@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.attack = exports.addSkill = exports.moveChara = exports.createChara = exports.getChara = void 0;
-const chara_controller_1 = require("./chara.controller");
+exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.createChara = exports.getChara = void 0;
+const mobile_controler_1 = require("./mobile.controler");
+const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
 const player_data_1 = require("./../data/player.data");
 const mobile_data_1 = require("./../data/mobile.data");
 const values_data_1 = require("./../data/values.data");
 const user_socket_1 = require("./../socket/user.socket");
-const calcul_data_1 = require("../data/calcul.data");
+const attack_controller_1 = require("./attack.controller");
 exports.getChara = (world_name, id, callBack) => {
     let chara = {};
     player_data_1.PlayerData.readCharaAsObj(world_name, id, (player) => {
@@ -112,16 +113,23 @@ exports.addSkill = (req, res) => {
         res.status(204).send("not found");
     }
 };
-exports.attack = (req, res) => {
+exports.popsChara = (world_name, chara, callBack) => {
+    valuesPatterns_data_1.ValuesPatternsData.read('player', (playerPattern) => {
+    });
+};
+exports.httpAttack = (req, res) => {
     const user = req["user"];
-    const values = req["chara"];
-    if (req.body && req.body['target']) {
-        exports.getChara(user['world'], req.body['target']['id'], (target) => {
-            calcul_data_1.Calculation.readCalculs((calcul) => {
-                console.log(calcul['attack']);
+    const chara = req["chara"];
+    const userFinal = {};
+    Object.assign(userFinal, user, chara);
+    if (req.body && req.body["target"]) {
+        mobile_controler_1.getMobile(user["world"], req.body["target"]["id"], (target) => {
+            attack_controller_1.attack(user['world'], userFinal, target, (resAttack) => {
+                if (resAttack) {
+                    res.status(200).send(resAttack);
+                }
             });
         });
-        res.status(200).send('ok');
     }
     else {
         res.status(204).send("not found");

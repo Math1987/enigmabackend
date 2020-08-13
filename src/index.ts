@@ -1,3 +1,4 @@
+import { MainPatterns } from "./patterns/main.patterns";
 import { localStorage } from "./services/localstorage";
 
 /**
@@ -57,8 +58,10 @@ app.use("/api/u/chara", routerChara);
 app.use("/", indexRouter);
 
 Data.init(function (data) {
-  Worlds.init(function (worlds) {
-    server.listen(PORT);
+  MainPatterns.init((patterns) => {
+    Worlds.init(function (worlds) {
+      server.listen(PORT);
+    });
   });
 });
 

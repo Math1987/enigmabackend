@@ -76,5 +76,14 @@ class MobilesData {
             callBack(res);
         });
     }
+    static addValue(world_name, id, key_, adder, callBack) {
+        data_1.Data.successOrFail(`
+      UPDATE ${world_name}_${TABLE_NAME}
+      SET ${key_} = ${key_} + ${adder}
+      WHERE id = "${id}"
+    `, (res) => {
+            callBack(res);
+        });
+    }
 }
 exports.MobilesData = MobilesData;

@@ -6,8 +6,7 @@ class ValuesPatternsData {
     static init(callBack) {
         data_1.Data.successOrFail(`
         DROP TABLE ${ValuesPatternsData.TABLE_NAME}
-        `, function (res) {
-        });
+        `, function (res) { });
         data_1.Data.successOrFail(`
         CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
         (
@@ -25,92 +24,111 @@ class ValuesPatternsData {
     }
     static initValues(callBack) {
         let values = [
+            //LIFE
+            {
+                key_: "life",
+                icon: 0,
+                user: "player",
+                start: 100,
+            },
+            {
+                key_: "life_max",
+                icon: 0,
+                user: "player",
+                start: 100,
+            },
+            {
+                key_: "counter",
+                icon: 0,
+                user: "player",
+                start: 0.5,
+            },
             //RESOURCES
             {
                 key_: "water",
                 icon: 53,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "food",
                 icon: 55,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "faith",
                 icon: 7,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "wood",
                 icon: 18,
                 user: "player",
-                start: 10
+                start: 10,
             },
             //SKILLS
             {
                 key_: "attack",
                 icon: 32,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "defense",
                 icon: 34,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "hunter",
                 icon: 32,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "dowser",
                 icon: 17,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "priest",
                 icon: 8,
                 user: "player",
-                start: 10
+                start: 10,
             },
             {
                 key_: "woodcutter",
                 icon: 35,
                 user: "player",
-                start: 10
+                start: 10,
             },
             //STOCK
             {
                 key_: "moves",
                 icon: 36,
                 user: "player",
-                start: 20
+                start: 20,
             },
             {
                 key_: "actions",
                 icon: 16,
                 user: "player",
-                start: 8
+                start: 8,
             },
             {
                 key_: "addskills",
                 icon: 5,
                 user: "player",
-                start: 50
-            }
+                start: 50,
+            },
         ];
-        let valString = '';
+        let valString = "";
         for (let row of values) {
             if (valString.length > 0) {
-                valString += ', ';
+                valString += ", ";
             }
             valString += `("${row.key_}",${row.icon},"${row.user}","${row.start}")`;
         }
