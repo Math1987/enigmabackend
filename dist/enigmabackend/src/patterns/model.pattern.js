@@ -10,7 +10,6 @@ class ModelPattern {
             for (let row of values) {
                 this.values[row["key_"]] = row["start"];
             }
-            console.log(this.values);
         });
     }
     readKey() {
@@ -20,6 +19,8 @@ class ModelPattern {
         if (this.values["life"]) {
             mobile_data_1.MobilesData.updateLifeAndPosition(world_name, user["id"], this.values["life"], 0, 0, (resLife) => {
                 if (resLife) {
+                    user["life"] = this.values["life"];
+                    user["position"] = { x: 0, y: 0 };
                     callBack(this.values["life"]);
                 }
                 else {

@@ -12,7 +12,6 @@ class MainPatterns {
             vampiremasculin: new chara_pattern_1.Player(),
             vampirefeminine: new chara_pattern_1.Player(),
         };
-        console.log(main_patterns_1.MainPatterns.PATTERNS);
         callBack("ok");
     }
     static getPattern(key) {

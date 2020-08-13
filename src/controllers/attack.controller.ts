@@ -1,6 +1,6 @@
 import { MainPatterns } from './../patterns/main.patterns';
 import { MobilesData } from "./../data/mobile.data";
-import { getSocketsNear } from "./socket.controller";
+import { getSocketsNear, sendToNear } from "./socket.controller";
 import { getCalculation } from "./calculation.controller";
 
 export const attackPower = (user, target, D100, callBack) => {
@@ -43,8 +43,6 @@ export const attackPower = (user, target, D100, callBack) => {
 };
 
 export const attackProba = (user, userPattern, target, targetPattern, callBack) => {
-
-  console.log(targetPattern);
 
   if ( targetPattern && targetPattern['values']['counter'] ){
 
@@ -115,6 +113,8 @@ export const makeAttack = (world_name, user, patternUser, target, patternTarget,
             callback("kill");
           });
         }else{
+          target['life'] = Math.max(0, target['life'] - power);
+          console.log("hurt");
           callback("hurt")
         }
 
@@ -150,26 +150,22 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
           patternTarget,
           dammage,
           (attackRes) => {
-            getSocketsNear(
-              worldName,
-              user["position"].x,
-              user["position"].y,
-              5,
-              (sockets) => {
-                for (let socket in sockets) {
-                  sockets[socket].emit(
-                    "attack",
-                    user,
-                    target,
-                    "attack",
-                    D100,
-                    dammage
-                  );
-                }
-              }
-            );
 
-            callBack('attack', "hurt");
+            sendToNear( 
+              worldName,
+               user["position"],
+                5,
+                 "attack", 
+                 { type: "attack", 
+                 result : attackRes,
+                 user : user, 
+                 target : target,
+                  D100 : D100, 
+                  power : dammage 
+                }, (resSend)=>{
+    
+                });
+                callBack('attack', attackRes);
           }
         );
       });
@@ -183,26 +179,23 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
           patternUser,
           dammage * 0.5,
           (attackRes) => {
-            getSocketsNear(
-              worldName
-              user["position"].x,
-              user["position"].y,
-              5,
-              (sockets) => {
-                for (let socket in sockets) {
-                  sockets[socket].emit(
-                    "attack",
-                    user,
-                    target,
-                    "counter",
-                    D100,
-                    dammage
-                  );
-                }
-              }
-            );
 
-            callBack('counter', "hurt");
+
+            sendToNear( 
+              worldName,
+               user["position"],
+                5,
+                 "attack", 
+                 { type: "counter", 
+                 result : attackRes,
+                 user : user, 
+                 target : target,
+                  D100 : D100, 
+                  power : dammage 
+                }, (resSend)=>{
+    
+                });
+                callBack('counter', "hurt");
           }
         );
       });

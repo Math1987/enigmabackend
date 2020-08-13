@@ -35,7 +35,6 @@ exports.attackPower = (user, target, D100, callBack) => {
     });
 };
 exports.attackProba = (user, userPattern, target, targetPattern, callBack) => {
-    console.log(targetPattern);
     if (targetPattern && targetPattern['values']['counter']) {
         calculation_controller_1.getCalculation((calculs) => {
             let calculation = calculs["attack"];
@@ -86,6 +85,8 @@ exports.makeAttack = (world_name, user, patternUser, target, patternTarget, powe
                 });
             }
             else {
+                target['life'] = Math.max(0, target['life'] - power);
+                console.log("hurt");
                 callback("hurt");
             }
         }
@@ -103,22 +104,28 @@ exports.attack = (worldName, user, target, callBack) => {
             exports.attackPower(user, target, D100, (dammage) => {
                 console.log("attack " + dammage);
                 exports.makeAttack(worldName, user, patternUser, target, patternTarget, dammage, (attackRes) => {
-                    socket_controller_1.getSocketsNear(worldName, user["position"].x, user["position"].y, 5, (sockets) => {
-                        for (let socket in sockets) {
-                            sockets[socket].emit("attack", user, target, "attack", D100, dammage);
-                        }
+                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", { type: "attack",
+                        result: attackRes,
+                        user: user,
+                        target: target,
+                        D100: D100,
+                        power: dammage
+                    }, (resSend) => {
                     });
-                    callBack('attack', "hurt");
+                    callBack('attack', attackRes);
                 });
             });
         }
         else {
             exports.attackPower(target, user, D100, (dammage) => {
                 exports.makeAttack(worldName, target, patternTarget, user, patternUser, dammage * 0.5, (attackRes) => {
-                    socket_controller_1.getSocketsNear(worldName, user["position"].x, user["position"].y, 5, (sockets) => {
-                        for (let socket in sockets) {
-                            sockets[socket].emit("attack", user, target, "counter", D100, dammage);
-                        }
+                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", { type: "counter",
+                        result: attackRes,
+                        user: user,
+                        target: target,
+                        D100: D100,
+                        power: dammage
+                    }, (resSend) => {
                     });
                     callBack('counter', "hurt");
                 });

@@ -14,7 +14,6 @@ export class MainPatterns {
       vampiremasculin: new Player(),
       vampirefeminine: new Player(),
     };
-    console.log(MainPatterns.PATTERNS);
 
     callBack("ok");
   }
