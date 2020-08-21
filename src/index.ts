@@ -13,11 +13,12 @@ import { Data } from "./data/data";
 import { Worlds } from "./services/worlds";
 import { indexRouter } from "./routes/index.router";
 import { routerApi } from "./routes/api.router";
+import { routerAccount } from "./routes/account.router";
 import { routerUser } from "./routes/user.router";
 import { routerWorld } from "./routes/world.router";
 import { routerChara } from "./routes/chara.router";
-
 import { UserSocket } from "./socket/user.socket";
+import { environment } from "./environment/environment";
 
 const app = express();
 const PORT = 4040;
@@ -30,10 +31,12 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 
+console.log(environment);
+
 const server = https.createServer(
   {
-    key: fs.readFileSync(path.join(__dirname, "/ssl/localhost.key")),
-    cert: fs.readFileSync(path.join(__dirname, "/ssl/localhost.crt")),
+    key: fs.readFileSync(path.join(__dirname, environment.ssl.key)),
+    cert: fs.readFileSync(path.join(__dirname, environment.ssl.cert)),
   },
   app
 );
@@ -51,7 +54,16 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, "public")));
 
+routerUser.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.status(200).send("");
+  } else {
+    next();
+  }
+});
+
 app.use("/api", routerApi);
+app.use("/api/account", routerAccount);
 app.use("/api/world", routerWorld);
 app.use("/api/u", routerUser);
 app.use("/api/u/chara", routerChara);
@@ -74,3 +86,6 @@ Data.init(function (data) {
     res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
     res.end();
 }).listen(4000);*/
+
+// let test = ecnrypt(JSON.stringify(values));
+// console.log(test);

@@ -1,9 +1,10 @@
-import { MobilesData } from "./mobile.data";
+import { PatternPlayer } from "./patternPlayer";
 import { WorldData } from "./world.data";
 import { AccountData } from "./account.data";
 import { MetaData } from "./meta.data";
 import { ValuesPatternsData } from "./valuesPatterns.data";
 import { Calculation } from "./calcul.data";
+import { environment } from "./../environment/environment";
 
 /**
  * Data manage the only database of the game.
@@ -19,10 +20,10 @@ export class Data {
    * the mysqljs informations to create a connection
    * when server launched
    */
-  private static HOST = "localhost";
-  private static USER = "root";
-  private static PASSWORD = "";
-  private static DB_NAME = "enigma_db";
+  private static HOST = environment.db.host;
+  private static USER = environment.db.user;
+  private static PASSWORD = environment.db.password;
+  private static DB_NAME = environment.db.name;
   public static CONNECTION = null;
 
   /**
@@ -58,10 +59,12 @@ export class Data {
     });
     MetaData.init(function (metaDatasInit) {
       Calculation.initCalculation((calculation) => {
-        ValuesPatternsData.init(function (patternData) {
-          AccountData.initAccount(function (account) {
-            WorldData.init(function (worldInit) {
-              callBack("init");
+        PatternPlayer.init((patternPlayerRes) => {
+          ValuesPatternsData.init(function (patternData) {
+            AccountData.initAccount(function (account) {
+              WorldData.init(function (worldInit) {
+                callBack("init");
+              });
             });
           });
         });

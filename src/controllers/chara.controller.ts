@@ -41,36 +41,41 @@ export const createChara = (world_name:string, datas : {}, callBack )=>{
     datas['key_'] = `${datas['race']}${datas['sexe']}`;
   }
 
+  PlayerData.createCharacter('world1', datas, ( chara ) => {
 
-  PlayerData.createCharacter("world1", datas, function (chara) {
-    if (chara) {
-      MobilesData.createMobile(
-        "world1",
-        chara.id,
-        `${datas['key_']}`,
-        `${datas['name']}`,
-        0,
-        0,
-        100,
-        (resMobile) => {
 
-          chara = datas ;
-          chara["world"] = world_name;
-          getChara(world_name, chara['id'], ( charaRes )=>{
-            if ( charaRes ){
-              moveChara(world_name, charaRes, 0,0, (moveRes) => {
-              });
-            }
 
-          });
-
-          callBack(chara);
-        }
-      );
-    } else {
-      callBack(null);
-    }
   });
+
+  // PlayerData.createCharacter("world1", datas, function (chara) {
+  //   if (chara) {
+  //     MobilesData.createMobile(
+  //       "world1",
+  //       chara.id,
+  //       `${datas['key_']}`,
+  //       `${datas['name']}`,
+  //       0,
+  //       0,
+  //       100,
+  //       (resMobile) => {
+
+  //         chara = datas ;
+  //         chara["world"] = world_name;
+  //         getChara(world_name, chara['id'], ( charaRes )=>{
+  //           if ( charaRes ){
+  //             moveChara(world_name, charaRes, 0,0, (moveRes) => {
+  //             });
+  //           }
+
+  //         });
+
+  //         callBack(chara);
+  //       }
+  //     );
+  //   } else {
+  //     callBack(null);
+  //   }
+  // });
 
 }
 

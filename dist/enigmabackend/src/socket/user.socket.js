@@ -7,7 +7,7 @@ exports.io = null;
 class UserSocket {
     constructor() { }
     init(http) {
-        exports.io = require("socket.io")(http);
+        exports.io = require("socket.io")(http, { origin: "*:*" });
         exports.io.on("connection", (socket) => {
             if (socket.handshake.query["token"] != null) {
                 security_1.Security.checkToken(socket.handshake.query["token"], (user) => {

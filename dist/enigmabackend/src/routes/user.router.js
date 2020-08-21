@@ -8,26 +8,21 @@ const security_1 = require("../services/security");
 const express = require("express");
 exports.routerUser = express.Router();
 exports.routerUser.use((req, res, next) => {
-    if (req.method === "OPTIONS") {
-        res.status(200).send("");
+    const token = req.headers.authorization;
+    if (token) {
+        security_1.Security.checkToken(token, function (userRes) {
+            if (userRes) {
+                req.headers["userTokenValues"] = userRes;
+                req["user"] = userRes;
+                next();
+            }
+            else {
+                res.status(401).json("token invalid");
+            }
+        });
     }
     else {
-        const token = req.headers.authorization;
-        if (token) {
-            security_1.Security.checkToken(token, function (userRes) {
-                if (userRes) {
-                    req.headers["userTokenValues"] = userRes;
-                    req["user"] = userRes;
-                    next();
-                }
-                else {
-                    res.status(401).json("token invalid");
-                }
-            });
-        }
-        else {
-            res.status(401).send("need token");
-        }
+        res.status(401).send("need token");
     }
 });
 exports.routerUser.get("/datas", function (req, res) {

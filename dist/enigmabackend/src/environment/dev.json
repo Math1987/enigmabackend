@@ -1,0 +1,13 @@
+{
+  "ssl": {
+    "key": "ssl/localhost.key",
+    "cert": "ssl/localhost.crt"
+  },
+  "db": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "name": "enigma_db"
+  },
+  "frontURL": "http://localhost:4200"
+}

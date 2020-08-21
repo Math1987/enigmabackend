@@ -11,7 +11,7 @@ export class UserSocket {
   constructor() {}
 
   init(http) {
-    io = require("socket.io")(http);
+    io = require("socket.io")(http, { origin: "*:*" });
 
     io.on("connection", (socket: Socket) => {
       if (socket.handshake.query["token"] != null) {

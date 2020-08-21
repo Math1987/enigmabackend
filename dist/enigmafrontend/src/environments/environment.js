@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.environment = void 0;
 exports.environment = {
     production: false,
+    backURL: 'https://localhost:4040',
     apiURL: 'https://localhost:4040/api',
     apiUserURL: 'https://localhost:4040/api/u',
     apiUserCharaURL: 'https://localhost:4040/api/u/chara'

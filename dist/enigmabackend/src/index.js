@@ -15,10 +15,12 @@ const data_1 = require("./data/data");
 const worlds_1 = require("./services/worlds");
 const index_router_1 = require("./routes/index.router");
 const api_router_1 = require("./routes/api.router");
+const account_router_1 = require("./routes/account.router");
 const user_router_1 = require("./routes/user.router");
 const world_router_1 = require("./routes/world.router");
 const chara_router_1 = require("./routes/chara.router");
 const user_socket_1 = require("./socket/user.socket");
+const environment_1 = require("./environment/environment");
 const app = express_1.default();
 const PORT = 4040;
 app.set("port", PORT);
@@ -29,9 +31,10 @@ const mime = require("mime");
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
+console.log(environment_1.environment);
 const server = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, "/ssl/localhost.key")),
-    cert: fs.readFileSync(path.join(__dirname, "/ssl/localhost.crt")),
+    key: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.key)),
+    cert: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.cert)),
 }, app);
 new user_socket_1.UserSocket().init(server);
 app.use(cookieParser());
@@ -45,7 +48,16 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express_1.default.static(path.join(__dirname, "public")));
+user_router_1.routerUser.use((req, res, next) => {
+    if (req.method === "OPTIONS") {
+        res.status(200).send("");
+    }
+    else {
+        next();
+    }
+});
 app.use("/api", api_router_1.routerApi);
+app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/world", world_router_1.routerWorld);
 app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
@@ -66,3 +78,5 @@ data_1.Data.init(function (data) {
     res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
     res.end();
 }).listen(4000);*/
+// let test = ecnrypt(JSON.stringify(values));
+// console.log(test);

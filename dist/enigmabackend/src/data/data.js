@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Data = void 0;
+const patternPlayer_1 = require("./patternPlayer");
 const world_data_1 = require("./world.data");
 const account_data_1 = require("./account.data");
 const meta_data_1 = require("./meta.data");
 const valuesPatterns_data_1 = require("./valuesPatterns.data");
 const calcul_data_1 = require("./calcul.data");
+const environment_1 = require("./../environment/environment");
 /**
  * Data manage the only database of the game.
  * There are to kinds of tables: global tables,
@@ -38,10 +40,12 @@ class Data {
         });
         meta_data_1.MetaData.init(function (metaDatasInit) {
             calcul_data_1.Calculation.initCalculation((calculation) => {
-                valuesPatterns_data_1.ValuesPatternsData.init(function (patternData) {
-                    account_data_1.AccountData.initAccount(function (account) {
-                        world_data_1.WorldData.init(function (worldInit) {
-                            callBack("init");
+                patternPlayer_1.PatternPlayer.init((patternPlayerRes) => {
+                    valuesPatterns_data_1.ValuesPatternsData.init(function (patternData) {
+                        account_data_1.AccountData.initAccount(function (account) {
+                            world_data_1.WorldData.init(function (worldInit) {
+                                callBack("init");
+                            });
                         });
                     });
                 });
@@ -90,10 +94,10 @@ exports.Data = Data;
  * the mysqljs informations to create a connection
  * when server launched
  */
-Data.HOST = "localhost";
-Data.USER = "root";
-Data.PASSWORD = "";
-Data.DB_NAME = "enigma_db";
+Data.HOST = environment_1.environment.db.host;
+Data.USER = environment_1.environment.db.user;
+Data.PASSWORD = environment_1.environment.db.password;
+Data.DB_NAME = environment_1.environment.db.name;
 Data.CONNECTION = null;
 /**
  * Here are the global tables
