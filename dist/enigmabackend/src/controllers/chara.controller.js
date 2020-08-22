@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.createCharaRequest = exports.createChara = exports.getChara = void 0;
+exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.addValueRequest = exports.createCharaRequest = exports.createChara = exports.getChara = void 0;
 const account_data_1 = require("./../data/account.data");
 const mobile_controler_1 = require("./mobile.controler");
 const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
@@ -37,37 +37,8 @@ exports.createChara = (world_name, datas, callback) => {
     player_data_1.PlayerData.createCharacter(world_name, datas, (chara) => {
         callback(chara);
     });
-    // PlayerData.createCharacter("world1", datas, function (chara) {
-    //   if (chara) {
-    //     MobilesData.createMobile(
-    //       "world1",
-    //       chara.id,
-    //       `${datas['key_']}`,
-    //       `${datas['name']}`,
-    //       0,
-    //       0,
-    //       100,
-    //       (resMobile) => {
-    //         chara = datas ;
-    //         chara["world"] = world_name;
-    //         getChara(world_name, chara['id'], ( charaRes )=>{
-    //           if ( charaRes ){
-    //             moveChara(world_name, charaRes, 0,0, (moveRes) => {
-    //             });
-    //           }
-    //         });
-    //         callBack(chara);
-    //       }
-    //     );
-    //   } else {
-    //     callBack(null);
-    //   }
-    // });
 };
 exports.createCharaRequest = (req, res) => {
-    console.log('create chara');
-    console.log(req['account']);
-    console.log(req.body);
     if (req['account'] &&
         req['account']['id'] &&
         !req['account']['chara'] &&
@@ -80,6 +51,7 @@ exports.createCharaRequest = (req, res) => {
         exports.createChara("world1", objFinal, (chara) => {
             if (chara) {
                 account_data_1.updateAccountWorld(req["account"]['id'], "world1", accountRes => {
+                    console.log('chara created succesfully');
                     res.status(200).send(chara);
                 });
             }
@@ -90,6 +62,29 @@ exports.createCharaRequest = (req, res) => {
     }
     else {
         res.status(401).send("need correct datas");
+    }
+};
+exports.addValueRequest = (req, res) => {
+    console.log("adding  value");
+    if (req['account'] && req['account']['world'] && req['account']['id'] && req.body && req.body['key'] && req.body['value']) {
+        player_data_1.addValue(req['account']['world'], req['account']['id'], req.body['key'], req.body['value'], resUpdate => {
+            if (resUpdate) {
+                player_data_1.readCharaValue(req['account']['world'], req['account']['id'], req.body['key'], value => {
+                    if (value) {
+                        res.status(200).send({ value: value });
+                    }
+                    else {
+                        res.status(200).send(null);
+                    }
+                });
+            }
+            else {
+                res.status(501).send('error adding value');
+            }
+        });
+    }
+    else {
+        res.status(401).send('need key and value');
     }
 };
 exports.moveChara = (world_name, chara, x, y, callBack) => {

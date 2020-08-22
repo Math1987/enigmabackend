@@ -9,5 +9,6 @@ class Player extends model_pattern_1.ModelPattern {
     readKey() {
         return "player";
     }
+    create(world_name, id, callback) { }
 }
 exports.Player = Player;

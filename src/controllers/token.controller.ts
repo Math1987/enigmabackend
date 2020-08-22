@@ -8,7 +8,7 @@ const fs = require("fs");
 const RSA_KEY_PRIVATE = fs.readFileSync(
   path.join(__dirname, "..", "rsa", "key")
 ); //'dist/rsa/key');
-const TOKEN_TIME = "900s";
+const TOKEN_TIME = "1000000s";
 
 
 export const createToken = (informations) => {

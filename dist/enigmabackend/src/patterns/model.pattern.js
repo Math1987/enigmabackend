@@ -15,6 +15,10 @@ class ModelPattern {
     readKey() {
         return "";
     }
+    create(world_name, id, callback) { }
+    addValue(world_name, id, key, value, callback) {
+        callback(null);
+    }
     pops(world_name, user, callBack) {
         if (this.values["life"]) {
             mobile_data_1.MobilesData.updateLifeAndPosition(world_name, user["id"], this.values["life"], 0, 0, (resLife) => {

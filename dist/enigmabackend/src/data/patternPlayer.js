@@ -20,18 +20,18 @@ class PatternPlayer {
           faith FLOAT, 
           wood FLOAT,
   
-          comp_getwater FLOAT, 
-          comp_getfood FLOAT,
-          comp_getfaith FLOAT,
-          comp_getwood FLOAT, 
-          comp_attack FLOAT,
-          comp_defense FLOAT,
+          skill_water FLOAT, 
+          skill_food FLOAT,
+          skill_faith FLOAT,
+          skill_wood FLOAT, 
+          skill_attack FLOAT,
+          skill_defense FLOAT,
   
           xp FLOAT,
           move INT,
           move_max INT,
-          attack INT,
-          attack_max INT
+          action INT,
+          action_max INT
   
         )
         `, function (res) {
@@ -238,18 +238,18 @@ class PatternPlayer {
               faith, 
               wood,
       
-              comp_getwater, 
-              comp_getfood,
-              comp_getfaith,
-              comp_getwood, 
-              comp_attack,
-              comp_defense,
+              skill_water, 
+              skill_food,
+              skill_faith,
+              skill_wood, 
+              skill_attack,
+              skill_defense,
       
               xp,
               move,
               move_max,
-              attack,
-              attack_max              
+              action,
+              action_max              
             )
             VALUES ${valString}
         `, function (res) {

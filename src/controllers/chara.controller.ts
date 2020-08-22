@@ -1,8 +1,8 @@
 import { AccountData, updateAccountWorld } from './../data/account.data';
 import { getMobile } from './mobile.controler';
 import { ValuesPatternsData } from './../data/valuesPatterns.data';
-import { getSocketsNear } from './socket.controller';
-import { PlayerData } from './../data/player.data';
+import { getSocketsNear, sendToNear } from './socket.controller';
+import { PlayerData, addValue, readCharaValue } from './../data/player.data';
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "./../data/values.data";
 import { io } from "./../socket/user.socket";
@@ -41,42 +41,9 @@ export const createChara = (world_name:string, datas : {}, callback )=>{
       callback(chara);
   });
 
-  // PlayerData.createCharacter("world1", datas, function (chara) {
-  //   if (chara) {
-  //     MobilesData.createMobile(
-  //       "world1",
-  //       chara.id,
-  //       `${datas['key_']}`,
-  //       `${datas['name']}`,
-  //       0,
-  //       0,
-  //       100,
-  //       (resMobile) => {
-
-  //         chara = datas ;
-  //         chara["world"] = world_name;
-  //         getChara(world_name, chara['id'], ( charaRes )=>{
-  //           if ( charaRes ){
-  //             moveChara(world_name, charaRes, 0,0, (moveRes) => {
-  //             });
-  //           }
-
-  //         });
-
-  //         callBack(chara);
-  //       }
-  //     );
-  //   } else {
-  //     callBack(null);
-  //   }
-  // });
-
 }
 
 export const createCharaRequest = (req: Request, res: Response) => {
-  console.log('create chara') ;
-  console.log(req['account']);
-  console.log(req.body);
   if (
     req['account'] && 
     req['account']['id'] &&
@@ -91,9 +58,11 @@ export const createCharaRequest = (req: Request, res: Response) => {
     Object.assign(objFinal, req.body, req['account'] );
 
     createChara("world1", objFinal, (chara) => {
+
       if (chara) {
 
         updateAccountWorld( req["account"]['id'], "world1", accountRes => {
+          console.log('chara created succesfully');
           res.status(200).send(chara);
         });
 
@@ -104,6 +73,36 @@ export const createCharaRequest = (req: Request, res: Response) => {
   } else {
     res.status(401).send("need correct datas");
   }
+}
+
+export const addValueRequest = (req: Request, res: Response ) => {
+  console.log("adding  value");
+  if ( req['account'] && req['account']['world'] && req['account']['id'] && req.body && req.body['key'] && req.body['value'] ){
+
+    addValue( req['account']['world'], req['account']['id'], req.body['key'], req.body['value'], resUpdate => {
+
+      if ( resUpdate ){
+
+        readCharaValue(req['account']['world'], req['account']['id'], req.body['key'], value => {
+          if ( value ){
+            res.status(200).send({value : value});
+          }else{
+            res.status(200).send(null);
+          }
+
+        });
+
+
+      }else{
+        res.status(501).send('error adding value');
+      }
+
+    });
+
+  }else{
+    res.status(401).send('need key and value');
+  }
+
 }
 
 

@@ -25,167 +25,167 @@ class MetaData {
                 type: "resource",
                 name_fr: "eau",
                 description_fr: "resource en eau",
-                img: ''
+                img: "",
             },
             {
                 key_: "food",
                 type: "resource",
                 name_fr: "nourriture",
                 description_fr: "resource en nourriture",
-                img: ''
+                img: "",
             },
             {
                 key_: "wood",
                 type: "resource",
                 name_fr: "bois",
                 description_fr: "resource en bois",
-                img: ''
+                img: "",
             },
             {
                 key_: "faith",
                 type: "resource",
                 name_fr: "foi",
                 description_fr: "spiritualité",
-                img: ''
+                img: "",
             },
             {
-                key_: "moves",
-                type: "resourceAction",
+                key_: "move",
+                type: "playtoken",
                 name_fr: "déplacement",
                 description_fr: "permet de se déplacer",
-                img: ''
+                img: "",
             },
             {
-                key_: "actions",
-                type: "resourceAction",
+                key_: "action",
+                type: "playtoken",
                 name_fr: "actions",
                 description_fr: "actions a utiliser",
-                img: ''
+                img: "",
             },
             {
                 key_: "addskills",
                 type: "addskill",
                 name_fr: "ajout de compétences",
                 description_fr: "ajouter des compétences",
-                img: ''
+                img: "",
             },
             {
-                key_: "attack",
+                key_: "skill_attack",
                 type: "skill",
                 name_fr: "attaque",
                 description_fr: "compétence d'attaque",
-                img: ''
+                img: "",
             },
             {
-                key_: "defense",
+                key_: "skill_defense",
                 type: "skill",
                 name_fr: "défense",
                 description_fr: "compétence de défense",
-                img: ''
+                img: "",
             },
             {
-                key_: "dowser",
+                key_: "skill_water",
                 type: "skill",
                 name_fr: "sourcier",
                 description_fr: "compétence de sourcier",
-                img: ''
+                img: "",
             },
             {
-                key_: "priest",
+                key_: "skill_faith",
                 type: "skill",
                 name_fr: "prêtre",
                 description_fr: "compétence de prêtre",
-                img: ''
+                img: "",
             },
             {
-                key_: "woodcutter",
+                key_: "skill_wood",
                 type: "skill",
                 name_fr: "bûcheron",
                 description_fr: "compétence de bûcheron",
-                img: ''
+                img: "",
             },
             {
-                key_: "hunter",
+                key_: "skill_food",
                 type: "skill",
                 name_fr: "chasseur",
                 description_fr: "compétence de chasseur",
-                img: ''
+                img: "",
             },
             {
                 key_: "masculin",
                 type: "sexes",
                 name_fr: "masculin",
                 description_fr: "",
-                img: '/assets/images/homme.png'
+                img: "/assets/images/homme.png",
             },
             {
                 key_: "feminine",
-                type: 'sexes',
-                name_fr: 'féminin',
-                description_fr: '',
-                img: '/assets/images/femme.png'
+                type: "sexes",
+                name_fr: "féminin",
+                description_fr: "",
+                img: "/assets/images/femme.png",
             },
             {
-                key_: 'human',
-                type: 'races',
-                name_fr: 'humain',
-                description_fr: 'Je suis de taille moyenne, blablabla....',
-                img: '/assets/images/humain.png'
+                key_: "human",
+                type: "races",
+                name_fr: "humain",
+                description_fr: "Je suis de taille moyenne, blablabla....",
+                img: "/assets/images/humain.png",
             },
             {
-                key_: 'dwarf',
-                type: 'races',
-                name_fr: 'nain',
-                description_fr: 'description_fr',
-                img: '/assets/images/nain.png'
+                key_: "dwarf",
+                type: "races",
+                name_fr: "nain",
+                description_fr: "description_fr",
+                img: "/assets/images/nain.png",
             },
             {
-                key_: 'vampire',
-                type: 'races',
-                name_fr: 'vampire',
-                description_fr: 'description_fr',
-                img: '/assets/images/vampire.png'
+                key_: "vampire",
+                type: "races",
+                name_fr: "vampire",
+                description_fr: "description_fr",
+                img: "/assets/images/vampire.png",
             },
             {
-                key_: 'elf',
-                type: 'races',
-                name_fr: 'elfe',
-                description_fr: 'description_fr',
-                img: '/assets/images/elfe.png'
+                key_: "elf",
+                type: "races",
+                name_fr: "elfe",
+                description_fr: "description_fr",
+                img: "/assets/images/elfe.png",
             },
             {
-                key_: 'godWater',
-                type: 'religions',
+                key_: "godWater",
+                type: "religions",
                 name_fr: `Déesse de l'eau`,
                 description_fr: `déesse de l'eau`,
-                img: '/assets/images/eau.png'
+                img: "/assets/images/eau.png",
             },
             {
-                key_: 'godFire',
-                type: 'religions',
+                key_: "godFire",
+                type: "religions",
                 name_fr: `Dieu du feu`,
                 description_fr: `Dieu du feu`,
-                img: '/assets/images/feu.png'
+                img: "/assets/images/feu.png",
             },
             {
-                key_: 'godLight',
-                type: 'religions',
+                key_: "godLight",
+                type: "religions",
                 name_fr: `Déesse de la lumière`,
                 description_fr: `Déesse de la lumière`,
-                img: '/assets/images/lumiere.png'
+                img: "/assets/images/lumiere.png",
             },
             {
-                key_: 'godShadow',
-                type: 'religions',
+                key_: "godShadow",
+                type: "religions",
                 name_fr: `Dieu des ombres`,
                 description_fr: `Dieu des ombres`,
-                img: '/assets/images/ombre.png'
-            }
+                img: "/assets/images/ombre.png",
+            },
         ];
-        let valString = '';
+        let valString = "";
         for (let row of values) {
             if (valString.length > 0) {
-                valString += ', ';
+                valString += ", ";
             }
             valString += `("${row.key_}","${row.type}","${row.name_fr}","${row.description_fr}","${row.img}")`;
         }
@@ -208,7 +208,7 @@ class MetaData {
                     obj[row.type] = [];
                 }
                 let type = row.type;
-                Reflect.deleteProperty(row, 'type');
+                Reflect.deleteProperty(row, "type");
                 obj[type].push(row);
             }
             callBack(obj);

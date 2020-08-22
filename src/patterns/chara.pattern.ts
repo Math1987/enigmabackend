@@ -7,4 +7,5 @@ export class Player extends ModelPattern {
   readKey() {
     return "player";
   }
+  create(world_name, id, callback) {}
 }

@@ -80,37 +80,37 @@ export class ValuesPatternsData {
 
       //SKILLS
       {
-        key_: "attack",
+        key_: "skill_attack",
         icon: 32,
         user: "player",
         start: 10,
       },
       {
-        key_: "defense",
+        key_: "skill_defense",
         icon: 34,
         user: "player",
         start: 10,
       },
       {
-        key_: "hunter",
+        key_: "skill_food",
         icon: 32,
         user: "player",
         start: 10,
       },
       {
-        key_: "dowser",
+        key_: "skill_water",
         icon: 17,
         user: "player",
         start: 10,
       },
       {
-        key_: "priest",
+        key_: "skill_faith",
         icon: 8,
         user: "player",
         start: 10,
       },
       {
-        key_: "woodcutter",
+        key_: "skill_wood",
         icon: 35,
         user: "player",
         start: 10,
@@ -118,13 +118,13 @@ export class ValuesPatternsData {
 
       //STOCK
       {
-        key_: "moves",
+        key_: "move",
         icon: 36,
         user: "player",
         start: 20,
       },
       {
-        key_: "actions",
+        key_: "action",
         icon: 16,
         user: "player",
         start: 8,

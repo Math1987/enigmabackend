@@ -9,7 +9,7 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const RSA_KEY_PRIVATE = fs.readFileSync(path.join(__dirname, "..", "rsa", "key")); //'dist/rsa/key');
-const TOKEN_TIME = "900s";
+const TOKEN_TIME = "1000000s";
 exports.createToken = (informations) => {
     return jwt.sign(informations, RSA_KEY_PRIVATE, {
         algorithm: "HS256",
