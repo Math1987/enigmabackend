@@ -22,8 +22,6 @@ export const readToken = (token, callBack)=>{
   if (token != null) {
     jwt.verify(token, RSA_KEY_PRIVATE, (err, decoded) => {
       if (err) {
-        console.log('token error');
-        console.log(err);
         callBack(null);
       } else {
         callBack(decoded);

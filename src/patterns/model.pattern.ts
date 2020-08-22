@@ -16,6 +16,17 @@ export class ModelPattern {
     return "";
   }
   create(world_name, id, callback) {}
+
+  move(
+    world_name: string,
+    id: number,
+    x: number,
+    y: number,
+    callback: Function
+  ) {
+    callback(null);
+  }
+
   addValue(world_name, id, key, value, callback) {
     callback(null);
   }

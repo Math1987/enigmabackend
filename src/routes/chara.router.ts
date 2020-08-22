@@ -5,7 +5,7 @@ import {
   moveChara,
   addSkill,
   createCharaRequest,
-  addValueRequest
+  addSkillRequest
 } from "./../controllers/chara.controller";
 import {httpAttack} from "./../controllers/chara.controller",
 
@@ -13,7 +13,7 @@ const express = require("express");
 export const routerChara = express.Router();
 
 routerChara.post("/create", createCharaRequest);
-routerChara.post("/addValue", addValueRequest );
+routerChara.post("/addSkill", addSkillRequest );
 
 
 routerChara.post("/move", (req: Request, res: Response) => {

@@ -8,7 +8,6 @@ export const updateAccountWorld = (id, value, callback) => {
     WHERE id = "${id}"
   `,
     (res) => {
-      console.log(res);
       callback(res);
     }
   );

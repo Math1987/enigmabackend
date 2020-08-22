@@ -269,8 +269,6 @@ export class PatternPlayer {
             VALUES ${valString}
         `,
       function (res) {
-        console.log("insert pattern player => ");
-        console.log(res);
         callBack(res);
       }
     );

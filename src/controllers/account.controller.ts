@@ -57,7 +57,6 @@ export const checkNameRequest = (req, res) => {
   }
 };
 export const signUpRequest = (req, res) => {
-  console.log(req.body);
   if (req.body && req.body.email && req.body.password && req.body.name) {
     AccountData.checkAccount(req.body.email, (accountRes) => {
       if (accountRes){
@@ -79,9 +78,7 @@ export const signUpRequest = (req, res) => {
 };
 export const confirmRequest = (req, res) => {
   if (req.body["code"]) {
-    console.log(req.body["code"]);
     confirmEmail(req.body["code"], (confirmRes) => {
-      console.log(confirmRes);
       res.status(200).send(confirmRes);
     });
   } else {
@@ -89,7 +86,6 @@ export const confirmRequest = (req, res) => {
   }
 });
 export const singInRequest  = (req: Request, res: Response) => {
-  console.log('signIn');
   if (req.body && req.body.email && req.body.password) {
     AccountData.readAccount(req.body.email, req.body.password, function (
       accountRes

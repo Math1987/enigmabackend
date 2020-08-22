@@ -16,6 +16,9 @@ class ModelPattern {
         return "";
     }
     create(world_name, id, callback) { }
+    move(world_name, id, x, y, callback) {
+        callback(null);
+    }
     addValue(world_name, id, key, value, callback) {
         callback(null);
     }

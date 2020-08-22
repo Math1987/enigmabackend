@@ -7,7 +7,7 @@ const chara_controller_2 = require("./../controllers/chara.controller");
 const express = require("express");
 exports.routerChara = express.Router();
 exports.routerChara.post("/create", chara_controller_1.createCharaRequest);
-exports.routerChara.post("/addValue", chara_controller_1.addValueRequest);
+exports.routerChara.post("/addSkill", chara_controller_1.addSkillRequest);
 exports.routerChara.post("/move", (req, res) => {
     if (req.body &&
         req.body["x"] !== null &&

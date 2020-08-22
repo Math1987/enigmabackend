@@ -2,7 +2,7 @@ import { AccountData, updateAccountWorld } from './../data/account.data';
 import { getMobile } from './mobile.controler';
 import { ValuesPatternsData } from './../data/valuesPatterns.data';
 import { getSocketsNear, sendToNear } from './socket.controller';
-import { PlayerData, addValue, readCharaValue } from './../data/player.data';
+import { PlayerData, addValue, readCharaValue, addValues, readCharaValues } from './../data/player.data';
 import { MobilesData } from "./../data/mobile.data";
 import { ValuesData } from "./../data/values.data";
 import { io } from "./../socket/user.socket";
@@ -42,6 +42,14 @@ export const createChara = (world_name:string, datas : {}, callback )=>{
   });
 
 }
+export const getCharasOnPositions = (world_name:string, positions : {x:number,y:number}[], callback )=>{
+
+  
+
+  callback(null) ;
+
+}
+
 
 export const createCharaRequest = (req: Request, res: Response) => {
   if (
@@ -75,29 +83,49 @@ export const createCharaRequest = (req: Request, res: Response) => {
   }
 }
 
-export const addValueRequest = (req: Request, res: Response ) => {
-  console.log("adding  value");
-  if ( req['account'] && req['account']['world'] && req['account']['id'] && req.body && req.body['key'] && req.body['value'] ){
+export const addSkillRequest = (req: Request, res: Response ) => {
 
-    addValue( req['account']['world'], req['account']['id'], req.body['key'], req.body['value'], resUpdate => {
+  if ( 
+    req['account'] && 
+    req['account']['world'] && 
+    req['account']['id'] && 
+    req['account']['chara'] && 
+    req.body && 
+    req.body['key'] && 
+    req.body['adder'] 
+  ){
 
-      if ( resUpdate ){
+    if ( req['account']['chara']['xp'] >= req.body['adder'] ){
 
-        readCharaValue(req['account']['world'], req['account']['id'], req.body['key'], value => {
-          if ( value ){
-            res.status(200).send({value : value});
-          }else{
-            res.status(200).send(null);
-          }
+      let obj = {} ;
+      obj[req.body['key']] = req.body['adder'] ;
+      obj['xp'] = -req.body['adder'];
 
-        });
+      addValues( req['account']['world'], req['account']['id'], obj, resUpdate => {
+
+        if ( resUpdate ){
+  
+          readCharaValues(req['account']['world'], req['account']['id'], [ req.body['key'], 'xp'], values => {
+            if ( values){
+              res.status(200).send(values);
+            }else{
+              res.status(200).send(null);
+            }
+  
+          });
+  
+  
+        }else{
+          res.status(501).send('error adding value');
+        }
+  
+      });
+
+    }else{
+      res.status(401).send('not enought xp');
+    }
 
 
-      }else{
-        res.status(501).send('error adding value');
-      }
-
-    });
 
   }else{
     res.status(401).send('need key and value');

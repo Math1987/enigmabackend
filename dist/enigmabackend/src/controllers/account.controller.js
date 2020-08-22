@@ -62,7 +62,6 @@ exports.checkNameRequest = (req, res) => {
     }
 };
 exports.signUpRequest = (req, res) => {
-    console.log(req.body);
     if (req.body && req.body.email && req.body.password && req.body.name) {
         account_data_1.AccountData.checkAccount(req.body.email, (accountRes) => {
             if (accountRes) {
@@ -87,9 +86,7 @@ exports.signUpRequest = (req, res) => {
 };
 exports.confirmRequest = (req, res) => {
     if (req.body["code"]) {
-        console.log(req.body["code"]);
         email_controller_1.confirmEmail(req.body["code"], (confirmRes) => {
-            console.log(confirmRes);
             res.status(200).send(confirmRes);
         });
     }
@@ -98,7 +95,6 @@ exports.confirmRequest = (req, res) => {
     }
 };
 exports.singInRequest = (req, res) => {
-    console.log('signIn');
     if (req.body && req.body.email && req.body.password) {
         account_data_1.AccountData.readAccount(req.body.email, req.body.password, function (accountRes) {
             if (accountRes) {

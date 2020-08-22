@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.addValueRequest = exports.createCharaRequest = exports.createChara = exports.getChara = void 0;
+exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.addSkillRequest = exports.createCharaRequest = exports.getCharasOnPositions = exports.createChara = exports.getChara = void 0;
 const account_data_1 = require("./../data/account.data");
 const mobile_controler_1 = require("./mobile.controler");
 const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
@@ -38,6 +38,9 @@ exports.createChara = (world_name, datas, callback) => {
         callback(chara);
     });
 };
+exports.getCharasOnPositions = (world_name, positions, callback) => {
+    callback(null);
+};
 exports.createCharaRequest = (req, res) => {
     if (req['account'] &&
         req['account']['id'] &&
@@ -64,24 +67,37 @@ exports.createCharaRequest = (req, res) => {
         res.status(401).send("need correct datas");
     }
 };
-exports.addValueRequest = (req, res) => {
-    console.log("adding  value");
-    if (req['account'] && req['account']['world'] && req['account']['id'] && req.body && req.body['key'] && req.body['value']) {
-        player_data_1.addValue(req['account']['world'], req['account']['id'], req.body['key'], req.body['value'], resUpdate => {
-            if (resUpdate) {
-                player_data_1.readCharaValue(req['account']['world'], req['account']['id'], req.body['key'], value => {
-                    if (value) {
-                        res.status(200).send({ value: value });
-                    }
-                    else {
-                        res.status(200).send(null);
-                    }
-                });
-            }
-            else {
-                res.status(501).send('error adding value');
-            }
-        });
+exports.addSkillRequest = (req, res) => {
+    if (req['account'] &&
+        req['account']['world'] &&
+        req['account']['id'] &&
+        req['account']['chara'] &&
+        req.body &&
+        req.body['key'] &&
+        req.body['adder']) {
+        if (req['account']['chara']['xp'] >= req.body['adder']) {
+            let obj = {};
+            obj[req.body['key']] = req.body['adder'];
+            obj['xp'] = -req.body['adder'];
+            player_data_1.addValues(req['account']['world'], req['account']['id'], obj, resUpdate => {
+                if (resUpdate) {
+                    player_data_1.readCharaValues(req['account']['world'], req['account']['id'], [req.body['key'], 'xp'], values => {
+                        if (values) {
+                            res.status(200).send(values);
+                        }
+                        else {
+                            res.status(200).send(null);
+                        }
+                    });
+                }
+                else {
+                    res.status(501).send('error adding value');
+                }
+            });
+        }
+        else {
+            res.status(401).send('not enought xp');
+        }
     }
     else {
         res.status(401).send('need key and value');

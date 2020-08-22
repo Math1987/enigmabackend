@@ -8,7 +8,6 @@ exports.updateAccountWorld = (id, value, callback) => {
     SET world = "${value}"
     WHERE id = "${id}"
   `, (res) => {
-        console.log(res);
         callback(res);
     });
 };

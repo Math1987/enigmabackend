@@ -35,7 +35,7 @@ class WorldData {
                         });
                     }
                     else {
-                        callBack('done');
+                        callBack("done");
                     }
                 }
                 buildWorld(0);
@@ -47,6 +47,19 @@ class WorldData {
      * eatch row contain infos as name, width, height, rounds etc...
      * @param callBack: send back and arrays of worlds
      */
+    static readWorld(world_name, callBack) {
+        data_1.Data.successOrFail(`
+        SELECT * FROM ${data_1.Data.TABLE_WORLDS}
+        WHERE name = "${world_name}"
+        `, function (res) {
+            if (res) {
+                callBack(JSON.parse(JSON.stringify(res)));
+            }
+            else {
+                callBack([]);
+            }
+        });
+    }
     static readWorlds(callBack) {
         data_1.Data.successOrFail(`
         SELECT * FROM ${data_1.Data.TABLE_WORLDS}
@@ -77,7 +90,7 @@ class WorldData {
             player_data_1.PlayerData.buildPlayerTable(datas, function (playerRes) {
                 values_data_1.ValuesData.buildTable(datas, function (resourceCB) {
                     mobile_data_1.MobilesData.buildMobileDatas(datas, (resMObiles) => {
-                        callBack('done');
+                        callBack("done");
                     });
                 });
             });

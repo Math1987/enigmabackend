@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readCharaById = exports.PlayerData = exports.addValue = exports.readCharaValue = void 0;
+exports.readCharasByPositions = exports.readCharaById = exports.PlayerData = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = void 0;
 const patternPlayer_1 = require("./patternPlayer");
 const data_1 = require("./data");
 /**
@@ -53,7 +53,6 @@ const insertChara = (world_name, chara, callBack) => {
         ${chara.action}
            )
         `, function (playerRes) {
-        console.log(playerRes);
         callBack(playerRes);
         // if (playerRes) {
         //   Data.successOrFail(
@@ -85,8 +84,6 @@ exports.readCharaValue = (world_name, id, key, callback) => {
     WHERE id = "${id}"
   `, (updateRes) => {
         if (updateRes && updateRes.length > 0) {
-            let json = JSON.parse(JSON.stringify(updateRes[0]));
-            console.log(updateRes[0][key]);
             callback(updateRes[0][key]);
         }
         else {
@@ -94,11 +91,48 @@ exports.readCharaValue = (world_name, id, key, callback) => {
         }
     });
 };
+exports.readCharaValues = (world_name, id, keys, callback) => {
+    let keysString = "";
+    for (let i = 0; i < keys.length; i++) {
+        keysString += `${keys[i]}`;
+        if (i < keys.length - 1) {
+            keysString += ",";
+        }
+    }
+    data_1.Data.successOrFail(`
+    SELECT ${keysString} FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    WHERE id = "${id}"
+  `, (updateRes) => {
+        if (updateRes && updateRes.length > 0) {
+            callback(JSON.stringify(updateRes[0]));
+        }
+        else {
+            callback(null);
+        }
+    });
+};
 exports.addValue = (world_name, id, key, value, callback) => {
-    console.log("updateing value", key, value, id, world_name);
     data_1.Data.successOrFail(`
     UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
     SET ${key} = ${key} + ${value}
+    WHERE id = "${id}"
+  `, (updateRes) => {
+        callback(updateRes);
+    });
+};
+exports.addValues = (world_name, id, keyVals, callback) => {
+    let updatesString = `SET `;
+    let i = 0;
+    for (let key in keyVals) {
+        updatesString += `${key} = ${key} + ${keyVals[key]}`;
+        if (i < Object.keys(keyVals).length - 1) {
+            updatesString += ",";
+            i++;
+        }
+    }
+    data_1.Data.successOrFail(`
+    UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    ${updatesString}
     WHERE id = "${id}"
   `, (updateRes) => {
         callback(updateRes);
@@ -160,15 +194,12 @@ class PlayerData {
         });
     }
     static createCharacter(world_name, character, callBack) {
-        console.log("createchara");
         patternPlayer_1.PatternPlayer.read(character.key_, (pattern) => {
-            console.log(pattern);
             if (pattern) {
                 let finalObj = {};
                 Object.assign(finalObj, pattern, character);
                 insertChara(world_name, finalObj, (charaRes) => {
                     if (charaRes) {
-                        console.log(finalObj);
                         callBack(finalObj);
                     }
                 });
@@ -202,6 +233,34 @@ exports.readCharaById = (world_name, id, callback) => {
       `, function (charaRes) {
         if (charaRes && charaRes.length > 0) {
             callback(JSON.parse(JSON.stringify(charaRes[0])));
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.readCharasByPositions = (world_name, positions, callback) => {
+    let posRequete = "";
+    for (let p of positions) {
+        if (posRequete.length > 0) {
+            posRequete += ",";
+        }
+        posRequete += `POINT(${p.x},${p.y})`;
+    }
+    data_1.Data.successOrFail(`
+      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      WHERE position IN (${posRequete})
+      `, function (res) {
+        if (res) {
+            let finalObj = [];
+            for (let row of res) {
+                let newObj = row;
+                newObj["x"] = row["position"]["x"];
+                newObj["y"] = row["position"]["y"];
+                newObj["key"] = row["key_"];
+                finalObj.push(newObj);
+            }
+            callback(JSON.parse(JSON.stringify(finalObj)));
         }
         else {
             callback(null);
