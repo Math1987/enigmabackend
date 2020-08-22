@@ -9,7 +9,8 @@ router.get(`/`, function (req, res) {
 });
 router.get("/checkEmail", account_controller_1.checkEmailRequest);
 router.get("/checkName", account_controller_1.checkNameRequest);
-router.post("/signup", function (req, res) { });
-router.post("/confirm", (req, res) => { });
-router.post("/signIn", function (req, res) { });
+router.post("/signup", account_controller_1.signUpRequest);
+router.post("/confirm", account_controller_1.confirmRequest);
+router.post("/signIn", account_controller_1.singInRequest);
+router.post("/readAccount", account_controller_1.readAccountRequest);
 exports.routerAccount = router;

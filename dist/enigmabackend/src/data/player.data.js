@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlayerData = void 0;
+exports.readCharaById = exports.PlayerData = void 0;
 const patternPlayer_1 = require("./patternPlayer");
 const data_1 = require("./data");
 /**
@@ -134,12 +134,15 @@ class PlayerData {
         });
     }
     static createCharacter(world_name, character, callBack) {
+        console.log("createchara");
         patternPlayer_1.PatternPlayer.read(character.key_, (pattern) => {
+            console.log(pattern);
             if (pattern) {
                 let finalObj = {};
                 Object.assign(finalObj, pattern, character);
                 insertChara(world_name, finalObj, (charaRes) => {
                     if (charaRes) {
+                        console.log(finalObj);
                         callBack(finalObj);
                     }
                 });
@@ -215,3 +218,16 @@ class PlayerData {
 exports.PlayerData = PlayerData;
 PlayerData.TABLE_PLAYERS_NAME = `players`;
 PlayerData.TABLE_POSITIONS = `positions`;
+exports.readCharaById = (world_name, id, callback) => {
+    data_1.Data.successOrFail(`
+      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      WHERE id = "${id}"
+      `, function (charaRes) {
+        if (charaRes && charaRes.length > 0) {
+            callback(JSON.parse(JSON.stringify(charaRes[0])));
+        }
+        else {
+            callback(null);
+        }
+    });
+};

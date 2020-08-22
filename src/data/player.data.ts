@@ -165,12 +165,15 @@ export class PlayerData {
     character: { id: string; name: string; key_: string; religion: string },
     callBack: CallableFunction
   ) {
+    console.log("createchara");
     PatternPlayer.read(character.key_, (pattern) => {
+      console.log(pattern);
       if (pattern) {
         let finalObj = {};
         Object.assign(finalObj, pattern, character);
         insertChara(world_name, finalObj, (charaRes) => {
           if (charaRes) {
+            console.log(finalObj);
             callBack(finalObj);
           }
         });
@@ -249,3 +252,19 @@ export class PlayerData {
     );
   }
 }
+
+export const readCharaById = (world_name, id: string, callback) => {
+  Data.successOrFail(
+    `
+      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      WHERE id = "${id}"
+      `,
+    function (charaRes) {
+      if (charaRes && charaRes.length > 0) {
+        callback(JSON.parse(JSON.stringify(charaRes[0])));
+      } else {
+        callback(null);
+      }
+    }
+  );
+};

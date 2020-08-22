@@ -1,3 +1,4 @@
+import { AccountData, updateAccountWorld } from './../data/account.data';
 import { getMobile } from './mobile.controler';
 import { ValuesPatternsData } from './../data/valuesPatterns.data';
 import { getSocketsNear } from './socket.controller';
@@ -12,13 +13,9 @@ export const getChara = (world_name, id, callBack) => {
   let chara = {};
 
   PlayerData.readCharaAsObj(world_name, id, (player)=>{
-
-
     if ( player ){
-  
     ValuesData.readAsObject(world_name, id, (values) => {
       if (values) {
-    
           MobilesData.readById(world_name, id, (mobile) => {
 
             Object.assign(chara, player, values, mobile);
@@ -34,17 +31,14 @@ export const getChara = (world_name, id, callBack) => {
   });
 
 };
-
-export const createChara = (world_name:string, datas : {}, callBack )=>{
+export const createChara = (world_name:string, datas : {}, callback )=>{
 
   if ( datas['sexe'] && datas['race'] ){
     datas['key_'] = `${datas['race']}${datas['sexe']}`;
   }
 
-  PlayerData.createCharacter('world1', datas, ( chara ) => {
-
-
-
+  PlayerData.createCharacter(world_name, datas, ( chara ) => {
+      callback(chara);
   });
 
   // PlayerData.createCharacter("world1", datas, function (chara) {
@@ -78,6 +72,41 @@ export const createChara = (world_name:string, datas : {}, callBack )=>{
   // });
 
 }
+
+export const createCharaRequest = (req: Request, res: Response) => {
+  console.log('create chara') ;
+  console.log(req['account']);
+  console.log(req.body);
+  if (
+    req['account'] && 
+    req['account']['id'] &&
+    !req['account']['chara'] &&
+    req.body &&
+    req.body.name &&
+    req.body.race &&
+    req.body.religion
+  ) {
+
+    let objFinal = {} ;
+    Object.assign(objFinal, req.body, req['account'] );
+
+    createChara("world1", objFinal, (chara) => {
+      if (chara) {
+
+        updateAccountWorld( req["account"]['id'], "world1", accountRes => {
+          res.status(200).send(chara);
+        });
+
+      } else {
+        res.status(401).json("erreur de création du personnage");
+      }
+    });
+  } else {
+    res.status(401).send("need correct datas");
+  }
+}
+
+
 
 export const moveChara = (world_name: string, chara : {}, x:number, y:number,callBack){
 

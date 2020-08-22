@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useSecurRoute = exports.createToken = void 0;
+exports.useSecurRoute = exports.readToken = exports.createToken = void 0;
 /**
  * Security manage token usage with JWT,
  * using a private key write in rsa folder
@@ -16,10 +16,11 @@ exports.createToken = (informations) => {
         expiresIn: TOKEN_TIME,
     });
 };
-const checkToken = (token, callBack) => {
+exports.readToken = (token, callBack) => {
     if (token != null) {
         jwt.verify(token, RSA_KEY_PRIVATE, (err, decoded) => {
             if (err) {
+                console.log('token error');
                 console.log(err);
                 callBack(null);
             }
@@ -35,7 +36,7 @@ const checkToken = (token, callBack) => {
 (req, res, next) => {
     const token = req.headers.authorization;
     if (token) {
-        checkToken(token, function (userRes) {
+        exports.readToken(token, function (userRes) {
             if (userRes) {
                 req.headers["userTokenValues"] = userRes;
                 req["user"] = userRes;

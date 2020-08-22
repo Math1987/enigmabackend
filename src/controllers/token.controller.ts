@@ -18,10 +18,11 @@ export const createToken = (informations) => {
   });
 }
 
-const checkToken = (token, callBack)=>{
+export const readToken = (token, callBack)=>{
   if (token != null) {
     jwt.verify(token, RSA_KEY_PRIVATE, (err, decoded) => {
       if (err) {
+        console.log('token error');
         console.log(err);
         callBack(null);
       } else {
@@ -38,7 +39,7 @@ export const useSecurRoute (req, res, next) => {
 
   const token = req.headers.authorization;
   if (token) {
-    checkToken(token, function (userRes) {
+    readToken(token, function (userRes) {
       if (userRes) {
         req.headers["userTokenValues"] = userRes;
         req["user"] = userRes;

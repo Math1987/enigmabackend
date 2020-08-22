@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.createChara = exports.getChara = void 0;
+exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.createCharaRequest = exports.createChara = exports.getChara = void 0;
+const account_data_1 = require("./../data/account.data");
 const mobile_controler_1 = require("./mobile.controler");
 const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
 const player_data_1 = require("./../data/player.data");
@@ -29,11 +30,12 @@ exports.getChara = (world_name, id, callBack) => {
         }
     });
 };
-exports.createChara = (world_name, datas, callBack) => {
+exports.createChara = (world_name, datas, callback) => {
     if (datas['sexe'] && datas['race']) {
         datas['key_'] = `${datas['race']}${datas['sexe']}`;
     }
-    player_data_1.PlayerData.createCharacter('world1', datas, (chara) => {
+    player_data_1.PlayerData.createCharacter(world_name, datas, (chara) => {
+        callback(chara);
     });
     // PlayerData.createCharacter("world1", datas, function (chara) {
     //   if (chara) {
@@ -61,6 +63,34 @@ exports.createChara = (world_name, datas, callBack) => {
     //     callBack(null);
     //   }
     // });
+};
+exports.createCharaRequest = (req, res) => {
+    console.log('create chara');
+    console.log(req['account']);
+    console.log(req.body);
+    if (req['account'] &&
+        req['account']['id'] &&
+        !req['account']['chara'] &&
+        req.body &&
+        req.body.name &&
+        req.body.race &&
+        req.body.religion) {
+        let objFinal = {};
+        Object.assign(objFinal, req.body, req['account']);
+        exports.createChara("world1", objFinal, (chara) => {
+            if (chara) {
+                account_data_1.updateAccountWorld(req["account"]['id'], "world1", accountRes => {
+                    res.status(200).send(chara);
+                });
+            }
+            else {
+                res.status(401).json("erreur de création du personnage");
+            }
+        });
+    }
+    else {
+        res.status(401).send("need correct datas");
+    }
 };
 exports.moveChara = (world_name, chara, x, y, callBack) => {
     if (world_name && chara) {

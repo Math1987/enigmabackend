@@ -4,44 +4,50 @@ import {
   getChara,
   moveChara,
   addSkill,
+  createCharaRequest
 } from "./../controllers/chara.controller";
 import {httpAttack} from "./../controllers/chara.controller",
 
 const express = require("express");
 export const routerChara = express.Router();
 
-routerChara.use("/", (req: Request, res: Response, next) => {
-  if (req.method === "OPTIONS") {
-    res.status(200).send("ok");
-  } else {
-    const tokenDatas = req.headers["userTokenValues"];
+// routerChara.use("/", (req: Request, res: Response, next) => {
+//   if (req.method === "OPTIONS") {
+//     res.status(200).send("ok");
+//   } else {
+//     const tokenDatas = req.headers["userTokenValues"];
 
-    getChara(
-      req.headers["userTokenValues"]["world"],
-      req.headers["userTokenValues"]["id"],
-      (chara) => {
-        req["chara"] = chara;
-        req.headers["characterValuesAsObj"] = chara;
-        next();
-      }
-    );
+//     getChara(
+//       req.headers["userTokenValues"]["world"],
+//       req.headers["userTokenValues"]["id"],
+//       (chara) => {
+//         req["chara"] = chara;
+//         req.headers["characterValuesAsObj"] = chara;
+//         next();
+//       }
+//     );
 
-    // ValuesData.readResources(tokenDatas.id, tokenDatas.world, (resValues) => {
-    //   MobilesData.readById(tokenDatas.world, tokenDatas["id"], (mobile) => {
-    //     if (resValues) {
-    //       req.headers["characterValues"] = resValues;
-    //       let valuesAsObj = {};
-    //       for (let row of resValues) {
-    //         valuesAsObj[row.key_] = row;
-    //       }
-    //       req.headers["characterValuesAsObj"] = valuesAsObj;
-    //     }
-    //   });
+//     // ValuesData.readResources(tokenDatas.id, tokenDatas.world, (resValues) => {
+//     //   MobilesData.readById(tokenDatas.world, tokenDatas["id"], (mobile) => {
+//     //     if (resValues) {
+//     //       req.headers["characterValues"] = resValues;
+//     //       let valuesAsObj = {};
+//     //       for (let row of resValues) {
+//     //         valuesAsObj[row.key_] = row;
+//     //       }
+//     //       req.headers["characterValuesAsObj"] = valuesAsObj;
+//     //     }
+//     //   });
 
-    //   next();
-    // });
-  }
-});
+//     //   next();
+//     // });
+//   }
+// });
+
+
+routerChara.post("/create", createCharaRequest);
+
+
 
 routerChara.post("/move", (req: Request, res: Response) => {
   if (

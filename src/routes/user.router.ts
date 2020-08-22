@@ -1,3 +1,4 @@
+import { readToken } from "./../controllers/token.controller";
 import { createChara } from "./../controllers/chara.controller";
 import { MobilesData } from "./../data/mobile.data";
 import { Chara } from "./../../../enigmafrontend/src/app/shared/models/chara.model";
@@ -5,21 +6,17 @@ import { localStorage } from "./../services/localstorage";
 import { Security } from "../services/security";
 import { WorldData } from "../data/world.data";
 import { PlayerData } from "../data/player.data";
+import { readAccountByToken } from "./../controllers/account.controller";
 
 const express = require("express");
 export const routerUser = express.Router();
 
 routerUser.use((req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.headers.authtoken;
   if (token) {
-    Security.checkToken(token, function (userRes) {
-      if (userRes) {
-        req.headers["userTokenValues"] = userRes;
-        req["user"] = userRes;
-        next();
-      } else {
-        res.status(401).json("token invalid");
-      }
+    readAccountByToken(token, (values) => {
+      req["account"] = values;
+      next();
     });
   } else {
     res.status(401).send("need token");

@@ -1,6 +1,10 @@
 import {
   checkEmailRequest,
   checkNameRequest,
+  confirmRequest,
+  signUpRequest,
+  singInRequest,
+  readAccountRequest,
 } from "./../controllers/account.controller";
 const express = require("express");
 const router = express.Router();
@@ -10,13 +14,10 @@ router.get(`/`, function (req, res) {
 });
 
 router.get("/checkEmail", checkEmailRequest);
-
 router.get("/checkName", checkNameRequest);
-
-router.post("/signup", function (req: Request, res: Response) {});
-
-router.post("/confirm", (req: Request, res: Response) => {});
-
-router.post("/signIn", function (req: Request, res: Response) {});
+router.post("/signup", signUpRequest);
+router.post("/confirm", confirmRequest);
+router.post("/signIn", singInRequest);
+router.post("/readAccount", readAccountRequest);
 
 export const routerAccount = router;

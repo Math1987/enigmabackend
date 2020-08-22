@@ -1,7 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AccountData = void 0;
+exports.AccountData = exports.updateAccountWorld = void 0;
 const data_1 = require("./data");
+exports.updateAccountWorld = (id, value, callback) => {
+    data_1.Data.successOrFail(`
+    UPDATE ${data_1.Data.TABLE_ACCOUNTS}
+    SET world = "${value}"
+    WHERE id = "${id}"
+  `, (res) => {
+        console.log(res);
+        callback(res);
+    });
+};
 class AccountData {
     static initAccount(callBack) {
         let sql = `
@@ -56,7 +66,28 @@ class AccountData {
             }
             else {
                 if (res && res.length > 0) {
-                    delete res[0]['password'];
+                    delete res[0]["password"];
+                    let json = JSON.parse(JSON.stringify(res[0]));
+                    callBack(json);
+                }
+                else {
+                    callBack(null);
+                }
+            }
+        });
+    }
+    static readAccountById(id, callBack) {
+        data_1.Data.CONNECTION.query(`
+        SELECT * FROM ${data_1.Data.TABLE_ACCOUNTS} 
+        WHERE id = "${id}"
+                `, function (err, res) {
+            if (err) {
+                console.error(err);
+                callBack(null);
+            }
+            else {
+                if (res && res.length > 0) {
+                    delete res[0]["password"];
                     let json = JSON.parse(JSON.stringify(res[0]));
                     callBack(json);
                 }

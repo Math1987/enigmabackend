@@ -191,7 +191,7 @@ let AuthService = (AuthService_1 = class AuthService {
       isAuthenticated: false,
       token: null,
     });
-    this.router.navigate(["connexion"]);
+    // this.router.navigate(["connexion"]);
     window.location.reload();
   }
 });

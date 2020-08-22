@@ -52,9 +52,9 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
   next();
 });
-app.use(express.static(path.join(__dirname, "public")));
+//app.use(express.static(path.join(__dirname, "public")));
 
-routerUser.use((req, res, next) => {
+app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     res.status(200).send("");
   } else {
@@ -63,11 +63,10 @@ routerUser.use((req, res, next) => {
 });
 
 app.use("/api", routerApi);
-app.use("/api/account", routerAccount);
 app.use("/api/world", routerWorld);
+app.use("/api/account", routerAccount);
 app.use("/api/u", routerUser);
 app.use("/api/u/chara", routerChara);
-app.use("/", indexRouter);
 
 Data.init(function (data) {
   MainPatterns.init((patterns) => {

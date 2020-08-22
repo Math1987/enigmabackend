@@ -13,7 +13,6 @@ const main_patterns_1 = require("./patterns/main.patterns");
 const express_1 = __importDefault(require("express"));
 const data_1 = require("./data/data");
 const worlds_1 = require("./services/worlds");
-const index_router_1 = require("./routes/index.router");
 const api_router_1 = require("./routes/api.router");
 const account_router_1 = require("./routes/account.router");
 const user_router_1 = require("./routes/user.router");
@@ -47,8 +46,8 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     next();
 });
-app.use(express_1.default.static(path.join(__dirname, "public")));
-user_router_1.routerUser.use((req, res, next) => {
+//app.use(express.static(path.join(__dirname, "public")));
+app.use((req, res, next) => {
     if (req.method === "OPTIONS") {
         res.status(200).send("");
     }
@@ -57,11 +56,10 @@ user_router_1.routerUser.use((req, res, next) => {
     }
 });
 app.use("/api", api_router_1.routerApi);
-app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/world", world_router_1.routerWorld);
+app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
-app.use("/", index_router_1.indexRouter);
 data_1.Data.init(function (data) {
     main_patterns_1.MainPatterns.init((patterns) => {
         worlds_1.Worlds.init(function (worlds) {
