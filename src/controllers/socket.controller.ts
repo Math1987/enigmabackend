@@ -40,10 +40,10 @@ export const sendToNear = (
 
     for (let socketID of clients) {
       let targetSocket = io["sockets"]["connected"][socketID];
-      if (targetSocket["chara"]) {
+      if (targetSocket["account"]) {
         let targetPos = {
-          x: targetSocket["chara"]["position"].x,
-          y: targetSocket["chara"]["position"].y,
+          x: targetSocket["account"]["chara"]["position"].x,
+          y: targetSocket["account"]["chara"]["position"].y,
         };
 
         if (
@@ -59,5 +59,23 @@ export const sendToNear = (
     }
 
     callBack(targets);
+  });
+};
+
+export const updateSocketAccountChara = (world_name, chara) => {
+  io.in(world_name).clients((err, clients) => {
+    let targets = {};
+
+    for (let socketID of clients) {
+      let targetSocket = io["sockets"]["connected"][socketID];
+      if (
+        targetSocket["account"] &&
+        targetSocket["account"]["chara"] &&
+        targetSocket["account"]["chara"]["id"] === chara["id"]
+      ) {
+        targetSocket["account"]["chara"] = chara;
+        break;
+      }
+    }
   });
 };

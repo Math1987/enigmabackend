@@ -1,3 +1,4 @@
+import { MainPatterns } from './../patterns/main.patterns';
 import { AccountData, updateAccountWorld } from './../data/account.data';
 import { getMobile } from './mobile.controler';
 import { ValuesPatternsData } from './../data/valuesPatterns.data';
@@ -9,6 +10,7 @@ import { io } from "./../socket/user.socket";
 import { Calculation } from '../data/calcul.data';
 import {attack} from "./attack.controller";
  
+///DEPRECIATED///
 export const getChara = (world_name, id, callBack) => {
   let chara = {};
 
@@ -31,6 +33,9 @@ export const getChara = (world_name, id, callBack) => {
   });
 
 };
+
+
+///OK
 export const createChara = (world_name:string, datas : {}, callback )=>{
 
   if ( datas['sexe'] && datas['race'] ){
@@ -38,17 +43,22 @@ export const createChara = (world_name:string, datas : {}, callback )=>{
   }
 
   PlayerData.createCharacter(world_name, datas, ( chara ) => {
+    if ( chara ){
+      let pattern = MainPatterns.getPattern(chara['key_']);
+      if ( pattern ){
+        pattern.move(world_name, chara['id'], 0, 0, moveRes =>{
+          console.log('move done');
+        });
+      }
+    }
       callback(chara);
   });
 
 }
 export const getCharasOnPositions = (world_name:string, positions : {x:number,y:number}[], callback )=>{
-
-  
-
   callback(null) ;
-
 }
+
 
 
 export const createCharaRequest = (req: Request, res: Response) => {

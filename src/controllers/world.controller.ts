@@ -13,8 +13,10 @@ export const getOnPositions = (
       newPos.push(ground);
     }
     readCharasByPositions(world_name, positions, (charas) => {
-      for (let chara of charas) {
-        newPos.push(chara);
+      if (charas && charas.length > 0) {
+        for (let chara of charas) {
+          newPos.push(chara);
+        }
       }
       callback(newPos);
     });

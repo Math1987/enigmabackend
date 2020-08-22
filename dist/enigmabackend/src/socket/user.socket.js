@@ -15,23 +15,23 @@ class UserSocket {
             });
             if (socket.handshake.query["token"] != null) {
                 account_controller_1.readAccountByToken(socket.handshake.query["token"], (account) => {
-                    if (account) {
+                    if (account && account["world"] && account["chara"]) {
+                        socket["account"] = account;
+                        socket.join(account["world"]);
                         const id = account["id"];
                         const world_name = account["world"];
-                        if (account["chara"]) {
-                            const key = account["chara"]["key_"];
-                            console.log(id, key);
-                            socket.on("getOnPositions", (positions, callback) => {
-                                world_controller_1.getOnPositions(account["world"], positions, callback);
-                            });
-                            socket.on("move", (x, y, callback) => {
-                                console.log(id);
-                                let pattern = main_patterns_1.MainPatterns.getPattern(key);
-                                if (pattern) {
-                                    pattern.move(world_name, id, x, y, callback);
-                                }
-                            });
-                        }
+                        const key = account["chara"]["key_"];
+                        console.log(id, key);
+                        socket.on("getOnPositions", (positions, callback) => {
+                            world_controller_1.getOnPositions(account["world"], positions, callback);
+                        });
+                        socket.on("move", (x, y, callback) => {
+                            console.log(id);
+                            let pattern = main_patterns_1.MainPatterns.getPattern(key);
+                            if (pattern) {
+                                pattern.move(world_name, id, x, y, callback);
+                            }
+                        });
                     }
                 });
                 // Security.checkToken(socket.handshake.query["token"], (user) => {

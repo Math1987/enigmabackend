@@ -252,6 +252,10 @@ export class PlayerData {
         Object.assign(finalObj, pattern, character);
         insertChara(world_name, finalObj, (charaRes) => {
           if (charaRes) {
+            finalObj['position'] = {x : 0, y : 0};
+            finalObj['x'] = 0 ;
+            finalObj['y'] =  0 ;
+            finalObj['key'] = finalObj['key_'];
             callBack(finalObj);
           }
         });
@@ -288,6 +292,7 @@ export const readCharaById = (world_name, id: string, callback) => {
       `,
     function (charaRes) {
       if (charaRes && charaRes.length > 0) {
+        charaRes[0]['key'] = charaRes[0]['key_'];
         callback(JSON.parse(JSON.stringify(charaRes[0])));
       } else {
         callback(null);
@@ -330,3 +335,19 @@ export const readCharasByPositions = (
     }
   );
 };
+
+export const updateCharaPosition = (world_name:string, id: string, x : number, y : number, callback => {
+
+  Data.successOrFail(
+    `
+          UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+          SET position = POINT( ${x},${y})
+          WHERE id = "${id}"
+      `,
+    (res) => {
+      callback(res);
+    }
+  );
+    
+
+});

@@ -11,8 +11,10 @@ exports.getOnPositions = (world_name, positions, callback) => {
             newPos.push(ground);
         }
         player_data_1.readCharasByPositions(world_name, positions, (charas) => {
-            for (let chara of charas) {
-                newPos.push(chara);
+            if (charas && charas.length > 0) {
+                for (let chara of charas) {
+                    newPos.push(chara);
+                }
             }
             callback(newPos);
         });

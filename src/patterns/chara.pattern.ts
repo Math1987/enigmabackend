@@ -1,6 +1,10 @@
 import { ModelPattern } from "./model.pattern";
 import { getWorld } from "../controllers/world.controller";
-import { readCharaById } from "../data/player.data";
+import { readCharaById, updateCharaPosition } from "../data/player.data";
+import {
+  sendToNear,
+  updateSocketAccountChara,
+} from "../controllers/socket.controller";
 
 export class Player extends ModelPattern {
   constructor() {
@@ -22,14 +26,35 @@ export class Player extends ModelPattern {
       let newX = chara["position"]["x"] + x;
       let newY = chara["position"]["y"] + y;
       getWorld(world_name, (world) => {
-        console.log(world);
-
         if (
           chara["move"] >= moveCost &&
           newX >= -world.width / 2 &&
-          newX <= world.width / 2
+          newX <= world.width / 2 &&
+          newY >= -world.height / 2 &&
+          newY <= world.height / 2
         ) {
-          callback(true);
+          updateCharaPosition(world_name, id, newX, newY, (updateRes) => {
+            if (updateRes) {
+              chara["position"]["x"] = newX;
+              chara["position"]["y"] = newY;
+
+              sendToNear(
+                world_name,
+                { x: chara["position"]["x"], y: chara["position"]["y"] },
+                8,
+                "move",
+                chara,
+                (moveRes) => {
+                  updateSocketAccountChara(world_name, chara);
+
+                  callback(true);
+                }
+              );
+            } else {
+              callback(null);
+            }
+            console.log(updateRes);
+          });
         } else {
           callback(false);
         }

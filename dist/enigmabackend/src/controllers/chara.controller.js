@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.httpAttack = exports.popsChara = exports.addSkill = exports.moveChara = exports.addSkillRequest = exports.createCharaRequest = exports.getCharasOnPositions = exports.createChara = exports.getChara = void 0;
+const main_patterns_1 = require("./../patterns/main.patterns");
 const account_data_1 = require("./../data/account.data");
 const mobile_controler_1 = require("./mobile.controler");
 const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
@@ -9,6 +10,7 @@ const mobile_data_1 = require("./../data/mobile.data");
 const values_data_1 = require("./../data/values.data");
 const user_socket_1 = require("./../socket/user.socket");
 const attack_controller_1 = require("./attack.controller");
+///DEPRECIATED///
 exports.getChara = (world_name, id, callBack) => {
     let chara = {};
     player_data_1.PlayerData.readCharaAsObj(world_name, id, (player) => {
@@ -30,11 +32,20 @@ exports.getChara = (world_name, id, callBack) => {
         }
     });
 };
+///OK
 exports.createChara = (world_name, datas, callback) => {
     if (datas['sexe'] && datas['race']) {
         datas['key_'] = `${datas['race']}${datas['sexe']}`;
     }
     player_data_1.PlayerData.createCharacter(world_name, datas, (chara) => {
+        if (chara) {
+            let pattern = main_patterns_1.MainPatterns.getPattern(chara['key_']);
+            if (pattern) {
+                pattern.move(world_name, chara['id'], 0, 0, moveRes => {
+                    console.log('move done');
+                });
+            }
+        }
         callback(chara);
     });
 };

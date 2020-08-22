@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readCharasByPositions = exports.readCharaById = exports.PlayerData = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = void 0;
+exports.updateCharaPosition = exports.readCharasByPositions = exports.readCharaById = exports.PlayerData = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = void 0;
 const patternPlayer_1 = require("./patternPlayer");
 const data_1 = require("./data");
 /**
@@ -200,6 +200,10 @@ class PlayerData {
                 Object.assign(finalObj, pattern, character);
                 insertChara(world_name, finalObj, (charaRes) => {
                     if (charaRes) {
+                        finalObj['position'] = { x: 0, y: 0 };
+                        finalObj['x'] = 0;
+                        finalObj['y'] = 0;
+                        finalObj['key'] = finalObj['key_'];
                         callBack(finalObj);
                     }
                 });
@@ -232,6 +236,7 @@ exports.readCharaById = (world_name, id, callback) => {
       WHERE id = "${id}"
       `, function (charaRes) {
         if (charaRes && charaRes.length > 0) {
+            charaRes[0]['key'] = charaRes[0]['key_'];
             callback(JSON.parse(JSON.stringify(charaRes[0])));
         }
         else {
@@ -265,5 +270,14 @@ exports.readCharasByPositions = (world_name, positions, callback) => {
         else {
             callback(null);
         }
+    });
+};
+exports.updateCharaPosition = (world_name, id, x, y, callback) => {
+    data_1.Data.successOrFail(`
+          UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+          SET position = POINT( ${x},${y})
+          WHERE id = "${id}"
+      `, (res) => {
+        callback(res);
     });
 };

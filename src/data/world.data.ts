@@ -63,8 +63,8 @@ export class WorldData {
         WHERE name = "${world_name}"
         `,
       function (res) {
-        if (res) {
-          callBack(JSON.parse(JSON.stringify(res)));
+        if (res && res.length > 0) {
+          callBack(JSON.parse(JSON.stringify(res[0])));
         } else {
           callBack([]);
         }

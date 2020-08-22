@@ -23,26 +23,28 @@ export class UserSocket {
 
       if (socket.handshake.query["token"] != null) {
         readAccountByToken(socket.handshake.query["token"], (account) => {
-          if (account) {
+          if (account && account["world"] && account["chara"]) {
+            socket["account"] = account;
+            socket.join(account["world"]);
+
             const id = account["id"];
             const world_name = account["world"];
-            if (account["chara"]) {
-              const key = account["chara"]["key_"];
 
-              console.log(id, key);
+            const key = account["chara"]["key_"];
 
-              socket.on("getOnPositions", (positions: [], callback) => {
-                getOnPositions(account["world"], positions, callback);
-              });
+            console.log(id, key);
 
-              socket.on("move", (x,y,callback) => {
-                console.log(id);
-                let pattern = MainPatterns.getPattern(key);
-                if (pattern) {
-                  pattern.move(world_name, id, x,y, callback);
-                }
-              });
-            }
+            socket.on("getOnPositions", (positions: [], callback) => {
+              getOnPositions(account["world"], positions, callback);
+            });
+
+            socket.on("move", (x, y, callback) => {
+              console.log(id);
+              let pattern = MainPatterns.getPattern(key);
+              if (pattern) {
+                pattern.move(world_name, id, x, y, callback);
+              }
+            });
           }
         });
 
