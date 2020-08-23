@@ -1,4 +1,4 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
 import { World } from "../models/world";
 
 
@@ -8,7 +8,7 @@ import { World } from "../models/world";
  */
 const TABLE_NAME = "players" ;
 const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
-  Data.successOrFail(
+  successOrFailData(
     `
       CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}
       ( 
@@ -45,7 +45,7 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
 }
 const insertCharaData = (world_name, chara, callBack) => {
   console.log(chara);
-  Data.successOrFail(
+  successOrFailData(
     `
         INSERT INTO ${world_name}_${TABLE_NAME}
         (
@@ -120,7 +120,7 @@ const insertCharaData = (world_name, chara, callBack) => {
   );
 };
 const readCharaValue = (world_name, id, key, callback) => {
-  Data.successOrFail(
+  successOrFailData(
     `
     SELECT ${key} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
@@ -143,7 +143,7 @@ const readCharaValues = (world_name, id, keys: string[], callback) => {
     }
   }
 
-  Data.successOrFail(
+  successOrFailData(
     `
     SELECT ${keysString} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
@@ -164,7 +164,7 @@ const addValue = (
   value,
   callback
 ) => {
-  Data.successOrFail(
+  successOrFailData(
     `
     UPDATE ${world_name}_${TABLE_NAME}
     SET ${key} = ${key} + ${value}
@@ -190,7 +190,7 @@ const addValues = (
       i++;
     }
   }
-  Data.successOrFail(
+  successOrFailData(
     `
     UPDATE ${world_name}_${TABLE_NAME}
     ${updatesString}
@@ -202,7 +202,7 @@ const addValues = (
   );
 };
 const readCharaById = (world_name, id: string, callback) => {
-  Data.successOrFail(
+  successOrFailData(
     `
       SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE id = "${id}"
@@ -230,7 +230,7 @@ const readCharasByPositions = (
     posRequete += `POINT(${p.x},${p.y})`;
   }
 
-  Data.successOrFail(
+  successOrFailData(
     `
       SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE position IN (${posRequete})
@@ -254,7 +254,7 @@ const readCharasByPositions = (
 };
 const updateCharaPosition = (world_name:string, id: string, x : number, y : number, callback => {
 
-  Data.successOrFail(
+  successOrFailData(
     `
           UPDATE ${world_name}_${TABLE_NAME}
           SET position = POINT( ${x},${y})

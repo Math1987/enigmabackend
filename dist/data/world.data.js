@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorldData = void 0;
 const data_1 = require("./data");
 const player_data_1 = require("./player.data");
+const TABLE_NAME = "worlds";
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
@@ -16,8 +17,8 @@ class WorldData {
      * @param callBack: whatever...just say when work is finish.
      */
     static init(callBack) {
-        data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${data_1.Data.TABLE_WORLDS}
+        data_1.successOrFailData(`
+        CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
         (
         name VARCHAR(36) primary key,
         width INT,
@@ -46,8 +47,8 @@ class WorldData {
      * @param callBack: send back and arrays of worlds
      */
     static readWorld(world_name, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${data_1.Data.TABLE_WORLDS}
+        data_1.successOrFailData(`
+        SELECT * FROM ${TABLE_NAME}
         WHERE name = "${world_name}"
         `, function (res) {
             if (res && res.length > 0) {
@@ -59,8 +60,8 @@ class WorldData {
         });
     }
     static readWorlds(callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${data_1.Data.TABLE_WORLDS}
+        data_1.successOrFailData(`
+        SELECT * FROM ${TABLE_NAME}
         `, function (res) {
             if (res) {
                 callBack(JSON.parse(JSON.stringify(res)));
@@ -80,8 +81,8 @@ class WorldData {
      * @param callBack
      */
     static buildWorld(datas, callBack) {
-        data_1.Data.successOrFail(`
-        INSERT INTO ${data_1.Data.TABLE_WORLDS}
+        data_1.successOrFailData(`
+        INSERT INTO ${TABLE_NAME}
         (name, width, height)
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {

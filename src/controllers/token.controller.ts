@@ -11,14 +11,13 @@ const RSA_KEY_PRIVATE = fs.readFileSync(
 const TOKEN_TIME = "1000000s";
 
 
-export const createToken = (informations) => {
+const createToken = (informations) => {
   return jwt.sign(informations, RSA_KEY_PRIVATE, {
     algorithm: "HS256",
     expiresIn: TOKEN_TIME,
   });
 }
-
-export const readToken = (token, callBack)=>{
+const readToken = (token, callBack)=>{
   if (token != null) {
     jwt.verify(token, RSA_KEY_PRIVATE, (err, decoded) => {
       if (err) {
@@ -31,7 +30,7 @@ export const readToken = (token, callBack)=>{
     callBack(null);
   }
 }
-
+export { createToken, readToken};
 
 export const useSecurRoute (req, res, next) => {
 

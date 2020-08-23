@@ -1,6 +1,8 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
 import { World } from "../models/world";
 import { buildWorldPlayerData } from "./player.data";
+
+const TABLE_NAME = "worlds";
 
 /**
  * This object manage all the world data.
@@ -18,9 +20,9 @@ export class WorldData {
    * @param callBack: whatever...just say when work is finish.
    */
   static init(callBack: CallableFunction) {
-    Data.successOrFail(
+    successOrFailData(
       `
-        CREATE TABLE IF NOT EXISTS ${Data.TABLE_WORLDS}
+        CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
         (
         name VARCHAR(36) primary key,
         width INT,
@@ -54,9 +56,9 @@ export class WorldData {
     world_name: string,
     callBack: CallableFunction
   ): Array<World> {
-    Data.successOrFail(
+    successOrFailData(
       `
-        SELECT * FROM ${Data.TABLE_WORLDS}
+        SELECT * FROM ${TABLE_NAME}
         WHERE name = "${world_name}"
         `,
       function (res) {
@@ -69,9 +71,9 @@ export class WorldData {
     );
   }
   static readWorlds(callBack: CallableFunction): Array<World> {
-    Data.successOrFail(
+    successOrFailData(
       `
-        SELECT * FROM ${Data.TABLE_WORLDS}
+        SELECT * FROM ${TABLE_NAME}
         `,
       function (res) {
         if (res) {
@@ -92,9 +94,9 @@ export class WorldData {
    * @param callBack
    */
   static buildWorld(datas: World, callBack: CallableFunction) {
-    Data.successOrFail(
+    successOrFailData(
       `
-        INSERT INTO ${Data.TABLE_WORLDS}
+        INSERT INTO ${TABLE_NAME}
         (name, width, height)
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `,

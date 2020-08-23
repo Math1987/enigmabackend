@@ -4,8 +4,8 @@ exports.readMetaDatasDatas = exports.initMetaValuesData = exports.initMetaData =
 const data_1 = require("./data");
 const TABLE_NAME = "metadatas";
 const initMetaData = (callBack) => {
-    data_1.Data.successOrFail(` DROP TABLE IF EXISTS ${TABLE_NAME}`, () => { });
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(` DROP TABLE IF EXISTS ${TABLE_NAME}`, () => { });
+    data_1.successOrFailData(`
       CREATE TABLE ${TABLE_NAME}
       (
       key_ VARCHAR(36) PRIMARY KEY,
@@ -190,7 +190,7 @@ const initMetaValuesData = (callBack) => {
         }
         valString += `("${row.key_}","${row.type}","${row.name_fr}","${row.description_fr}","${row.img}")`;
     }
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
           INSERT INTO ${TABLE_NAME}
           (key_, type, name_fr, description_fr, img)
           VALUES ${valString}
@@ -200,7 +200,7 @@ const initMetaValuesData = (callBack) => {
 };
 exports.initMetaValuesData = initMetaValuesData;
 const readMetaDatasDatas = (callBack) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
       SELECT * FROM ${TABLE_NAME}
       `, function (res) {
         res = JSON.parse(JSON.stringify(res));

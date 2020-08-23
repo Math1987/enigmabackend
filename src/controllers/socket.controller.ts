@@ -1,6 +1,6 @@
 import { io } from "./../socket/user.socket";
 
-export const getSocketsNear = (world_name, x, y, rayon, callBack) => {
+const getSocketsNear = (world_name, x, y, rayon, callBack) => {
   io.in(world_name).clients((err, clients) => {
     let targets = {};
 
@@ -26,8 +26,7 @@ export const getSocketsNear = (world_name, x, y, rayon, callBack) => {
     callBack(targets);
   });
 };
-
-export const sendToNear = (
+const sendToNear = (
   world_name,
   position,
   rayon,
@@ -61,8 +60,7 @@ export const sendToNear = (
     callBack(targets);
   });
 };
-
-export const updateSocketAccountChara = (world_name, chara) => {
+const updateSocketAccountChara = (world_name, chara) => {
   io.in(world_name).clients((err, clients) => {
     let targets = {};
 
@@ -79,3 +77,5 @@ export const updateSocketAccountChara = (world_name, chara) => {
     }
   });
 };
+
+export { getSocketsNear, sendToNear, updateSocketAccountChara };

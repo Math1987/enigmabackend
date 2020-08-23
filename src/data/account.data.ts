@@ -1,4 +1,4 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
 
 const TABLE_NAME = `accounts`;
 
@@ -13,14 +13,14 @@ const initAccountData = (callBack: CallableFunction) => {
           admin INT
           )
       `;
-  Data.successOrFail(sql, callBack);
+  successOrFailData(sql, callBack);
 };
 const checkEmailData = (email: String, callBack: CallableFunction) => {
   let sql = `
           SELECT email from ${TABLE_NAME}
           WHERE email = "${email}"
       `;
-  Data.findOrFail(sql, callBack);
+  successOrFailData(sql, callBack);
 };
 const checkAccountNameData = (name: String, callBack: CallableFunction) => {
   let sql = `
@@ -28,10 +28,10 @@ const checkAccountNameData = (name: String, callBack: CallableFunction) => {
           WHERE name = "${name}"
       `;
 
-  Data.findOrFail(sql, callBack);
+  successOrFailData(sql, callBack);
 };
 const updateAccountWorldData = (id, value, callback) => {
-  Data.successOrFail(
+  successOrFailData(
     `
     UPDATE ${TABLE_NAME}
     SET world = "${value}"
@@ -49,18 +49,17 @@ const createAccountData = (
   admin: Number,
   callBack: CallableFunction
 ) => {
-  Data.CONNECTION.query(
+  successOrFailData(
     `
-      INSERT INTO ${TABLE_NAME}
-      (id, email, password, name, admin)
-      VALUES (uuid(), "${email}", MD5("${password}"), "${name}", ${admin})
-      `,
-    function (err, res) {
-      if (err) {
-        console.error(err);
-        callBack(null);
-      } else {
+  INSERT INTO ${TABLE_NAME}
+  (id, email, password, name, admin)
+  VALUES (uuid(), "${email}", MD5("${password}"), "${name}", ${admin})
+  `,
+    (res) => {
+      if (res) {
         callBack({ email: email, password: password });
+      } else {
+        callBack(null);
       }
     }
   );
@@ -70,45 +69,35 @@ const readAccountData = (
   password: String,
   callBack: CallableFunction
 ) => {
-  Data.CONNECTION.query(
+  successOrFailData(
     `
-      SELECT * FROM ${TABLE_NAME} 
-      WHERE email = "${email}" AND password = MD5("${password}")
-      `,
-    function (err, res) {
-      if (err) {
-        console.error(err);
-        callBack(null);
+  SELECT * FROM ${TABLE_NAME} 
+  WHERE email = "${email}" AND password = MD5("${password}")
+  `,
+    (res) => {
+      if (res && res.length > 0) {
+        delete res[0]["password"];
+        let json = JSON.parse(JSON.stringify(res[0]));
+        callBack(json);
       } else {
-        if (res && res.length > 0) {
-          delete res[0]["password"];
-          let json = JSON.parse(JSON.stringify(res[0]));
-          callBack(json);
-        } else {
-          callBack(null);
-        }
+        callBack(null);
       }
     }
   );
 };
 const readAccountDataById = (id: String, callBack: CallableFunction) => {
-  Data.CONNECTION.query(
+  successOrFailData(
     `
-      SELECT * FROM ${TABLE_NAME} 
-      WHERE id = "${id}"
-              `,
-    function (err, res) {
-      if (err) {
-        console.error(err);
-        callBack(null);
+  SELECT * FROM ${TABLE_NAME} 
+  WHERE id = "${id}"
+          `,
+    (res) => {
+      if (res && res.length > 0) {
+        delete res[0]["password"];
+        let json = JSON.parse(JSON.stringify(res[0]));
+        callBack(json);
       } else {
-        if (res && res.length > 0) {
-          delete res[0]["password"];
-          let json = JSON.parse(JSON.stringify(res[0]));
-          callBack(json);
-        } else {
-          callBack(null);
-        }
+        callBack(null);
       }
     }
   );

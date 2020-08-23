@@ -1,19 +1,21 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
+
+const TABLE_NAME = "valuesPatterns";
 
 export class ValuesPatternsData {
   static TABLE_NAME = "valuesPatterns";
 
   static init(callBack: CallableFunction) {
-    Data.successOrFail(
+    successOrFailData(
       `
-        DROP TABLE ${ValuesPatternsData.TABLE_NAME}
+        DROP TABLE ${TABLE_NAME}
         `,
       function (res) {}
     );
 
-    Data.successOrFail(
+    successOrFailData(
       `
-        CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
+        CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
         (
         key_ VARCHAR(36),
         icon INT,
@@ -145,9 +147,9 @@ export class ValuesPatternsData {
       valString += `("${row.key_}",${row.icon},"${row.user}","${row.start}")`;
     }
 
-    Data.successOrFail(
+    successOrFailData(
       `
-            INSERT INTO ${ValuesPatternsData.TABLE_NAME}
+            INSERT INTO ${TABLE_NAME}
             (key_, icon, user, start)
             VALUES ${valString}
         `,
@@ -158,9 +160,9 @@ export class ValuesPatternsData {
   }
 
   static read(key: string, callback: CallableFunction) {
-    Data.successOrFail(
+    successOrFailData(
       `
-            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
+            SELECT * FROM ${TABLE_NAME}
             WHERE user = "${key}"
         `,
       (res) => {
@@ -169,9 +171,9 @@ export class ValuesPatternsData {
     );
   }
   static readAll(callBack: CallableFunction) {
-    Data.successOrFail(
+    successOrFailData(
       `
-            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
+            SELECT * FROM ${TABLE_NAME}
         `,
       (res) => {
         callBack(JSON.parse(JSON.stringify(res)));

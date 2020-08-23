@@ -8,7 +8,7 @@ import { MainPatterns } from "./patterns/main.patterns";
  */
 
 import express, { NextFunction, Request, Response } from "express";
-import { Data } from "./data/data";
+import { Data, initData } from "./data/data";
 import { Worlds } from "./services/worlds";
 import { routerApi } from "./routes/api.router";
 import { routerMetadata } from "./routes/metadata.router";
@@ -64,6 +64,10 @@ app.use((req, res, next) => {
   }
 });
 
+app.get("", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use("/api", routerApi);
 app.use("/api/metadatas", routerMetadata);
 app.use("/api/admin", routerAdmin);
@@ -72,7 +76,7 @@ app.use("/api/u", routerUser);
 
 app.use("/api/u/chara", routerChara);
 
-Data.init(function (data) {
+initData(function (data) {
   MainPatterns.init((patterns) => {
     Worlds.init(function (worlds) {
       server.listen(PORT);

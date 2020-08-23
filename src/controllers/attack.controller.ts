@@ -41,7 +41,6 @@ export const attackPower = (user, target, D100, callBack) => {
     callBack(power);
   });
 };
-
 export const attackProba = (user, userPattern, target, targetPattern, callBack) => {
 
   if ( targetPattern && targetPattern['values']['counter'] ){
@@ -98,7 +97,6 @@ export const attackProba = (user, userPattern, target, targetPattern, callBack) 
     callBack(1);
   }
 };
-
 export const makeAttack = (world_name, user, patternUser, target, patternTarget, power, callback) => {
   MobilesData.addValue(
     world_name,
@@ -124,8 +122,6 @@ export const makeAttack = (world_name, user, patternUser, target, patternTarget,
     }
   );
 };
-
-
 export const attack = (worldName: string, user: Object, target: Object, callBack: Function){
 
 

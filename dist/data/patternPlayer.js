@@ -4,10 +4,11 @@ exports.readAllPlayerPatternData = exports.readPlayerPatternData = exports.initV
 const data_1 = require("./data");
 const TABLE_NAME = "PatternPlayer";
 const initPatternPlayerData = (callBack) => {
-    data_1.Data.successOrFail(`
-      DROP TABLE PatternPlayer
+    console.log("init patternPlayer");
+    data_1.successOrFailData(`
+      DROP TABLE ${TABLE_NAME}
       `, function (res) { });
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
       CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
       (
         key_ VARCHAR(36) primary key,
@@ -226,7 +227,7 @@ const initValuesData = (callBack) => {
             8,
             8
             )`;
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
           INSERT INTO PatternPlayer
           (
             key_,
@@ -259,7 +260,7 @@ const initValuesData = (callBack) => {
 };
 exports.initValuesData = initValuesData;
 const readPlayerPatternData = (key, callback) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
           SELECT * FROM ${TABLE_NAME}
           WHERE key_ = "${key}"
       `, (res) => {
@@ -273,7 +274,7 @@ const readPlayerPatternData = (key, callback) => {
 };
 exports.readPlayerPatternData = readPlayerPatternData;
 const readAllPlayerPatternData = (callBack) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
           SELECT * FROM PatternPlayer
       `, (res) => {
         callBack(JSON.parse(JSON.stringify(res)));

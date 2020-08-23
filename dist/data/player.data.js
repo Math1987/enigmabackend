@@ -8,7 +8,7 @@ const data_1 = require("./data");
  */
 const TABLE_NAME = "players";
 const buildWorldPlayerData = (datas, callBack) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
       CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}
       ( 
       id VARCHAR(36) primary key,
@@ -43,7 +43,7 @@ const buildWorldPlayerData = (datas, callBack) => {
 exports.buildWorldPlayerData = buildWorldPlayerData;
 const insertCharaData = (world_name, chara, callBack) => {
     console.log(chara);
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
         INSERT INTO ${world_name}_${TABLE_NAME}
         (
         id,
@@ -115,7 +115,7 @@ const insertCharaData = (world_name, chara, callBack) => {
 };
 exports.insertCharaData = insertCharaData;
 const readCharaValue = (world_name, id, key, callback) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
     SELECT ${key} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `, (updateRes) => {
@@ -136,7 +136,7 @@ const readCharaValues = (world_name, id, keys, callback) => {
             keysString += ",";
         }
     }
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
     SELECT ${keysString} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `, (updateRes) => {
@@ -150,7 +150,7 @@ const readCharaValues = (world_name, id, keys, callback) => {
 };
 exports.readCharaValues = readCharaValues;
 const addValue = (world_name, id, key, value, callback) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
     UPDATE ${world_name}_${TABLE_NAME}
     SET ${key} = ${key} + ${value}
     WHERE id = "${id}"
@@ -169,7 +169,7 @@ const addValues = (world_name, id, keyVals, callback) => {
             i++;
         }
     }
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
     UPDATE ${world_name}_${TABLE_NAME}
     ${updatesString}
     WHERE id = "${id}"
@@ -179,7 +179,7 @@ const addValues = (world_name, id, keyVals, callback) => {
 };
 exports.addValues = addValues;
 const readCharaById = (world_name, id, callback) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
       SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE id = "${id}"
       `, function (charaRes) {
@@ -201,7 +201,7 @@ const readCharasByPositions = (world_name, positions, callback) => {
         }
         posRequete += `POINT(${p.x},${p.y})`;
     }
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
       SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE position IN (${posRequete})
       `, function (res) {
@@ -223,7 +223,7 @@ const readCharasByPositions = (world_name, positions, callback) => {
 };
 exports.readCharasByPositions = readCharasByPositions;
 const updateCharaPosition = (world_name, id, x, y, callback) => {
-    data_1.Data.successOrFail(`
+    data_1.successOrFailData(`
           UPDATE ${world_name}_${TABLE_NAME}
           SET position = POINT( ${x},${y})
           WHERE id = "${id}"

@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValuesPatternsData = void 0;
 const data_1 = require("./data");
+const TABLE_NAME = "valuesPatterns";
 class ValuesPatternsData {
     static init(callBack) {
-        data_1.Data.successOrFail(`
-        DROP TABLE ${ValuesPatternsData.TABLE_NAME}
+        data_1.successOrFailData(`
+        DROP TABLE ${TABLE_NAME}
         `, function (res) { });
-        data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${ValuesPatternsData.TABLE_NAME}
+        data_1.successOrFailData(`
+        CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
         (
         key_ VARCHAR(36),
         icon INT,
@@ -132,8 +133,8 @@ class ValuesPatternsData {
             }
             valString += `("${row.key_}",${row.icon},"${row.user}","${row.start}")`;
         }
-        data_1.Data.successOrFail(`
-            INSERT INTO ${ValuesPatternsData.TABLE_NAME}
+        data_1.successOrFailData(`
+            INSERT INTO ${TABLE_NAME}
             (key_, icon, user, start)
             VALUES ${valString}
         `, function (res) {
@@ -141,16 +142,16 @@ class ValuesPatternsData {
         });
     }
     static read(key, callback) {
-        data_1.Data.successOrFail(`
-            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
+        data_1.successOrFailData(`
+            SELECT * FROM ${TABLE_NAME}
             WHERE user = "${key}"
         `, (res) => {
             callback(JSON.parse(JSON.stringify(res)));
         });
     }
     static readAll(callBack) {
-        data_1.Data.successOrFail(`
-            SELECT * FROM ${ValuesPatternsData.TABLE_NAME}
+        data_1.successOrFailData(`
+            SELECT * FROM ${TABLE_NAME}
         `, (res) => {
             callBack(JSON.parse(JSON.stringify(res)));
         });

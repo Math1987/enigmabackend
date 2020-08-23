@@ -4,7 +4,7 @@ exports.getWorld = exports.getOnPositions = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
-exports.getOnPositions = (world_name, positions, callback) => {
+const getOnPositions = (world_name, positions, callback) => {
     let newPos = [];
     grounds_controller_1.getGroundsOnPositions(world_name, positions, (grounds) => {
         for (let ground of grounds) {
@@ -20,6 +20,8 @@ exports.getOnPositions = (world_name, positions, callback) => {
         });
     });
 };
-exports.getWorld = (world_name, callback) => {
+exports.getOnPositions = getOnPositions;
+const getWorld = (world_name, callback) => {
     world_data_1.WorldData.readWorld(world_name, callback);
 };
+exports.getWorld = getWorld;

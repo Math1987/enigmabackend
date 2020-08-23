@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSocketAccountChara = exports.sendToNear = exports.getSocketsNear = void 0;
 const user_socket_1 = require("./../socket/user.socket");
-exports.getSocketsNear = (world_name, x, y, rayon, callBack) => {
+const getSocketsNear = (world_name, x, y, rayon, callBack) => {
     user_socket_1.io.in(world_name).clients((err, clients) => {
         let targets = {};
         for (let socketID of clients) {
@@ -23,7 +23,8 @@ exports.getSocketsNear = (world_name, x, y, rayon, callBack) => {
         callBack(targets);
     });
 };
-exports.sendToNear = (world_name, position, rayon, emitAttribute, emitValues, callBack) => {
+exports.getSocketsNear = getSocketsNear;
+const sendToNear = (world_name, position, rayon, emitAttribute, emitValues, callBack) => {
     user_socket_1.io.in(world_name).clients((err, clients) => {
         let targets = {};
         for (let socketID of clients) {
@@ -45,7 +46,8 @@ exports.sendToNear = (world_name, position, rayon, emitAttribute, emitValues, ca
         callBack(targets);
     });
 };
-exports.updateSocketAccountChara = (world_name, chara) => {
+exports.sendToNear = sendToNear;
+const updateSocketAccountChara = (world_name, chara) => {
     user_socket_1.io.in(world_name).clients((err, clients) => {
         let targets = {};
         for (let socketID of clients) {
@@ -59,3 +61,4 @@ exports.updateSocketAccountChara = (world_name, chara) => {
         }
     });
 };
+exports.updateSocketAccountChara = updateSocketAccountChara;

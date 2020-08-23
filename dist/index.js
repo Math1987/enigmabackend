@@ -58,13 +58,16 @@ app.use((req, res, next) => {
         next();
     }
 });
+app.get("", (req, res) => {
+    res.status(200).send("OK");
+});
 app.use("/api", api_router_1.routerApi);
 app.use("/api/metadatas", metadata_router_1.routerMetadata);
 app.use("/api/admin", admin_router_1.routerAdmin);
 app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
-data_1.Data.init(function (data) {
+data_1.initData(function (data) {
     main_patterns_1.MainPatterns.init((patterns) => {
         worlds_1.Worlds.init(function (worlds) {
             server.listen(PORT);

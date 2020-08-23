@@ -2,7 +2,7 @@ import { readCalculsData } from "../data/calcul.data";
 
 let calculs = null;
 
-export const getCalculation = (callBack) => {
+const getCalculation = (callBack) => {
   if (!calculs) {
     readCalculsData((calcul) => {
       calculs = calcul;
@@ -12,3 +12,5 @@ export const getCalculation = (callBack) => {
     callBack(calculs);
   }
 };
+
+export { getCalculation };

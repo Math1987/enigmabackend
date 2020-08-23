@@ -1,16 +1,17 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
 
 const TABLE_NAME = "PatternPlayer";
 
 const initPatternPlayerData = (callBack: CallableFunction) => {
-  Data.successOrFail(
+  console.log("init patternPlayer");
+  successOrFailData(
     `
-      DROP TABLE PatternPlayer
+      DROP TABLE ${TABLE_NAME}
       `,
     function (res) {}
   );
 
-  Data.successOrFail(
+  successOrFailData(
     `
       CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
       (
@@ -239,7 +240,7 @@ const initValuesData = (callBack: CallableFunction) => {
             8
             )`;
 
-  Data.successOrFail(
+  successOrFailData(
     `
           INSERT INTO PatternPlayer
           (
@@ -274,7 +275,7 @@ const initValuesData = (callBack: CallableFunction) => {
   );
 };
 const readPlayerPatternData = (key: string, callback: CallableFunction) => {
-  Data.successOrFail(
+  successOrFailData(
     `
           SELECT * FROM ${TABLE_NAME}
           WHERE key_ = "${key}"
@@ -289,7 +290,7 @@ const readPlayerPatternData = (key: string, callback: CallableFunction) => {
   );
 };
 const readAllPlayerPatternData = (callBack: CallableFunction) => {
-  Data.successOrFail(
+  successOrFailData(
     `
           SELECT * FROM PatternPlayer
       `,

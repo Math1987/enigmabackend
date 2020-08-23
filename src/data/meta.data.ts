@@ -1,11 +1,11 @@
-import { Data } from "./data";
+import { Data, successOrFailData } from "./data";
 
 const TABLE_NAME = "metadatas";
 
 const initMetaData = (callBack: CallableFunction) => {
-  Data.successOrFail(` DROP TABLE IF EXISTS ${TABLE_NAME}`, () => {});
+  successOrFailData(` DROP TABLE IF EXISTS ${TABLE_NAME}`, () => {});
 
-  Data.successOrFail(
+  successOrFailData(
     `
       CREATE TABLE ${TABLE_NAME}
       (
@@ -199,7 +199,7 @@ const initMetaValuesData = (callBack: CallableFunction) => {
     valString += `("${row.key_}","${row.type}","${row.name_fr}","${row.description_fr}","${row.img}")`;
   }
 
-  Data.successOrFail(
+  successOrFailData(
     `
           INSERT INTO ${TABLE_NAME}
           (key_, type, name_fr, description_fr, img)
@@ -211,7 +211,7 @@ const initMetaValuesData = (callBack: CallableFunction) => {
   );
 };
 const readMetaDatasDatas = (callBack: CallableFunction) => {
-  Data.successOrFail(
+  successOrFailData(
     `
       SELECT * FROM ${TABLE_NAME}
       `,

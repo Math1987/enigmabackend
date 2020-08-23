@@ -1,12 +1,8 @@
 import { MainPatterns } from './../patterns/main.patterns';
 import { updateAccountWorldData } from './../data/account.data';
-
-
 import { insertCharaData, addValues, readCharaValues } from './../data/player.data';
 import { io } from "./../socket/user.socket";
 import { readPlayerPatternData } from '../data/patternPlayer';
-
-
 
 const createChara = (world_name:string, datas : {}, callback )=>{
 
