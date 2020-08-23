@@ -1,9 +1,4 @@
 import { MainPatterns } from "./../patterns/main.patterns";
-import { getChara, moveChara } from "./../controllers/chara.controller";
-import { ValuesData } from "./../data/values.data";
-import { MobilesData } from "./../data/mobile.data";
-import { Security } from "./../services/security";
-import { HttpBase } from "http";
 import { Socket } from "socket.io";
 import { readAccountByToken } from "../controllers/account.controller";
 import { getOnPositions } from "../controllers/world.controller";

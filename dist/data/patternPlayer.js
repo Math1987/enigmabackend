@@ -1,17 +1,13 @@
-import { Data } from "./data";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.readAllPlayerPatternData = exports.readPlayerPatternData = exports.initValuesData = exports.initPatternPlayerData = void 0;
+const data_1 = require("./data");
 const TABLE_NAME = "PatternPlayer";
-
-const initPatternPlayerData = (callBack: CallableFunction) => {
-  Data.successOrFail(
-    `
+const initPatternPlayerData = (callBack) => {
+    data_1.Data.successOrFail(`
       DROP TABLE PatternPlayer
-      `,
-    function (res) {}
-  );
-
-  Data.successOrFail(
-    `
+      `, function (res) { });
+    data_1.Data.successOrFail(`
       CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
       (
         key_ VARCHAR(36) primary key,
@@ -38,16 +34,15 @@ const initPatternPlayerData = (callBack: CallableFunction) => {
         action_max INT
 
       )
-      `,
-    function (res) {
-      initValuesData(function (end) {
-        callBack(end);
-      });
-    }
-  );
+      `, function (res) {
+        initValuesData(function (end) {
+            callBack(end);
+        });
+    });
 };
-const initValuesData = (callBack: CallableFunction) => {
-  let valString = `(
+exports.initPatternPlayerData = initPatternPlayerData;
+const initValuesData = (callBack) => {
+    let valString = `(
     "humanmasculin",
     100,
     100,
@@ -70,8 +65,7 @@ const initValuesData = (callBack: CallableFunction) => {
     8,
     8
     ),`;
-
-  valString += `(
+    valString += `(
       "humanfeminine",
       100,
       100,
@@ -94,8 +88,7 @@ const initValuesData = (callBack: CallableFunction) => {
       8,
       8
       ),`;
-
-  valString += `(
+    valString += `(
       "dwarfmasculin",
       100,
       100,
@@ -118,8 +111,7 @@ const initValuesData = (callBack: CallableFunction) => {
       8,
       8
       ),`;
-
-  valString += `(
+    valString += `(
         "dwarffeminine",
         100,
         100,
@@ -142,8 +134,7 @@ const initValuesData = (callBack: CallableFunction) => {
         8,
         8
         ),`;
-
-  valString += `(
+    valString += `(
         "elfmasculin",
         100,
         100,
@@ -166,8 +157,7 @@ const initValuesData = (callBack: CallableFunction) => {
         8,
         8
         ),`;
-
-  valString += `(
+    valString += `(
           "elffeminine",
           100,
           100,
@@ -190,8 +180,7 @@ const initValuesData = (callBack: CallableFunction) => {
           8,
           8
           ),`;
-
-  valString += `(
+    valString += `(
           "vampiremasculin",
           100,
           100,
@@ -214,8 +203,7 @@ const initValuesData = (callBack: CallableFunction) => {
           8,
           8
           ),`;
-
-  valString += `(
+    valString += `(
             "vampirefeminine",
             100,
             100,
@@ -238,9 +226,7 @@ const initValuesData = (callBack: CallableFunction) => {
             8,
             8
             )`;
-
-  Data.successOrFail(
-    `
+    data_1.Data.successOrFail(`
           INSERT INTO PatternPlayer
           (
             key_,
@@ -267,41 +253,30 @@ const initValuesData = (callBack: CallableFunction) => {
             action_max              
           )
           VALUES ${valString}
-      `,
-    function (res) {
-      callBack(res);
-    }
-  );
+      `, function (res) {
+        callBack(res);
+    });
 };
-const readPlayerPatternData = (key: string, callback: CallableFunction) => {
-  Data.successOrFail(
-    `
+exports.initValuesData = initValuesData;
+const readPlayerPatternData = (key, callback) => {
+    data_1.Data.successOrFail(`
           SELECT * FROM ${TABLE_NAME}
           WHERE key_ = "${key}"
-      `,
-    (res) => {
-      if (res && res.length > 0) {
-        callback(JSON.parse(JSON.stringify(res[0])));
-      } else {
-        callback(null);
-      }
-    }
-  );
+      `, (res) => {
+        if (res && res.length > 0) {
+            callback(JSON.parse(JSON.stringify(res[0])));
+        }
+        else {
+            callback(null);
+        }
+    });
 };
-const readAllPlayerPatternData = (callBack: CallableFunction) => {
-  Data.successOrFail(
-    `
+exports.readPlayerPatternData = readPlayerPatternData;
+const readAllPlayerPatternData = (callBack) => {
+    data_1.Data.successOrFail(`
           SELECT * FROM PatternPlayer
-      `,
-    (res) => {
-      callBack(JSON.parse(JSON.stringify(res)));
-    }
-  );
+      `, (res) => {
+        callBack(JSON.parse(JSON.stringify(res)));
+    });
 };
-
-export {
-  initPatternPlayerData,
-  initValuesData,
-  readPlayerPatternData,
-  readAllPlayerPatternData,
-};
+exports.readAllPlayerPatternData = readAllPlayerPatternData;

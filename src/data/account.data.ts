@@ -2,7 +2,7 @@ import { Data } from "./data";
 
 const TABLE_NAME = `accounts`;
 
-export const initAccountData = (callBack: CallableFunction) => {
+const initAccountData = (callBack: CallableFunction) => {
   let sql = `
           CREATE TABLE IF NOT EXISTS ${TABLE_NAME}(
           id VARCHAR(36) PRIMARY KEY,
@@ -15,19 +15,14 @@ export const initAccountData = (callBack: CallableFunction) => {
       `;
   Data.successOrFail(sql, callBack);
 };
-
-export const checkEmailData = (email: String, callBack: CallableFunction) => {
+const checkEmailData = (email: String, callBack: CallableFunction) => {
   let sql = `
           SELECT email from ${TABLE_NAME}
           WHERE email = "${email}"
       `;
   Data.findOrFail(sql, callBack);
 };
-
-export const checkAccountNameData = (
-  name: String,
-  callBack: CallableFunction
-) => {
+const checkAccountNameData = (name: String, callBack: CallableFunction) => {
   let sql = `
           SELECT email from ${TABLE_NAME}
           WHERE name = "${name}"
@@ -35,8 +30,7 @@ export const checkAccountNameData = (
 
   Data.findOrFail(sql, callBack);
 };
-
-export const updateAccountWorldData = (id, value, callback) => {
+const updateAccountWorldData = (id, value, callback) => {
   Data.successOrFail(
     `
     UPDATE ${TABLE_NAME}
@@ -48,8 +42,7 @@ export const updateAccountWorldData = (id, value, callback) => {
     }
   );
 };
-
-export const createAccountData = (
+const createAccountData = (
   email: String,
   password: String,
   name: String,
@@ -72,8 +65,7 @@ export const createAccountData = (
     }
   );
 };
-
-export const readAccountData = (
+const readAccountData = (
   email: String,
   password: String,
   callBack: CallableFunction
@@ -99,8 +91,7 @@ export const readAccountData = (
     }
   );
 };
-
-export const readAccountDataById = (id: String, callBack: CallableFunction) => {
+const readAccountDataById = (id: String, callBack: CallableFunction) => {
   Data.CONNECTION.query(
     `
       SELECT * FROM ${TABLE_NAME} 
@@ -121,4 +112,13 @@ export const readAccountDataById = (id: String, callBack: CallableFunction) => {
       }
     }
   );
+};
+
+export {
+  initAccountData,
+  checkEmailData,
+  updateAccountWorldData,
+  createAccountData,
+  readAccountData,
+  readAccountDataById,
 };

@@ -1,6 +1,6 @@
 import { getWorld } from "./world.controller";
 
-export const getGroundsOnPositions = (world_name, positions, callback) => {
+const getGroundsOnPositions = (world_name, positions, callback) => {
   getWorld(world_name, (world) => {
     let grounds = [];
     for (let pos of positions) {
@@ -16,3 +16,5 @@ export const getGroundsOnPositions = (world_name, positions, callback) => {
     callback(grounds);
   });
 };
+
+export { getGroundsOnPositions };

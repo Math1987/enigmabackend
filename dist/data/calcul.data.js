@@ -1,9 +1,10 @@
-import { Data } from "./data";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateCalculation = exports.readCalculationsByName = exports.readAllCalculationsData = exports.createCalculationsData = exports.readCalculsData = exports.initCalculationData = void 0;
+const data_1 = require("./data");
 const TABLE_NAME = "calcul";
-
 const initCalculationData = (callBack) => {
-  Data.CONNECTION.query(
-    `
+    data_1.Data.CONNECTION.query(`
         create table if not exists ${TABLE_NAME}
         (
         name VARCHAR(154), 
@@ -12,13 +13,12 @@ const initCalculationData = (callBack) => {
         value FLOAT,
         PRIMARY KEY (name, attribute)
         );
-`,
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        createCalculationsData(
-          `
+`, function (err, res) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            createCalculationsData(`
             
             ("getWater", "getWater", 0, 0.25 ),
             ("getWater", "defense", 0, 0.25),
@@ -117,132 +117,113 @@ const initCalculationData = (callBack) => {
             ("openChest", "gold_proba", 0, 0.5),
             ("openChest", "relic_proba", 0, 0.5)        
             
-            `,
-          function (calculRes) {
-            callBack(res);
-          }
-        );
-      }
-    }
-  );
-};
-const readCalculsData = (callBack) => {
-  Data.successOrFail(
-    `
-    SELECT * FROM ${TABLE_CALTABLE_NAMECULATION}
-  `,
-    (res) => {
-      if (res) {
-        let obj = {};
-        for (let row of res) {
-          if (!obj[row["name"]]) {
-            obj[row["name"]] = {};
-          }
-
-          obj[row["name"]][row["attribute"]] = row["value"];
-
-          //obj[row["name"]] = row["value"];
+            `, function (calculRes) {
+                callBack(res);
+            });
         }
-        callBack(obj);
-      } else {
-        callBack(null);
-      }
-    }
-  );
+    });
 };
+exports.initCalculationData = initCalculationData;
+const readCalculsData = (callBack) => {
+    data_1.Data.successOrFail(`
+    SELECT * FROM ${TABLE_CALTABLE_NAMECULATION}
+  `, (res) => {
+        if (res) {
+            let obj = {};
+            for (let row of res) {
+                if (!obj[row["name"]]) {
+                    obj[row["name"]] = {};
+                }
+                obj[row["name"]][row["attribute"]] = row["value"];
+                //obj[row["name"]] = row["value"];
+            }
+            callBack(obj);
+        }
+        else {
+            callBack(null);
+        }
+    });
+};
+exports.readCalculsData = readCalculsData;
 const createCalculationsData = (calculations, callBack) => {
-  Data.CONNECTION.query(
-    `
+    data_1.Data.CONNECTION.query(`
 INSERT IGNORE INTO ${TABLE_NAME}
 (name, attribute, operator, value)
 VALUES
 ${calculations}
-`,
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        callBack(res);
-      }
-    }
-  );
-};
-const readAllCalculationsData = (callBack) => {
-  Data.CONNECTION.query(
-    `
-SELECT * FROM ${TABLE_NAME}
-`,
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        let array = [];
-        for (let r of res) {
-          let found = false;
-          for (let ar of array) {
-            if (ar.name == r.name) {
-              ar.attributes[r.attribute] = r.value;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            let attribute = {};
-            attribute[r.attribute] = r.value;
-            array.push({
-              name: r.name,
-              attributes: attribute,
-            });
-          }
+`, function (err, res) {
+        if (err) {
+            console.log(err);
         }
-        callBack(array);
-      }
-    }
-  );
+        else {
+            callBack(res);
+        }
+    });
 };
+exports.createCalculationsData = createCalculationsData;
+const readAllCalculationsData = (callBack) => {
+    data_1.Data.CONNECTION.query(`
+SELECT * FROM ${TABLE_NAME}
+`, function (err, res) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            let array = [];
+            for (let r of res) {
+                let found = false;
+                for (let ar of array) {
+                    if (ar.name == r.name) {
+                        ar.attributes[r.attribute] = r.value;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    let attribute = {};
+                    attribute[r.attribute] = r.value;
+                    array.push({
+                        name: r.name,
+                        attributes: attribute,
+                    });
+                }
+            }
+            callBack(array);
+        }
+    });
+};
+exports.readAllCalculationsData = readAllCalculationsData;
 const readCalculationsByName = (name, callBack) => {
-  Data.CONNECTION.query(
-    `
+    data_1.Data.CONNECTION.query(`
 SELECT * FROM ${TABLE_NAME}
 WHERE name = "${name}"
-`,
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        let json = {};
-        for (let r of res) {
-          json[r.attribute] = r.value;
+`, function (err, res) {
+        if (err) {
+            console.log(err);
         }
-
-        callBack(json);
-      }
-    }
-  );
+        else {
+            let json = {};
+            for (let r of res) {
+                json[r.attribute] = r.value;
+            }
+            callBack(json);
+        }
+    });
 };
+exports.readCalculationsByName = readCalculationsByName;
 const updateCalculation = (name, attribute, value, callBack) => {
-  Data.CONNECTION.query(
-    `
+    data_1.Data.CONNECTION.query(`
 UPDATE ${TABLE_NAME}
 SET value = ${value}
 WHERE name = "${name}" AND attribute = "${attribute}"
-`,
-    function (err, res) {
-      if (err) {
-        console.log(err);
-        callBack(null);
-      } else {
-        callBack(res);
-      }
-    }
-  );
+`, function (err, res) {
+        if (err) {
+            console.log(err);
+            callBack(null);
+        }
+        else {
+            callBack(res);
+        }
+    });
 };
-
-export {
-  initCalculationData,
-  readCalculsData,
-  createCalculationsData,
-  readAllCalculationsData,
-  readCalculationsByName,
-  updateCalculation,
-};
+exports.updateCalculation = updateCalculation;

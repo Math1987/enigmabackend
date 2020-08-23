@@ -1,5 +1,4 @@
 import { MainPatterns } from "./patterns/main.patterns";
-import { localStorage } from "./services/localstorage";
 
 /**
  * Index.ts is the presentation page
@@ -11,11 +10,11 @@ import { localStorage } from "./services/localstorage";
 import express, { NextFunction, Request, Response } from "express";
 import { Data } from "./data/data";
 import { Worlds } from "./services/worlds";
-import { indexRouter } from "./routes/index.router";
 import { routerApi } from "./routes/api.router";
+import { routerMetadata } from "./routes/metadata.router";
 import { routerAccount } from "./routes/account.router";
 import { routerUser } from "./routes/user.router";
-import { routerWorld } from "./routes/world.router";
+import { routerAdmin } from "./routes/admin.router";
 import { routerChara } from "./routes/chara.router";
 import { UserSocket } from "./socket/user.socket";
 import { environment } from "./environment/environment";
@@ -63,9 +62,11 @@ app.use((req, res, next) => {
 });
 
 app.use("/api", routerApi);
-app.use("/api/world", routerWorld);
+app.use("/api/metadatas", routerMetadata);
+app.use("/api/admin", routerAdmin);
 app.use("/api/account", routerAccount);
 app.use("/api/u", routerUser);
+
 app.use("/api/u/chara", routerChara);
 
 Data.init(function (data) {

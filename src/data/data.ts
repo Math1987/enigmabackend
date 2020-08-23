@@ -1,9 +1,9 @@
-import { PatternPlayer } from "./patternPlayer";
+import { initPatternPlayerData } from "./patternPlayer";
 import { WorldData } from "./world.data";
 import { initAccountData } from "./account.data";
-import { MetaData } from "./meta.data";
+import { initMetaData } from "./meta.data";
 import { ValuesPatternsData } from "./valuesPatterns.data";
-import { Calculation } from "./calcul.data";
+import { initCalculationData } from "./calcul.data";
 import { environment } from "./../environment/environment";
 
 /**
@@ -57,9 +57,9 @@ export class Data {
       password: Data.PASSWORD,
       database: Data.DB_NAME,
     });
-    MetaData.init(function (metaDatasInit) {
-      Calculation.initCalculation((calculation) => {
-        PatternPlayer.init((patternPlayerRes) => {
+    initMetaData(function (metaDatasInit) {
+      initCalculationData((calculation) => {
+        initPatternPlayerData((patternPlayerRes) => {
           ValuesPatternsData.init(function (patternData) {
             initAccountData(function (account) {
               WorldData.init(function (worldInit) {

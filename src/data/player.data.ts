@@ -1,4 +1,4 @@
-import { PatternPlayer } from "./patternPlayer";
+import { PatternPlayer, readPlayerPatternData } from "./patternPlayer";
 import { Data } from "./data";
 import { World } from "../models/world";
 import { Player } from "../models/player";
@@ -246,7 +246,7 @@ export class PlayerData {
     character: { id: string; name: string; key_: string; religion: string },
     callBack: CallableFunction
   ) {
-    PatternPlayer.read(character.key_, (pattern) => {
+    readPlayerPatternData(character.key_, (pattern) => {
       if (pattern) {
         let finalObj = {};
         Object.assign(finalObj, pattern, character);

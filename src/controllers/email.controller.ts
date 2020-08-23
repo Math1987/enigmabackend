@@ -33,7 +33,6 @@ function encrypt(text) {
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return { iv: iv.toString("hex"), encryptedData: encrypted.toString("hex") };
 }
-
 function decrypt(text) {
   let iv = Buffer.from(text.iv, "hex");
   let encryptedText = Buffer.from(text.encryptedData, "hex");
@@ -43,7 +42,7 @@ function decrypt(text) {
   return decrypted.toString();
 }
 
-export const confirmEmail = (code: string, callBack) => {
+const confirmEmail = (code: string, callBack) => {
   if (emailChecker[code]) {
     let email = decrypt({ iv: iv, encryptedData: code });
     if (emailChecker[code]["email"] === email) {
@@ -63,8 +62,7 @@ export const confirmEmail = (code: string, callBack) => {
     callBack(false);
   }
 };
-
-export async function sendWelcomEmail(user: Object) {
+async function sendWelcomEmail(user: Object) {
   try {
     var crypter = encrypt(user["email"]);
 
@@ -87,7 +85,4 @@ export async function sendWelcomEmail(user: Object) {
   }
 }
 
-//main();
-var crypter = encrypt("bonjour@test.com");
-
-console.log(crypter.encryptedData);
+export { confirmEmail, sendWelcomEmail };
