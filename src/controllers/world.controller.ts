@@ -1,4 +1,4 @@
-import { WorldData } from "./../data/world.data";
+import { readWorldData } from "./../data/world.data";
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
 
@@ -23,6 +23,6 @@ const getOnPositions = (
   });
 };
 const getWorld = (world_name, callback) => {
-  WorldData.readWorld(world_name, callback);
+  readWorldData(world_name, callback);
 };
 export { getOnPositions, getWorld };

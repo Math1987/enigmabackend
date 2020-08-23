@@ -22,6 +22,6 @@ const getOnPositions = (world_name, positions, callback) => {
 };
 exports.getOnPositions = getOnPositions;
 const getWorld = (world_name, callback) => {
-    world_data_1.WorldData.readWorld(world_name, callback);
+    world_data_1.readWorldData(world_name, callback);
 };
 exports.getWorld = getWorld;

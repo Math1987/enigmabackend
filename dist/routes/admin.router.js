@@ -9,7 +9,7 @@ router.get("/", function (req, res) {
 });
 router.post("/createWorld", (req, res) => {
     if (req.body && req.body.name && req.body.width && req.body.height) {
-        world_data_1.WorldData.buildWorld(req.body, (worldBuild) => { });
+        world_data_1.buildWorldData(req.body, (worldBuild) => { });
     }
     res.status(200).send("ok");
 });

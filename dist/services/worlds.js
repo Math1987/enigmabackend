@@ -17,9 +17,9 @@ class Worlds {
      * @param callBack
      */
     static init(callBack) {
-        world_data_1.WorldData.readWorlds(function (worlds) {
+        world_data_1.readWorldsData(function (worlds) {
             if (!(worlds && worlds.length > 0)) {
-                world_data_1.WorldData.buildWorld({ name: "world1", width: 100, height: 100 }, function (world) {
+                world_data_1.buildWorldData({ name: "world1", width: 100, height: 100 }, function (world) {
                     callBack("done");
                 });
             }

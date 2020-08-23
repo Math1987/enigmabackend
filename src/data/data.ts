@@ -1,5 +1,5 @@
 import { initPatternPlayerData } from "./patternPlayer";
-import { WorldData } from "./world.data";
+import { initWorldData } from "./world.data";
 import { initAccountData } from "./account.data";
 import { initMetaData } from "./meta.data";
 import { initPatternValueData } from "./valuesPatterns.data";
@@ -35,7 +35,7 @@ const initData = (callBack: CallableFunction) => {
       initPatternPlayerData((patternPlayerRes) => {
         initPatternValueData(function (patternData) {
           initAccountData(function (account) {
-            WorldData.init(function (worldInit) {
+            initWorldData(function (worldInit) {
               callBack("init");
             });
           });

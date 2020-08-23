@@ -1,6 +1,6 @@
 import { localStorage } from "./localstorage";
 
-import { WorldData } from "../data/world.data";
+import { buildWorldData, readWorldsData } from "../data/world.data";
 import { localStorage } from "./localstorage";
 
 /**
@@ -17,14 +17,13 @@ export class Worlds {
    * @param callBack
    */
   static init(callBack) {
-    WorldData.readWorlds(function (worlds: Array<string>) {
+    readWorldsData(function (worlds: Array<string>) {
       if (!(worlds && worlds.length > 0)) {
-        WorldData.buildWorld(
-          { name: "world1", width: 100, height: 100 },
-          function (world) {
-            callBack("done");
-          }
-        );
+        buildWorldData({ name: "world1", width: 100, height: 100 }, function (
+          world
+        ) {
+          callBack("done");
+        });
       } else {
         for (let world of worlds) {
           localStorage.setItem(world["name"], JSON.stringify(world));

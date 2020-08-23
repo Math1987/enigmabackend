@@ -32,7 +32,7 @@ const initData = (callBack) => {
             patternPlayer_1.initPatternPlayerData((patternPlayerRes) => {
                 valuesPatterns_data_1.initPatternValueData(function (patternData) {
                     account_data_1.initAccountData(function (account) {
-                        world_data_1.WorldData.init(function (worldInit) {
+                        world_data_1.initWorldData(function (worldInit) {
                             callBack("init");
                         });
                     });
