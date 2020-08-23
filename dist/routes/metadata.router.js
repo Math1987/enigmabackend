@@ -14,7 +14,7 @@ router.get(`/metadatas`, (req, res) => {
     });
 });
 router.get(`/metavalues`, (req, res) => {
-    valuesPatterns_data_1.ValuesPatternsData.readAll((metavalues) => {
+    valuesPatterns_data_1.readAllPatternData((metavalues) => {
         res.status(200).json(metavalues);
     });
 });

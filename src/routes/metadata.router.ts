@@ -1,5 +1,5 @@
 import { readMetaDatasDatas } from "../data/meta.data";
-import { ValuesPatternsData } from "../data/valuesPatterns.data";
+import { readAllPatternData } from "../data/valuesPatterns.data";
 
 const express = require("express");
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get(`/metadatas`, (req, res) => {
   });
 });
 router.get(`/metavalues`, (req, res) => {
-  ValuesPatternsData.readAll((metavalues) => {
+  readAllPatternData((metavalues) => {
     res.status(200).json(metavalues);
   });
 });

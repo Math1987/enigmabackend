@@ -5,7 +5,7 @@ const valuesPatterns_data_1 = require("./../data/valuesPatterns.data");
 class ModelPattern {
     constructor() {
         this.values = {};
-        valuesPatterns_data_1.ValuesPatternsData.read(this.readKey(), (values) => {
+        valuesPatterns_data_1.readPatterValueData(this.readKey(), (values) => {
             for (let row of values) {
                 this.values[row["key_"]] = row["start"];
             }

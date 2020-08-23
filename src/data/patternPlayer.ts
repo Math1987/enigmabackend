@@ -1,4 +1,4 @@
-import { Data, successOrFailData } from "./data";
+import { successOrFailData } from "./data";
 
 const TABLE_NAME = "PatternPlayer";
 

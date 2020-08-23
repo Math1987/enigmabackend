@@ -2,7 +2,7 @@ import { initPatternPlayerData } from "./patternPlayer";
 import { WorldData } from "./world.data";
 import { initAccountData } from "./account.data";
 import { initMetaData } from "./meta.data";
-import { ValuesPatternsData } from "./valuesPatterns.data";
+import { initPatternValueData } from "./valuesPatterns.data";
 import { initCalculationData } from "./calcul.data";
 import { environment } from "./../environment/environment";
 
@@ -33,7 +33,7 @@ const initData = (callBack: CallableFunction) => {
   initMetaData(function (metaDatasInit) {
     initCalculationData((calculation) => {
       initPatternPlayerData((patternPlayerRes) => {
-        ValuesPatternsData.init(function (patternData) {
+        initPatternValueData(function (patternData) {
           initAccountData(function (account) {
             WorldData.init(function (worldInit) {
               callBack("init");
@@ -44,7 +44,6 @@ const initData = (callBack: CallableFunction) => {
     });
   });
 };
-
 const successOrFailData = (sql: String, callBack: CallableFunction) => {
   co.query(sql, function (err, res) {
     if (err) {

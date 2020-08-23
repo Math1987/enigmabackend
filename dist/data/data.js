@@ -30,7 +30,7 @@ const initData = (callBack) => {
     meta_data_1.initMetaData(function (metaDatasInit) {
         calcul_data_1.initCalculationData((calculation) => {
             patternPlayer_1.initPatternPlayerData((patternPlayerRes) => {
-                valuesPatterns_data_1.ValuesPatternsData.init(function (patternData) {
+                valuesPatterns_data_1.initPatternValueData(function (patternData) {
                     account_data_1.initAccountData(function (account) {
                         world_data_1.WorldData.init(function (worldInit) {
                             callBack("init");

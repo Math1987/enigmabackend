@@ -1,12 +1,10 @@
-import { MobilesData } from "./../data/mobile.data";
-import { ValuesData } from "./../data/values.data";
-import { ValuesPatternsData } from "./../data/valuesPatterns.data";
+import { readPatterValueData } from "./../data/valuesPatterns.data";
 
 export class ModelPattern {
   values: {} = {};
 
   constructor() {
-    ValuesPatternsData.read(this.readKey(), (values) => {
+    readPatterValueData(this.readKey(), (values) => {
       for (let row of values) {
         this.values[row["key_"]] = row["start"];
       }
