@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/Math1987/enigmabackend/compare/v0.0.7...v0.0.8) (2020-08-23)
+
+
+### Bug Fixes
+
+* correct chara creation using pattern ([0542ce4](https://github.com/Math1987/enigmabackend/commit/0542ce41d1a041a3b9fd5ccfd00eb8c1bc0974f5))
+
 ### [0.0.7](https://github.com/Math1987/enigmabackend/compare/v0.0.6...v0.0.7) (2020-08-13)
 
 
