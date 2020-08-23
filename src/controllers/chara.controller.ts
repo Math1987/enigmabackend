@@ -1,5 +1,5 @@
 import { MainPatterns } from './../patterns/main.patterns';
-import { AccountData, updateAccountWorld } from './../data/account.data';
+import { AccountData, updateAccountWorldData } from './../data/account.data';
 import { getMobile } from './mobile.controler';
 import { ValuesPatternsData } from './../data/valuesPatterns.data';
 import { getSocketsNear, sendToNear } from './socket.controller';
@@ -79,7 +79,7 @@ export const createCharaRequest = (req: Request, res: Response) => {
 
       if (chara) {
 
-        updateAccountWorld( req["account"]['id'], "world1", accountRes => {
+        updateAccountWorldData( req["account"]['id'], "world1", accountRes => {
           console.log('chara created succesfully');
           res.status(200).send(chara);
         });

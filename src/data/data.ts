@@ -1,6 +1,6 @@
 import { PatternPlayer } from "./patternPlayer";
 import { WorldData } from "./world.data";
-import { AccountData } from "./account.data";
+import { initAccountData } from "./account.data";
 import { MetaData } from "./meta.data";
 import { ValuesPatternsData } from "./valuesPatterns.data";
 import { Calculation } from "./calcul.data";
@@ -61,7 +61,7 @@ export class Data {
       Calculation.initCalculation((calculation) => {
         PatternPlayer.init((patternPlayerRes) => {
           ValuesPatternsData.init(function (patternData) {
-            AccountData.initAccount(function (account) {
+            initAccountData(function (account) {
               WorldData.init(function (worldInit) {
                 callBack("init");
               });

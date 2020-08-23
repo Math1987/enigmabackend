@@ -1,15 +1,15 @@
-import { AccountData } from "./../data/account.data";
+import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData } from "./../data/account.data";
 import { sendWelcomEmail, confirmEmail } from "./email.controller";
 import { createToken, readToken } from "./token.controller";
 import { readCharaById } from "../data/player.data";
 
 const checkEmail = (email: string, callback: Function) => {
-  AccountData.checkAccount(email, (accountRes) => {
+  checkEmailData(email, (accountRes) => {
     callback(accountRes);
   });
 };
 const checkName = (name: string, callback: Function) => {
-  AccountData.checkAccountName(name, (accountRes) => {
+  checkAccountNameData(name, (accountRes) => {
     callback(accountRes);
   });
 };
@@ -17,7 +17,7 @@ const readAccountByToken = (token: string, callback: Function ) => {
   if ( token ){
     readToken(token, tokenRes => {
       if ( tokenRes && tokenRes['id'] ){
-        AccountData.readAccountById( tokenRes['id'], accountRes =>{
+        readAccountDataById( tokenRes['id'], accountRes =>{
           if ( accountRes && accountRes['world'] ){
             readCharaById( accountRes['world'], accountRes['id'], charaRes => {
               accountRes['chara'] = charaRes ;
@@ -58,11 +58,11 @@ export const checkNameRequest = (req, res) => {
 };
 export const signUpRequest = (req, res) => {
   if (req.body && req.body.email && req.body.password && req.body.name) {
-    AccountData.checkAccount(req.body.email, (accountRes) => {
+    checkEmailData(req.body.email, (accountRes) => {
       if (accountRes){
         res.status(401).send('already exist');
       }else{
-        AccountData.checkAccountName(req.body.name, (nameRes) => {
+        checkAccountNameData(req.body.name, (nameRes) => {
           if (!nameRes) {
             sendWelcomEmail(req.body);
             res.status(200).json(req.body);
@@ -87,9 +87,9 @@ export const confirmRequest = (req, res) => {
 });
 export const singInRequest  = (req: Request, res: Response) => {
   if (req.body && req.body.email && req.body.password) {
-    AccountData.readAccount(req.body.email, req.body.password, function (
+    readAccountData(req.body.email, req.body.password, (
       accountRes
-    ) {
+    ) => {
       if (accountRes) {
 
         let tokenVal = {id : accountRes.id };

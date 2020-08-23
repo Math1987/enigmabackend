@@ -1,11 +1,11 @@
 import { confirmEmail } from './email.controller';
-import { AccountData } from './../data/account.data';
+import { createAccountData } from './../data/account.data';
 
 
 export const confirmAccount(req, res){
 
   if ( req.query['confirm'] && confirmEmail( req.query['confirm'] )){
-    AccountData.createAccount(
+    createAccountData(
       req.body.email,
       req.body.password,
       req.body.name,

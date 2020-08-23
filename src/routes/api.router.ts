@@ -1,5 +1,5 @@
 import { confirmEmail } from "./../controllers/email.controller";
-import { AccountData } from "../data/account.data";
+
 import { HttpsHandler } from "../https.handler";
 import { MetaData } from "../data/meta.data";
 import { Security } from "../services/security";

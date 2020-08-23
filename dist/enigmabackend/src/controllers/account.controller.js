@@ -6,12 +6,12 @@ const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
 const player_data_1 = require("../data/player.data");
 const checkEmail = (email, callback) => {
-    account_data_1.AccountData.checkAccount(email, (accountRes) => {
+    account_data_1.checkEmailData(email, (accountRes) => {
         callback(accountRes);
     });
 };
 const checkName = (name, callback) => {
-    account_data_1.AccountData.checkAccountName(name, (accountRes) => {
+    account_data_1.checkAccountNameData(name, (accountRes) => {
         callback(accountRes);
     });
 };
@@ -19,7 +19,7 @@ const readAccountByToken = (token, callback) => {
     if (token) {
         token_controller_1.readToken(token, tokenRes => {
             if (tokenRes && tokenRes['id']) {
-                account_data_1.AccountData.readAccountById(tokenRes['id'], accountRes => {
+                account_data_1.readAccountDataById(tokenRes['id'], accountRes => {
                     if (accountRes && accountRes['world']) {
                         player_data_1.readCharaById(accountRes['world'], accountRes['id'], charaRes => {
                             accountRes['chara'] = charaRes;
@@ -63,12 +63,12 @@ exports.checkNameRequest = (req, res) => {
 };
 exports.signUpRequest = (req, res) => {
     if (req.body && req.body.email && req.body.password && req.body.name) {
-        account_data_1.AccountData.checkAccount(req.body.email, (accountRes) => {
+        account_data_1.checkEmailData(req.body.email, (accountRes) => {
             if (accountRes) {
                 res.status(401).send('already exist');
             }
             else {
-                account_data_1.AccountData.checkAccountName(req.body.name, (nameRes) => {
+                account_data_1.checkAccountNameData(req.body.name, (nameRes) => {
                     if (!nameRes) {
                         email_controller_1.sendWelcomEmail(req.body);
                         res.status(200).json(req.body);
@@ -96,7 +96,7 @@ exports.confirmRequest = (req, res) => {
 };
 exports.singInRequest = (req, res) => {
     if (req.body && req.body.email && req.body.password) {
-        account_data_1.AccountData.readAccount(req.body.email, req.body.password, function (accountRes) {
+        account_data_1.readAccountData(req.body.email, req.body.password, (accountRes) => {
             if (accountRes) {
                 let tokenVal = { id: accountRes.id };
                 const token = token_controller_1.createToken(tokenVal);

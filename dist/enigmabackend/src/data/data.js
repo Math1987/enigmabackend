@@ -42,7 +42,7 @@ class Data {
             calcul_data_1.Calculation.initCalculation((calculation) => {
                 patternPlayer_1.PatternPlayer.init((patternPlayerRes) => {
                     valuesPatterns_data_1.ValuesPatternsData.init(function (patternData) {
-                        account_data_1.AccountData.initAccount(function (account) {
+                        account_data_1.initAccountData(function (account) {
                             world_data_1.WorldData.init(function (worldInit) {
                                 callBack("init");
                             });

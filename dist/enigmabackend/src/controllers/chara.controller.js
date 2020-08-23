@@ -64,7 +64,7 @@ exports.createCharaRequest = (req, res) => {
         Object.assign(objFinal, req.body, req['account']);
         exports.createChara("world1", objFinal, (chara) => {
             if (chara) {
-                account_data_1.updateAccountWorld(req["account"]['id'], "world1", accountRes => {
+                account_data_1.updateAccountWorldData(req["account"]['id'], "world1", accountRes => {
                     console.log('chara created succesfully');
                     res.status(200).send(chara);
                 });

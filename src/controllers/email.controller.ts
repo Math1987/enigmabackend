@@ -1,4 +1,4 @@
-import { AccountData } from "./../data/account.data";
+import { createAccountData } from "./../data/account.data";
 import { environment } from "./../environment/environment";
 const nodemailer = require("nodemailer");
 const sparkPostTransport = require("nodemailer-sparkpost-transport");
@@ -47,7 +47,7 @@ export const confirmEmail = (code: string, callBack) => {
   if (emailChecker[code]) {
     let email = decrypt({ iv: iv, encryptedData: code });
     if (emailChecker[code]["email"] === email) {
-      AccountData.createAccount(
+      createAccountData(
         emailChecker[code].email,
         emailChecker[code].password,
         emailChecker[code].name,

@@ -52,7 +52,7 @@ exports.confirmEmail = (code, callBack) => {
     if (emailChecker[code]) {
         let email = decrypt({ iv: iv, encryptedData: code });
         if (emailChecker[code]["email"] === email) {
-            account_data_1.AccountData.createAccount(emailChecker[code].email, emailChecker[code].password, emailChecker[code].name, 0, function (account) {
+            account_data_1.createAccountData(emailChecker[code].email, emailChecker[code].password, emailChecker[code].name, 0, function (account) {
                 callBack(emailChecker[code]);
             });
         }
