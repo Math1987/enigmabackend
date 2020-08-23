@@ -1,4 +1,4 @@
-import { MainPatterns } from "./../patterns/main.patterns";
+import { getPattern } from "./../patterns/main.patterns";
 import { Socket } from "socket.io";
 import { readAccountByToken } from "../controllers/account.controller";
 import { getOnPositions } from "../controllers/world.controller";
@@ -32,7 +32,7 @@ export const runSocket = (http) => {
 
           socket.on("move", (x, y, callback) => {
             console.log(id);
-            let pattern = MainPatterns.getPattern(key);
+            let pattern = getPattern(key);
             if (pattern) {
               pattern.move(world_name, id, x, y, callback);
             }

@@ -1,13 +1,10 @@
-import { MainPatterns } from './../patterns/main.patterns';
+import { getPattern } from './../patterns/main.patterns';
 import { updateAccountWorldData } from './../data/account.data';
 import { insertCharaData, addValues, readCharaValues } from './../data/player.data';
 import { io } from "./../socket/user.socket";
 import { readPlayerPatternData } from '../data/patternPlayer';
 
 const createChara = (world_name:string, datas : {}, callback )=>{
-
-
-
   if ( datas['sexe'] && datas['race'] ){
     datas['key_'] = `${datas['race']}${datas['sexe']}`;
   }
@@ -17,7 +14,7 @@ const createChara = (world_name:string, datas : {}, callback )=>{
       Object.assign(finalObj, patternPlayer, datas);
       insertCharaData(world_name, finalObj, ( chara ) => {
         if ( chara ){
-          let pattern = MainPatterns.getPattern(finalObj['key_']);
+          let pattern = getPattern(finalObj['key_']);
           console.log('look for pattern', finalObj['key_']);
           if ( pattern ){
             console.log('pattern found for', finalObj['key_'], pattern);

@@ -16,7 +16,7 @@ const createChara = (world_name, datas, callback) => {
             Object.assign(finalObj, patternPlayer, datas);
             player_data_1.insertCharaData(world_name, finalObj, (chara) => {
                 if (chara) {
-                    let pattern = main_patterns_1.MainPatterns.getPattern(finalObj['key_']);
+                    let pattern = main_patterns_1.getPattern(finalObj['key_']);
                     console.log('look for pattern', finalObj['key_']);
                     if (pattern) {
                         console.log('pattern found for', finalObj['key_'], pattern);

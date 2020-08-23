@@ -1,6 +1,6 @@
-import { MainPatterns } from './../patterns/main.patterns';
+import { getPattern } from './../patterns/main.patterns';
 import { MobilesData } from "./../data/mobile.data";
-import { getSocketsNear, sendToNear } from "./socket.controller";
+import { sendToNear } from "./socket.controller";
 import { getCalculation } from "./calculation.controller";
 
 export const attackPower = (user, target, D100, callBack) => {
@@ -125,8 +125,8 @@ export const makeAttack = (world_name, user, patternUser, target, patternTarget,
 export const attack = (worldName: string, user: Object, target: Object, callBack: Function){
 
 
-  let patternUser = MainPatterns.getPattern(user['key_']);
-  let patternTarget = MainPatterns.getPattern(target['key_']);
+  let patternUser = getPattern(user['key_']);
+  let patternTarget = getPattern(target['key_']);
 
 
 

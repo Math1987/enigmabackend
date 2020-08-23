@@ -96,8 +96,8 @@ exports.makeAttack = (world_name, user, patternUser, target, patternTarget, powe
     });
 };
 exports.attack = (worldName, user, target, callBack) => {
-    let patternUser = main_patterns_1.MainPatterns.getPattern(user['key_']);
-    let patternTarget = main_patterns_1.MainPatterns.getPattern(target['key_']);
+    let patternUser = main_patterns_1.getPattern(user['key_']);
+    let patternTarget = main_patterns_1.getPattern(target['key_']);
     exports.attackProba(user, patternUser, target, patternTarget, (attackType) => {
         let D100 = 1 + Math.floor(Math.random() * 99);
         if (attackType == "attack") {

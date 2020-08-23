@@ -1,15 +1,6 @@
-import { MainPatterns } from "./patterns/main.patterns";
-
-/**
- * Index.ts is the presentation page
- * init static handlers for exress and socket
- * divised in services as AccountService.
- * init the database with Data
- */
-
-import express, { NextFunction, Request, Response } from "express";
-import { Data, initData } from "./data/data";
-import { Worlds } from "./services/worlds";
+import { initMainPatterns } from "./patterns/main.patterns";
+import express from "express";
+import { initData } from "./data/data";
 import { initWorld } from "./controllers/world.controller";
 import { routerApi } from "./routes/api.router";
 import { routerMetadata } from "./routes/metadata.router";
@@ -19,6 +10,12 @@ import { routerAdmin } from "./routes/admin.router";
 import { routerChara } from "./routes/chara.router";
 import { runSocket } from "./socket/user.socket";
 import { environment } from "./environment/environment";
+/**
+ * Index.ts is the presentation page
+ * init static handlers for exress and socket
+ * divised in services as AccountService.
+ * init the database with Data
+ */
 
 const app = express();
 const PORT = 4040;
@@ -26,9 +23,7 @@ app.set("port", PORT);
 const path = require("path");
 var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const mime = require("mime");
 const fs = require("fs");
-const http = require("http");
 const https = require("https");
 
 console.log(environment);
@@ -75,26 +70,12 @@ app.use("/api/metadatas", routerMetadata);
 app.use("/api/admin", routerAdmin);
 app.use("/api/account", routerAccount);
 app.use("/api/u", routerUser);
-
 app.use("/api/u/chara", routerChara);
 
 initData(function (data) {
-  MainPatterns.init((patterns) => {
-    initWorld( (worlds) =>  {
+  initMainPatterns((patterns) => {
+    initWorld((worlds) => {
       server.listen(PORT);
-    //});
+    });
   });
 });
-
-/*http.createServer((req, res) =>{
-    console.log('http server');
-    console.log({
-        host: req.headers.host,
-        url : req.url
-    });
-    res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
-    res.end();
-}).listen(4000);*/
-
-// let test = ecnrypt(JSON.stringify(values));
-// console.log(test);

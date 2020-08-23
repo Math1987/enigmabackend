@@ -25,7 +25,7 @@ exports.runSocket = (http) => {
                     });
                     socket.on("move", (x, y, callback) => {
                         console.log(id);
-                        let pattern = main_patterns_1.MainPatterns.getPattern(key);
+                        let pattern = main_patterns_1.getPattern(key);
                         if (pattern) {
                             pattern.move(world_name, id, x, y, callback);
                         }
