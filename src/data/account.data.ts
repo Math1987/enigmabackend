@@ -22,13 +22,16 @@ const checkEmailData = (email: String, callBack: CallableFunction) => {
       `;
   successOrFailData(sql, callBack);
 };
-const checkAccountNameData = (name: String, callBack: CallableFunction) => {
+const checkAccountNameData = (name: String, callback: CallableFunction) => {
   let sql = `
-          SELECT email from ${TABLE_NAME}
+          SELECT name from ${TABLE_NAME}
           WHERE name = "${name}"
       `;
 
-  successOrFailData(sql, callBack);
+  successOrFailData(sql, (res) => {
+    console.log(res);
+    callback(res);
+  });
 };
 const updateAccountWorldData = (id, value, callback) => {
   successOrFailData(

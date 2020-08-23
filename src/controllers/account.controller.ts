@@ -5,12 +5,20 @@ import { readCharaById } from "../data/player.data";
 
 const checkEmail = (email: string, callback: Function) => {
   checkEmailData(email, (accountRes) => {
-    callback(accountRes);
+    if (accountRes && accountRes.length > 0  ){
+      callback(true);
+    }else{
+      callback(null);
+    }
   });
 };
 const checkName = (name: string, callback: Function) => {
   checkAccountNameData(name, (accountRes) => {
-    callback(accountRes);
+    if ( accountRes && accountRes.length > 0 ){
+      callback(true);
+    }else{
+      callback(null);
+    }
   });
 };
 const readAccountByToken = (token: string, callback: Function ) => {
@@ -57,13 +65,16 @@ export const checkNameRequest = (req, res) => {
   }
 };
 export const signUpRequest = (req, res) => {
+  console.log('signup');
   if (req.body && req.body.email && req.body.password && req.body.name) {
+    console.log('signup', req.body);
     checkEmailData(req.body.email, (accountRes) => {
-      if (accountRes){
+      if (accountRes&& accountRes.length >0 ){
         res.status(401).send('already exist');
       }else{
+        console.log('signup', accountRes);
         checkAccountNameData(req.body.name, (nameRes) => {
-          if (!nameRes) {
+          if (!nameRes || nameRes.length <= 0) {
             sendWelcomEmail(req.body);
             res.status(200).json(req.body);
           } else {

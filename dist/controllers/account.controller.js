@@ -7,12 +7,22 @@ const token_controller_1 = require("./token.controller");
 const player_data_1 = require("../data/player.data");
 const checkEmail = (email, callback) => {
     account_data_1.checkEmailData(email, (accountRes) => {
-        callback(accountRes);
+        if (accountRes && accountRes.length > 0) {
+            callback(true);
+        }
+        else {
+            callback(null);
+        }
     });
 };
 const checkName = (name, callback) => {
     account_data_1.checkAccountNameData(name, (accountRes) => {
-        callback(accountRes);
+        if (accountRes && accountRes.length > 0) {
+            callback(true);
+        }
+        else {
+            callback(null);
+        }
     });
 };
 const readAccountByToken = (token, callback) => {
@@ -62,14 +72,17 @@ exports.checkNameRequest = (req, res) => {
     }
 };
 exports.signUpRequest = (req, res) => {
+    console.log('signup');
     if (req.body && req.body.email && req.body.password && req.body.name) {
+        console.log('signup', req.body);
         account_data_1.checkEmailData(req.body.email, (accountRes) => {
-            if (accountRes) {
+            if (accountRes && accountRes.length > 0) {
                 res.status(401).send('already exist');
             }
             else {
+                console.log('signup', accountRes);
                 account_data_1.checkAccountNameData(req.body.name, (nameRes) => {
-                    if (!nameRes) {
+                    if (!nameRes || nameRes.length <= 0) {
                         email_controller_1.sendWelcomEmail(req.body);
                         res.status(200).json(req.body);
                     }

@@ -25,12 +25,15 @@ const checkEmailData = (email, callBack) => {
     data_1.successOrFailData(sql, callBack);
 };
 exports.checkEmailData = checkEmailData;
-const checkAccountNameData = (name, callBack) => {
+const checkAccountNameData = (name, callback) => {
     let sql = `
-          SELECT email from ${TABLE_NAME}
+          SELECT name from ${TABLE_NAME}
           WHERE name = "${name}"
       `;
-    data_1.successOrFailData(sql, callBack);
+    data_1.successOrFailData(sql, (res) => {
+        console.log(res);
+        callback(res);
+    });
 };
 exports.checkAccountNameData = checkAccountNameData;
 const updateAccountWorldData = (id, value, callback) => {
