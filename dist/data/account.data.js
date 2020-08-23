@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkEmailData = exports.initAccountData = void 0;
+exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
 const data_1 = require("./data");
 const TABLE_NAME = `accounts`;
 const initAccountData = (callBack) => {
@@ -32,6 +32,7 @@ const checkAccountNameData = (name, callBack) => {
       `;
     data_1.Data.findOrFail(sql, callBack);
 };
+exports.checkAccountNameData = checkAccountNameData;
 const updateAccountWorldData = (id, value, callback) => {
     data_1.Data.successOrFail(`
     UPDATE ${TABLE_NAME}

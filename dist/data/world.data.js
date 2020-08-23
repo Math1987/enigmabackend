@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorldData = void 0;
-const mobile_data_1 = require("./mobile.data");
 const data_1 = require("./data");
 const player_data_1 = require("./player.data");
-const values_data_1 = require("./values.data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
@@ -87,12 +85,8 @@ class WorldData {
         (name, width, height)
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `, function (worldInsert) {
-            player_data_1.PlayerData.buildPlayerTable(datas, function (playerRes) {
-                values_data_1.ValuesData.buildTable(datas, function (resourceCB) {
-                    mobile_data_1.MobilesData.buildMobileDatas(datas, (resMObiles) => {
-                        callBack("done");
-                    });
-                });
+            player_data_1.buildWorldPlayerData(datas, function (playerRes) {
+                callBack("done");
             });
         });
     }

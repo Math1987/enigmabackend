@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "MODE=dev concurrently -k -n \"Typescript, Node\" -p\"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/enigmabackend/src/index.js\"",
+    "dev": "concurrently -k -n \"Typescript, Node\" -p\"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/index.js\"",
     "release": "standard-version"
   },
   "keywords": [],
@@ -32,6 +32,7 @@
     "jsonwebtoken": "^8.5.1",
     "mime": "^2.4.6",
     "mime-types": "^2.1.27",
+    "morgan": "^1.10.0",
     "mysql": "github:mysqljs/mysql",
     "node-localstorage": "^2.1.6",
     "nodemailer": "^6.4.11",

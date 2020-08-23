@@ -37,6 +37,8 @@ const server = https.createServer({
     cert: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.cert)),
 }, app);
 new user_socket_1.UserSocket().init(server);
+const morgan = require("morgan");
+app.use(morgan("short"));
 app.use(cookieParser());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());

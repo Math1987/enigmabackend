@@ -1,32 +1,44 @@
 import { MainPatterns } from './../patterns/main.patterns';
 import { updateAccountWorldData } from './../data/account.data';
-import { getMobile } from './mobile.controler';
-import { ValuesPatternsData } from './../data/valuesPatterns.data';
 
-import { PlayerData, addValues, readCharaValues } from './../data/player.data';
-import { MobilesData } from "./../data/mobile.data";
-import { ValuesData } from "./../data/values.data";
+
+import { insertCharaData, addValues, readCharaValues } from './../data/player.data';
 import { io } from "./../socket/user.socket";
-import {attack} from "./attack.controller";
+import { readPlayerPatternData } from '../data/patternPlayer';
+
 
 
 const createChara = (world_name:string, datas : {}, callback )=>{
 
+
+
   if ( datas['sexe'] && datas['race'] ){
     datas['key_'] = `${datas['race']}${datas['sexe']}`;
   }
-
-  PlayerData.createCharacter(world_name, datas, ( chara ) => {
-    if ( chara ){
-      let pattern = MainPatterns.getPattern(chara['key_']);
-      if ( pattern ){
-        pattern.move(world_name, chara['id'], 0, 0, moveRes =>{
-          console.log('move done');
-        });
-      }
+  readPlayerPatternData(datas['key_'], patternPlayer => {
+    if ( patternPlayer ){
+      let finalObj = {} ;
+      Object.assign(finalObj, patternPlayer, datas);
+      insertCharaData(world_name, finalObj, ( chara ) => {
+        if ( chara ){
+          let pattern = MainPatterns.getPattern(finalObj['key_']);
+          console.log('look for pattern', finalObj['key_']);
+          if ( pattern ){
+            console.log('pattern found for', finalObj['key_'], pattern);
+            pattern.move(world_name, finalObj['id'], 0, 0, moveRes =>{
+              console.log('move done');
+            });
+          }
+        }
+        console.log(chara);
+          callback(chara);
+      });
+    }else{
+      callback(null);
     }
-      callback(chara);
+
   });
+
 
 }
 const getCharasOnPositions = (world_name:string, positions : {x:number,y:number}[], callback )=>{
@@ -114,7 +126,6 @@ const addSkill = (req: Request, res: Response) => {
 export { createChara, getCharasOnPositions, moveChara, addSkill};
 
 
-
 export const createCharaRequest = (req: Request, res: Response) => {
   if (
     req['account'] && 
@@ -195,30 +206,3 @@ export const addSkillRequest = (req: Request, res: Response ) => {
   }
 
 }
-export const httpAttack = (req: Request, res: Response) => {
-  const user = req["user"];
-  const chara = req["chara"];
-  const userFinal = {};
-  Object.assign(userFinal, user, chara);
-
-  if (req.body && req.body["target"]) {
-
-    getMobile(user["world"], req.body["target"]["id"], (target) => {
-
-
-      attack(user['world'], userFinal, target, (resAttack) =>{
-
-          if ( resAttack ){
-            res.status(200).send(resAttack);
-          }
-
-      });
-    });
-
-
-
-  } else {
-    res.status(204).send("not found");
-  }
-};
-

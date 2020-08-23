@@ -9,7 +9,7 @@ router.get(`/`, function (req, res) {
     res.status(200).send("test");
 });
 router.get(`/metadatas`, (req, res) => {
-    meta_data_1.MetaData.readMetaDatasDatas((metadatas) => {
+    meta_data_1.readMetaDatasDatas((metadatas) => {
         res.status(200).json(metadatas);
     });
 });

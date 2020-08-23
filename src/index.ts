@@ -41,6 +41,9 @@ const server = https.createServer(
 );
 new UserSocket().init(server);
 
+const morgan = require("morgan");
+app.use(morgan("short"));
+
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

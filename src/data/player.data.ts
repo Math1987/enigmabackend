@@ -1,17 +1,53 @@
-import { PatternPlayer, readPlayerPatternData } from "./patternPlayer";
 import { Data } from "./data";
 import { World } from "../models/world";
-import { Player } from "../models/player";
+
 
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
-
-const insertChara = (world_name, chara, callBack) => {
+const TABLE_NAME = "players" ;
+const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
   Data.successOrFail(
     `
-        INSERT INTO ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}
+      ( 
+      id VARCHAR(36) primary key,
+      key_ VARCHAR(36),
+      name VARCHAR(36),
+      position POINT,
+
+      life FLOAT,
+      life_max FLOAT,
+
+      water FLOAT,
+      food FLOAT, 
+      faith FLOAT, 
+      wood FLOAT,
+
+      skill_water FLOAT, 
+      skill_food FLOAT,
+      skill_faith FLOAT,
+      skill_wood FLOAT, 
+      skill_attack FLOAT,
+      skill_defense FLOAT,
+
+      xp FLOAT,
+      action INT,
+      move INT
+
+      )
+      `,
+    function (res) {
+      callBack(res);
+    }
+  );
+}
+const insertCharaData = (world_name, chara, callBack) => {
+  console.log(chara);
+  Data.successOrFail(
+    `
+        INSERT INTO ${world_name}_${TABLE_NAME}
         (
         id,
         key_,
@@ -83,10 +119,10 @@ const insertChara = (world_name, chara, callBack) => {
     }
   );
 };
-export const readCharaValue = (world_name, id, key, callback) => {
+const readCharaValue = (world_name, id, key, callback) => {
   Data.successOrFail(
     `
-    SELECT ${key} FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    SELECT ${key} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `,
     (updateRes) => {
@@ -98,7 +134,7 @@ export const readCharaValue = (world_name, id, key, callback) => {
     }
   );
 };
-export const readCharaValues = (world_name, id, keys: string[], callback) => {
+const readCharaValues = (world_name, id, keys: string[], callback) => {
   let keysString = "";
   for (let i = 0; i < keys.length; i++) {
     keysString += `${keys[i]}`;
@@ -109,7 +145,7 @@ export const readCharaValues = (world_name, id, keys: string[], callback) => {
 
   Data.successOrFail(
     `
-    SELECT ${keysString} FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    SELECT ${keysString} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `,
     (updateRes) => {
@@ -121,7 +157,7 @@ export const readCharaValues = (world_name, id, keys: string[], callback) => {
     }
   );
 };
-export const addValue = (
+const addValue = (
   world_name: string,
   id: string,
   key: string,
@@ -130,7 +166,7 @@ export const addValue = (
 ) => {
   Data.successOrFail(
     `
-    UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    UPDATE ${world_name}_${TABLE_NAME}
     SET ${key} = ${key} + ${value}
     WHERE id = "${id}"
   `,
@@ -139,7 +175,7 @@ export const addValue = (
     }
   );
 };
-export const addValues = (
+const addValues = (
   world_name: string,
   id: string,
   keyVals: Object,
@@ -156,7 +192,7 @@ export const addValues = (
   }
   Data.successOrFail(
     `
-    UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    UPDATE ${world_name}_${TABLE_NAME}
     ${updatesString}
     WHERE id = "${id}"
   `,
@@ -165,129 +201,10 @@ export const addValues = (
     }
   );
 };
-export class PlayerData {
-  static TABLE_PLAYERS_NAME = `players`;
-  static TABLE_POSITIONS = `positions`;
-
-  static buildPlayerTable(datas: World, callBack: CallableFunction) {
-    Data.successOrFail(
-      `
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${PlayerData.TABLE_PLAYERS_NAME}
-        ( 
-        id VARCHAR(36) primary key,
-        key_ VARCHAR(36),
-        name VARCHAR(36),
-        position POINT,
-
-        life FLOAT,
-        life_max FLOAT,
-
-        water FLOAT,
-        food FLOAT, 
-        faith FLOAT, 
-        wood FLOAT,
-
-        skill_water FLOAT, 
-        skill_food FLOAT,
-        skill_faith FLOAT,
-        skill_wood FLOAT, 
-        skill_attack FLOAT,
-        skill_defense FLOAT,
-
-        xp FLOAT,
-        action INT,
-        move INT
-
-        )
-        `,
-      function (res) {
-        callBack(res);
-      }
-    );
-  }
-
-  static readChara(
-    world_name: string,
-    player: Player,
-    callBack: CallableFunction
-  ) {
-    Data.successOrFail(
-      `
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = ${player.id}
-        `,
-      function (charaRes) {
-        callBack(charaRes);
-      }
-    );
-  }
-  static readCharaAsObj(
-    world_name: string,
-    id: string,
-    callBack: CallableFunction
-  ) {
-    Data.successOrFail(
-      `
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = "${id}"
-        `,
-      function (charaRes) {
-        if (charaRes && charaRes.length > 0) {
-          callBack(JSON.parse(JSON.stringify(charaRes[0])));
-        } else {
-          callBack(null);
-        }
-      }
-    );
-  }
-
-  static createCharacter(
-    world_name: string,
-    character: { id: string; name: string; key_: string; religion: string },
-    callBack: CallableFunction
-  ) {
-    readPlayerPatternData(character.key_, (pattern) => {
-      if (pattern) {
-        let finalObj = {};
-        Object.assign(finalObj, pattern, character);
-        insertChara(world_name, finalObj, (charaRes) => {
-          if (charaRes) {
-            finalObj['position'] = {x : 0, y : 0};
-            finalObj['x'] = 0 ;
-            finalObj['y'] =  0 ;
-            finalObj['key'] = finalObj['key_'];
-            callBack(finalObj);
-          }
-        });
-      } else {
-        callBack(null);
-      }
-    });
-  }
-  static readCharacter(
-    world_name: string,
-    id: string,
-    callBack: CallableFunction
-  ) {
-    Data.successOrFail(
-      `
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = "${id}"
-        `,
-      function (playerRes) {
-        if (playerRes && playerRes.length > 0) {
-          callBack(JSON.parse(JSON.stringify(playerRes[0])));
-        } else {
-          callBack(null);
-        }
-      }
-    );
-  }
-}
-export const readCharaById = (world_name, id: string, callback) => {
+const readCharaById = (world_name, id: string, callback) => {
   Data.successOrFail(
     `
-      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE id = "${id}"
       `,
     function (charaRes) {
@@ -300,7 +217,7 @@ export const readCharaById = (world_name, id: string, callback) => {
     }
   );
 };
-export const readCharasByPositions = (
+const readCharasByPositions = (
   world_name,
   positions: { x: number; y: number }[],
   callback
@@ -315,7 +232,7 @@ export const readCharasByPositions = (
 
   Data.successOrFail(
     `
-      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE position IN (${posRequete})
       `,
     function (res) {
@@ -335,12 +252,11 @@ export const readCharasByPositions = (
     }
   );
 };
-
-export const updateCharaPosition = (world_name:string, id: string, x : number, y : number, callback => {
+const updateCharaPosition = (world_name:string, id: string, x : number, y : number, callback => {
 
   Data.successOrFail(
     `
-          UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+          UPDATE ${world_name}_${TABLE_NAME}
           SET position = POINT( ${x},${y})
           WHERE id = "${id}"
       `,
@@ -351,3 +267,14 @@ export const updateCharaPosition = (world_name:string, id: string, x : number, y
     
 
 });
+
+export {buildWorldPlayerData, 
+  insertCharaData,
+  readCharaValue,
+  readCharaValues,
+  addValue,
+  addValues,
+  readCharaById,
+   readCharasByPositions,
+    updateCharaPosition
+  };

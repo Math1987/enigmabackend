@@ -1,28 +1,37 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.httpAttack = exports.addSkillRequest = exports.createCharaRequest = exports.addSkill = exports.moveChara = exports.getCharasOnPositions = exports.createChara = void 0;
+exports.addSkillRequest = exports.createCharaRequest = exports.addSkill = exports.moveChara = exports.getCharasOnPositions = exports.createChara = void 0;
 const main_patterns_1 = require("./../patterns/main.patterns");
 const account_data_1 = require("./../data/account.data");
-const mobile_controler_1 = require("./mobile.controler");
 const player_data_1 = require("./../data/player.data");
-const mobile_data_1 = require("./../data/mobile.data");
-const values_data_1 = require("./../data/values.data");
 const user_socket_1 = require("./../socket/user.socket");
-const attack_controller_1 = require("./attack.controller");
+const patternPlayer_1 = require("../data/patternPlayer");
 const createChara = (world_name, datas, callback) => {
     if (datas['sexe'] && datas['race']) {
         datas['key_'] = `${datas['race']}${datas['sexe']}`;
     }
-    player_data_1.PlayerData.createCharacter(world_name, datas, (chara) => {
-        if (chara) {
-            let pattern = main_patterns_1.MainPatterns.getPattern(chara['key_']);
-            if (pattern) {
-                pattern.move(world_name, chara['id'], 0, 0, moveRes => {
-                    console.log('move done');
-                });
-            }
+    patternPlayer_1.readPlayerPatternData(datas['key_'], patternPlayer => {
+        if (patternPlayer) {
+            let finalObj = {};
+            Object.assign(finalObj, patternPlayer, datas);
+            player_data_1.insertCharaData(world_name, finalObj, (chara) => {
+                if (chara) {
+                    let pattern = main_patterns_1.MainPatterns.getPattern(finalObj['key_']);
+                    console.log('look for pattern', finalObj['key_']);
+                    if (pattern) {
+                        console.log('pattern found for', finalObj['key_'], pattern);
+                        pattern.move(world_name, finalObj['id'], 0, 0, moveRes => {
+                            console.log('move done');
+                        });
+                    }
+                }
+                console.log(chara);
+                callback(chara);
+            });
         }
-        callback(chara);
+        else {
+            callback(null);
+        }
     });
 };
 exports.createChara = createChara;
@@ -33,7 +42,7 @@ exports.getCharasOnPositions = getCharasOnPositions;
 const moveChara = (world_name, chara, x, y, callBack) => {
     if (world_name && chara) {
         let position = chara['position'];
-        mobile_data_1.MobilesData.updatePosition(world_name, chara['id'], position.x + x, position.y + y, (resMove) => {
+        MobilesData.updatePosition(world_name, chara['id'], position.x + x, position.y + y, (resMove) => {
             if (resMove) {
                 let newPosition = { x: position.x + x, y: position.y + y };
                 chara['position']['x'] = newPosition.x;
@@ -78,7 +87,7 @@ const addSkill = (req, res) => {
             values["addskills"] >= req.body['adder']) {
             let skillVal = values["addskills"] - req.body['adder'];
             let valNewVal = values[req.body['key_']] + req.body['adder'];
-            values_data_1.ValuesData.updateValues(user.id, user.world, [
+            ValuesData.updateValues(user.id, user.world, [
                 { key_: "addskills", value: skillVal },
                 { key_: req.body['key_'], value: valNewVal },
             ]).then((addValueRes) => {
@@ -153,23 +162,5 @@ exports.addSkillRequest = (req, res) => {
     }
     else {
         res.status(401).send('need key and value');
-    }
-};
-exports.httpAttack = (req, res) => {
-    const user = req["user"];
-    const chara = req["chara"];
-    const userFinal = {};
-    Object.assign(userFinal, user, chara);
-    if (req.body && req.body["target"]) {
-        mobile_controler_1.getMobile(user["world"], req.body["target"]["id"], (target) => {
-            attack_controller_1.attack(user['world'], userFinal, target, (resAttack) => {
-                if (resAttack) {
-                    res.status(200).send(resAttack);
-                }
-            });
-        });
-    }
-    else {
-        res.status(204).send("not found");
     }
 };

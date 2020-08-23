@@ -1,9 +1,6 @@
-import { MobilesData } from "./mobile.data";
 import { Data } from "./data";
 import { World } from "../models/world";
-import { SkillsData } from "./skills.data";
-import { PlayerData } from "./player.data";
-import { ValuesData } from "./values.data";
+import { buildWorldPlayerData } from "./player.data";
 
 /**
  * This object manage all the world data.
@@ -102,12 +99,8 @@ export class WorldData {
         VALUES ("${datas.name}", ${datas.width}, ${datas.height})
         `,
       function (worldInsert) {
-        PlayerData.buildPlayerTable(datas, function (playerRes) {
-          ValuesData.buildTable(datas, function (resourceCB) {
-            MobilesData.buildMobileDatas(datas, (resMObiles) => {
-              callBack("done");
-            });
-          });
+        buildWorldPlayerData(datas, function (playerRes) {
+          callBack("done");
         });
       }
     );

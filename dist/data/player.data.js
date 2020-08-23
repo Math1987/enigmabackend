@@ -1,15 +1,50 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCharaPosition = exports.readCharasByPositions = exports.readCharaById = exports.PlayerData = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = void 0;
-const patternPlayer_1 = require("./patternPlayer");
+exports.updateCharaPosition = exports.readCharasByPositions = exports.readCharaById = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
-const insertChara = (world_name, chara, callBack) => {
+const TABLE_NAME = "players";
+const buildWorldPlayerData = (datas, callBack) => {
     data_1.Data.successOrFail(`
-        INSERT INTO ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}
+      ( 
+      id VARCHAR(36) primary key,
+      key_ VARCHAR(36),
+      name VARCHAR(36),
+      position POINT,
+
+      life FLOAT,
+      life_max FLOAT,
+
+      water FLOAT,
+      food FLOAT, 
+      faith FLOAT, 
+      wood FLOAT,
+
+      skill_water FLOAT, 
+      skill_food FLOAT,
+      skill_faith FLOAT,
+      skill_wood FLOAT, 
+      skill_attack FLOAT,
+      skill_defense FLOAT,
+
+      xp FLOAT,
+      action INT,
+      move INT
+
+      )
+      `, function (res) {
+        callBack(res);
+    });
+};
+exports.buildWorldPlayerData = buildWorldPlayerData;
+const insertCharaData = (world_name, chara, callBack) => {
+    console.log(chara);
+    data_1.Data.successOrFail(`
+        INSERT INTO ${world_name}_${TABLE_NAME}
         (
         id,
         key_,
@@ -78,9 +113,10 @@ const insertChara = (world_name, chara, callBack) => {
         // }
     });
 };
-exports.readCharaValue = (world_name, id, key, callback) => {
+exports.insertCharaData = insertCharaData;
+const readCharaValue = (world_name, id, key, callback) => {
     data_1.Data.successOrFail(`
-    SELECT ${key} FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    SELECT ${key} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `, (updateRes) => {
         if (updateRes && updateRes.length > 0) {
@@ -91,7 +127,8 @@ exports.readCharaValue = (world_name, id, key, callback) => {
         }
     });
 };
-exports.readCharaValues = (world_name, id, keys, callback) => {
+exports.readCharaValue = readCharaValue;
+const readCharaValues = (world_name, id, keys, callback) => {
     let keysString = "";
     for (let i = 0; i < keys.length; i++) {
         keysString += `${keys[i]}`;
@@ -100,7 +137,7 @@ exports.readCharaValues = (world_name, id, keys, callback) => {
         }
     }
     data_1.Data.successOrFail(`
-    SELECT ${keysString} FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    SELECT ${keysString} FROM ${world_name}_${TABLE_NAME}
     WHERE id = "${id}"
   `, (updateRes) => {
         if (updateRes && updateRes.length > 0) {
@@ -111,16 +148,18 @@ exports.readCharaValues = (world_name, id, keys, callback) => {
         }
     });
 };
-exports.addValue = (world_name, id, key, value, callback) => {
+exports.readCharaValues = readCharaValues;
+const addValue = (world_name, id, key, value, callback) => {
     data_1.Data.successOrFail(`
-    UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    UPDATE ${world_name}_${TABLE_NAME}
     SET ${key} = ${key} + ${value}
     WHERE id = "${id}"
   `, (updateRes) => {
         callback(updateRes);
     });
 };
-exports.addValues = (world_name, id, keyVals, callback) => {
+exports.addValue = addValue;
+const addValues = (world_name, id, keyVals, callback) => {
     let updatesString = `SET `;
     let i = 0;
     for (let key in keyVals) {
@@ -131,108 +170,17 @@ exports.addValues = (world_name, id, keyVals, callback) => {
         }
     }
     data_1.Data.successOrFail(`
-    UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+    UPDATE ${world_name}_${TABLE_NAME}
     ${updatesString}
     WHERE id = "${id}"
   `, (updateRes) => {
         callback(updateRes);
     });
 };
-class PlayerData {
-    static buildPlayerTable(datas, callBack) {
-        data_1.Data.successOrFail(`
-        CREATE TABLE IF NOT EXISTS ${datas.name}_${PlayerData.TABLE_PLAYERS_NAME}
-        ( 
-        id VARCHAR(36) primary key,
-        key_ VARCHAR(36),
-        name VARCHAR(36),
-        position POINT,
-
-        life FLOAT,
-        life_max FLOAT,
-
-        water FLOAT,
-        food FLOAT, 
-        faith FLOAT, 
-        wood FLOAT,
-
-        skill_water FLOAT, 
-        skill_food FLOAT,
-        skill_faith FLOAT,
-        skill_wood FLOAT, 
-        skill_attack FLOAT,
-        skill_defense FLOAT,
-
-        xp FLOAT,
-        action INT,
-        move INT
-
-        )
-        `, function (res) {
-            callBack(res);
-        });
-    }
-    static readChara(world_name, player, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = ${player.id}
-        `, function (charaRes) {
-            callBack(charaRes);
-        });
-    }
-    static readCharaAsObj(world_name, id, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = "${id}"
-        `, function (charaRes) {
-            if (charaRes && charaRes.length > 0) {
-                callBack(JSON.parse(JSON.stringify(charaRes[0])));
-            }
-            else {
-                callBack(null);
-            }
-        });
-    }
-    static createCharacter(world_name, character, callBack) {
-        patternPlayer_1.readPlayerPatternData(character.key_, (pattern) => {
-            if (pattern) {
-                let finalObj = {};
-                Object.assign(finalObj, pattern, character);
-                insertChara(world_name, finalObj, (charaRes) => {
-                    if (charaRes) {
-                        finalObj['position'] = { x: 0, y: 0 };
-                        finalObj['x'] = 0;
-                        finalObj['y'] = 0;
-                        finalObj['key'] = finalObj['key_'];
-                        callBack(finalObj);
-                    }
-                });
-            }
-            else {
-                callBack(null);
-            }
-        });
-    }
-    static readCharacter(world_name, id, callBack) {
-        data_1.Data.successOrFail(`
-        SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
-        WHERE id = "${id}"
-        `, function (playerRes) {
-            if (playerRes && playerRes.length > 0) {
-                callBack(JSON.parse(JSON.stringify(playerRes[0])));
-            }
-            else {
-                callBack(null);
-            }
-        });
-    }
-}
-exports.PlayerData = PlayerData;
-PlayerData.TABLE_PLAYERS_NAME = `players`;
-PlayerData.TABLE_POSITIONS = `positions`;
-exports.readCharaById = (world_name, id, callback) => {
+exports.addValues = addValues;
+const readCharaById = (world_name, id, callback) => {
     data_1.Data.successOrFail(`
-      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE id = "${id}"
       `, function (charaRes) {
         if (charaRes && charaRes.length > 0) {
@@ -244,7 +192,8 @@ exports.readCharaById = (world_name, id, callback) => {
         }
     });
 };
-exports.readCharasByPositions = (world_name, positions, callback) => {
+exports.readCharaById = readCharaById;
+const readCharasByPositions = (world_name, positions, callback) => {
     let posRequete = "";
     for (let p of positions) {
         if (posRequete.length > 0) {
@@ -253,7 +202,7 @@ exports.readCharasByPositions = (world_name, positions, callback) => {
         posRequete += `POINT(${p.x},${p.y})`;
     }
     data_1.Data.successOrFail(`
-      SELECT * FROM ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+      SELECT * FROM ${world_name}_${TABLE_NAME}
       WHERE position IN (${posRequete})
       `, function (res) {
         if (res) {
@@ -272,12 +221,14 @@ exports.readCharasByPositions = (world_name, positions, callback) => {
         }
     });
 };
-exports.updateCharaPosition = (world_name, id, x, y, callback) => {
+exports.readCharasByPositions = readCharasByPositions;
+const updateCharaPosition = (world_name, id, x, y, callback) => {
     data_1.Data.successOrFail(`
-          UPDATE ${world_name}_${PlayerData.TABLE_PLAYERS_NAME}
+          UPDATE ${world_name}_${TABLE_NAME}
           SET position = POINT( ${x},${y})
           WHERE id = "${id}"
       `, (res) => {
         callback(res);
     });
 };
+exports.updateCharaPosition = updateCharaPosition;

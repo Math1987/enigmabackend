@@ -117,6 +117,7 @@ const readAccountDataById = (id: String, callBack: CallableFunction) => {
 export {
   initAccountData,
   checkEmailData,
+  checkAccountNameData,
   updateAccountWorldData,
   createAccountData,
   readAccountData,
