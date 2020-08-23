@@ -1,6 +1,18 @@
-import { readWorldData } from "./../data/world.data";
+import { readWorldData, buildWorldData, initWorldData, readWorldsData } from "./../data/world.data";
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
+
+const initWorld = (callback) =>{
+  readWorldsData( (worlds: Array<string>) => {
+    if (!(worlds && worlds.length > 0)) {
+      buildWorldData({ name: "world1", width: 100, height: 100 }, world => {
+        callback("done");
+      });
+    } else {
+      callback("done");
+    }
+  });
+});
 
 const getOnPositions = (
   world_name,
@@ -25,4 +37,4 @@ const getOnPositions = (
 const getWorld = (world_name, callback) => {
   readWorldData(world_name, callback);
 };
-export { getOnPositions, getWorld };
+export { initWorld, getOnPositions, getWorld };

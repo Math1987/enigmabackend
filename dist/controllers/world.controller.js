@@ -1,9 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWorld = exports.getOnPositions = void 0;
+exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
+const initWorld = (callback) => {
+    world_data_1.readWorldsData((worlds) => {
+        if (!(worlds && worlds.length > 0)) {
+            world_data_1.buildWorldData({ name: "world1", width: 100, height: 100 }, world => {
+                callback("done");
+            });
+        }
+        else {
+            callback("done");
+        }
+    });
+};
+exports.initWorld = initWorld;
 const getOnPositions = (world_name, positions, callback) => {
     let newPos = [];
     grounds_controller_1.getGroundsOnPositions(world_name, positions, (grounds) => {

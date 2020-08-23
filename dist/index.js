@@ -12,7 +12,7 @@ const main_patterns_1 = require("./patterns/main.patterns");
  */
 const express_1 = __importDefault(require("express"));
 const data_1 = require("./data/data");
-const worlds_1 = require("./services/worlds");
+const world_controller_1 = require("./controllers/world.controller");
 const api_router_1 = require("./routes/api.router");
 const metadata_router_1 = require("./routes/metadata.router");
 const account_router_1 = require("./routes/account.router");
@@ -36,7 +36,7 @@ const server = https.createServer({
     key: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.key)),
     cert: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.cert)),
 }, app);
-new user_socket_1.UserSocket().init(server);
+user_socket_1.runSocket(server);
 const morgan = require("morgan");
 app.use(morgan("short"));
 app.use(cookieParser());
@@ -69,10 +69,22 @@ app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
 data_1.initData(function (data) {
     main_patterns_1.MainPatterns.init((patterns) => {
-        worlds_1.Worlds.init(function (worlds) {
+        world_controller_1.initWorld((worlds) => {
             server.listen(PORT);
+            //});
         });
     });
+    /*http.createServer((req, res) =>{
+        console.log('http server');
+        console.log({
+            host: req.headers.host,
+            url : req.url
+        });
+        res.writeHead('301', {Location: `https://${req.headers.host}${req.url}`});
+        res.end();
+    }).listen(4000);*/
+    // let test = ecnrypt(JSON.stringify(values));
+    // console.log(test);
 });
 /*http.createServer((req, res) =>{
     console.log('http server');

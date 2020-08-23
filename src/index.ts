@@ -10,13 +10,14 @@ import { MainPatterns } from "./patterns/main.patterns";
 import express, { NextFunction, Request, Response } from "express";
 import { Data, initData } from "./data/data";
 import { Worlds } from "./services/worlds";
+import { initWorld } from "./controllers/world.controller";
 import { routerApi } from "./routes/api.router";
 import { routerMetadata } from "./routes/metadata.router";
 import { routerAccount } from "./routes/account.router";
 import { routerUser } from "./routes/user.router";
 import { routerAdmin } from "./routes/admin.router";
 import { routerChara } from "./routes/chara.router";
-import { UserSocket } from "./socket/user.socket";
+import { runSocket } from "./socket/user.socket";
 import { environment } from "./environment/environment";
 
 const app = express();
@@ -39,7 +40,8 @@ const server = https.createServer(
   },
   app
 );
-new UserSocket().init(server);
+
+runSocket(server);
 
 const morgan = require("morgan");
 app.use(morgan("short"));
@@ -78,9 +80,9 @@ app.use("/api/u/chara", routerChara);
 
 initData(function (data) {
   MainPatterns.init((patterns) => {
-    Worlds.init(function (worlds) {
+    initWorld( (worlds) =>  {
       server.listen(PORT);
-    });
+    //});
   });
 });
 
