@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/Math1987/enigmabackend/compare/v0.0.8...v0.0.9) (2020-08-24)
+
+
+### Features
+
+* add pass round using patterns ([94de4f8](https://github.com/Math1987/enigmabackend/commit/94de4f8e0d4e6e89cb379729915bd87ce10baa6d))
+* add rank, kill ([ce306bc](https://github.com/Math1987/enigmabackend/commit/ce306bc5ba6fb5b4cf1f63931c19db60736f63a2))
+
 ### [0.0.8](https://github.com/Math1987/enigmabackend/compare/v0.0.7...v0.0.8) (2020-08-23)
 
 
