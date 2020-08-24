@@ -26,8 +26,9 @@ export class ModelPattern {
   ) {}
   counterAttack(
     world_name: string,
+    counterAttacker: Object,
+    attackerPatter: ModelPattern,
     attacker: Object,
-    targetThis: Object,
     callback
   ) {
     callback(false);

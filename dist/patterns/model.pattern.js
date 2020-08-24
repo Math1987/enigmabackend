@@ -13,7 +13,7 @@ class ModelPattern {
         callback(null);
     }
     attack(world_name, user, target, callBack) { }
-    counterAttack(world_name, attacker, targetThis, callback) {
+    counterAttack(world_name, counterAttacker, attackerPatter, attacker, callback) {
         callback(false);
     }
     getDammage(world_name, user, value, callback) { }
