@@ -1,5 +1,4 @@
-import { getPattern } from './../patterns/main.patterns';
-import { MobilesData } from "./../data/mobile.data";
+import { getPattern } from "./../patterns/main.patterns";
 import { sendToNear } from "./socket.controller";
 import { getCalculation } from "./calculation.controller";
 
@@ -41,12 +40,15 @@ export const attackPower = (user, target, D100, callBack) => {
     callBack(power);
   });
 };
-export const attackProba = (user, userPattern, target, targetPattern, callBack) => {
-
-  if ( targetPattern && targetPattern['values']['counter'] ){
-
+export const attackProba = (
+  user,
+  userPattern,
+  target,
+  targetPattern,
+  callBack
+) => {
+  if (targetPattern && targetPattern["values"]["counter"]) {
     getCalculation((calculs) => {
-
       let calculation = calculs["attack"];
 
       let proba_skillAttack = 10;
@@ -87,17 +89,25 @@ export const attackProba = (user, userPattern, target, targetPattern, callBack) 
         )
       );
 
-      if ( Math.random() <=  proba ){
-        callBack('attack');
-      }else{
-        callBack('counter');
+      if (Math.random() <= proba) {
+        callBack("attack");
+      } else {
+        callBack("counter");
       }
     });
-  }else{
+  } else {
     callBack(1);
   }
 };
-export const makeAttack = (world_name, user, patternUser, target, patternTarget, power, callback) => {
+export const makeAttack = (
+  world_name,
+  user,
+  patternUser,
+  target,
+  patternTarget,
+  power,
+  callback
+) => {
   MobilesData.addValue(
     world_name,
     target["id"],
@@ -107,31 +117,30 @@ export const makeAttack = (world_name, user, patternUser, target, patternTarget,
       if (resTarget) {
         if (target["life"] - power <= 0) {
           console.log("kill");
-          patternTarget.pops(world_name, target, ( resPops)=>{
+          patternTarget.pops(world_name, target, (resPops) => {
             callback("kill");
           });
-        }else{
-          target['life'] = Math.max(0, target['life'] - power);
+        } else {
+          target["life"] = Math.max(0, target["life"] - power);
           console.log("hurt");
-          callback("hurt")
+          callback("hurt");
         }
-
       } else {
         callback(null);
       }
     }
   );
 };
-export const attack = (worldName: string, user: Object, target: Object, callBack: Function){
-
-
-  let patternUser = getPattern(user['key_']);
-  let patternTarget = getPattern(target['key_']);
-
-
+export const attack = (
+  worldName: string,
+  user: Object,
+  target: Object,
+  callBack: Function
+) => {
+  let patternUser = getPattern(user["key_"]);
+  let patternTarget = getPattern(target["key_"]);
 
   attackProba(user, patternUser, target, patternTarget, (attackType) => {
-
     let D100 = 1 + Math.floor(Math.random() * 99);
 
     if (attackType == "attack") {
@@ -146,22 +155,22 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
           patternTarget,
           dammage,
           (attackRes) => {
-
-            sendToNear( 
+            sendToNear(
               worldName,
-               user["position"],
-                5,
-                 "attack", 
-                 { type: "attack", 
-                 result : attackRes,
-                 user : user, 
-                 target : target,
-                  D100 : D100, 
-                  power : dammage 
-                }, (resSend)=>{
-    
-                });
-                callBack('attack', attackRes);
+              user["position"],
+              5,
+              "attack",
+              {
+                type: "attack",
+                result: attackRes,
+                user: user,
+                target: target,
+                D100: D100,
+                power: dammage,
+              },
+              (resSend) => {}
+            );
+            callBack("attack", attackRes);
           }
         );
       });
@@ -175,28 +184,25 @@ export const attack = (worldName: string, user: Object, target: Object, callBack
           patternUser,
           dammage * 0.5,
           (attackRes) => {
-
-
-            sendToNear( 
+            sendToNear(
               worldName,
-               user["position"],
-                5,
-                 "attack", 
-                 { type: "counter", 
-                 result : attackRes,
-                 user : user, 
-                 target : target,
-                  D100 : D100, 
-                  power : dammage 
-                }, (resSend)=>{
-    
-                });
-                callBack('counter', "hurt");
+              user["position"],
+              5,
+              "attack",
+              {
+                type: "counter",
+                result: attackRes,
+                user: user,
+                target: target,
+                D100: D100,
+                power: dammage,
+              },
+              (resSend) => {}
+            );
+            callBack("counter", "hurt");
           }
         );
       });
     }
   });
-
-
-}
+};

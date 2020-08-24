@@ -12,6 +12,12 @@ class ModelPattern {
     move(world_name, id, x, y, callback) {
         callback(null);
     }
+    attack(world_name, user, target, callBack) { }
+    counterAttack(world_name, attacker, targetThis, callback) {
+        callback(false);
+    }
+    getDammage(world_name, user, value, callback) { }
+    die(world_name, user, callback) { }
     addValue(world_name, id, key, value, callback) {
         callback(null);
     }

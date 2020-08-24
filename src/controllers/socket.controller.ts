@@ -1,4 +1,5 @@
 import { io } from "./../socket/user.socket";
+import { readCharaValue, readCharaById } from "../data/player.data";
 
 const getSocketsNear = (world_name, x, y, rayon, callBack) => {
   io.in(world_name).clients((err, clients) => {
@@ -71,7 +72,12 @@ const updateSocketAccountChara = (world_name, chara) => {
         targetSocket["account"]["chara"] &&
         targetSocket["account"]["chara"]["id"] === chara["id"]
       ) {
-        targetSocket["account"]["chara"] = chara;
+        readCharaById(world_name, chara["id"], (newChara) => {
+          if (newChara) {
+            targetSocket["account"]["chara"] = newChara;
+          }
+        });
+
         break;
       }
     }

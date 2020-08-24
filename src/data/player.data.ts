@@ -17,7 +17,7 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
       name VARCHAR(36),
       position POINT,
 
-      life FLOAT,
+      life FLOAT ,
       life_max FLOAT,
 
       water FLOAT,
@@ -44,7 +44,6 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
   );
 }
 const insertCharaData = (world_name, chara, callBack) => {
-  console.log(chara);
   successOrFailData(
     `
         INSERT INTO ${world_name}_${TABLE_NAME}
@@ -157,7 +156,7 @@ const readCharaValues = (world_name, id, keys: string[], callback) => {
     }
   );
 };
-const addValue = (
+const addCharaValueData = (
   world_name: string,
   id: string,
   key: string,
@@ -167,7 +166,7 @@ const addValue = (
   successOrFailData(
     `
     UPDATE ${world_name}_${TABLE_NAME}
-    SET ${key} = ${key} + ${value}
+    SET ${key} =  GREATEST(0,${key} + ${value})
     WHERE id = "${id}"
   `,
     (updateRes) => {
@@ -175,7 +174,7 @@ const addValue = (
     }
   );
 };
-const addValues = (
+const addCharaValuesData = (
   world_name: string,
   id: string,
   keyVals: Object,
@@ -217,6 +216,34 @@ const readCharaById = (world_name, id: string, callback) => {
     }
   );
 };
+const readCharasById = (world_name, ids: string[], callback) => {
+
+  let idsStrings = '(' ;
+  for ( let id of ids ){
+    idsStrings += `"${id}"` ;
+    if ( id !== ids[ids.length-1]){
+      idsStrings += ',';
+    }
+  }
+  idsStrings += ')' ;
+  successOrFailData(
+    `
+      SELECT * FROM ${world_name}_${TABLE_NAME}
+      WHERE id IN ${idsStrings}
+      `,
+    function (charaRes) {
+      if (charaRes && charaRes.length > 0) {
+        for ( let i = 0 ; i < charaRes.length ; i ++ ){
+          charaRes[i]['key'] = charaRes[i]['key_'];
+        }
+
+        callback(JSON.parse(JSON.stringify(charaRes)));
+      } else {
+        callback(null);
+      }
+    }
+  );
+};
 const readCharasByPositions = (
   world_name,
   positions: { x: number; y: number }[],
@@ -252,7 +279,7 @@ const readCharasByPositions = (
     }
   );
 };
-const updateCharaPosition = (world_name:string, id: string, x : number, y : number, callback => {
+const updateCharaPositionData = (world_name:string, id: string, x : number, y : number, callback => {
 
   successOrFailData(
     `
@@ -272,9 +299,10 @@ export {buildWorldPlayerData,
   insertCharaData,
   readCharaValue,
   readCharaValues,
-  addValue,
-  addValues,
+  addCharaValueData,
+  addCharaValuesData,
   readCharaById,
+  readCharasById,
    readCharasByPositions,
-    updateCharaPosition
+   updateCharaPositionData
   };

@@ -18,6 +18,22 @@ export class ModelPattern {
   ) {
     callback(null);
   }
+  attack(
+    world_name: string,
+    user: Object,
+    target: Object,
+    callBack: Function
+  ) {}
+  counterAttack(
+    world_name: string,
+    attacker: Object,
+    targetThis: Object,
+    callback
+  ) {
+    callback(false);
+  }
+  getDammage(world_name, user, value, callback) {}
+  die(world_name, user, callback) {}
 
   addValue(world_name, id, key, value, callback) {
     callback(null);

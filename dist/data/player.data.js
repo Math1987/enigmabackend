@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCharaPosition = exports.readCharasByPositions = exports.readCharaById = exports.addValues = exports.addValue = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
+exports.updateCharaPositionData = exports.readCharasByPositions = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -16,7 +16,7 @@ const buildWorldPlayerData = (datas, callBack) => {
       name VARCHAR(36),
       position POINT,
 
-      life FLOAT,
+      life FLOAT ,
       life_max FLOAT,
 
       water FLOAT,
@@ -42,7 +42,6 @@ const buildWorldPlayerData = (datas, callBack) => {
 };
 exports.buildWorldPlayerData = buildWorldPlayerData;
 const insertCharaData = (world_name, chara, callBack) => {
-    console.log(chara);
     data_1.successOrFailData(`
         INSERT INTO ${world_name}_${TABLE_NAME}
         (
@@ -149,17 +148,17 @@ const readCharaValues = (world_name, id, keys, callback) => {
     });
 };
 exports.readCharaValues = readCharaValues;
-const addValue = (world_name, id, key, value, callback) => {
+const addCharaValueData = (world_name, id, key, value, callback) => {
     data_1.successOrFailData(`
     UPDATE ${world_name}_${TABLE_NAME}
-    SET ${key} = ${key} + ${value}
+    SET ${key} =  GREATEST(0,${key} + ${value})
     WHERE id = "${id}"
   `, (updateRes) => {
         callback(updateRes);
     });
 };
-exports.addValue = addValue;
-const addValues = (world_name, id, keyVals, callback) => {
+exports.addCharaValueData = addCharaValueData;
+const addCharaValuesData = (world_name, id, keyVals, callback) => {
     let updatesString = `SET `;
     let i = 0;
     for (let key in keyVals) {
@@ -177,7 +176,7 @@ const addValues = (world_name, id, keyVals, callback) => {
         callback(updateRes);
     });
 };
-exports.addValues = addValues;
+exports.addCharaValuesData = addCharaValuesData;
 const readCharaById = (world_name, id, callback) => {
     data_1.successOrFailData(`
       SELECT * FROM ${world_name}_${TABLE_NAME}
@@ -193,6 +192,31 @@ const readCharaById = (world_name, id, callback) => {
     });
 };
 exports.readCharaById = readCharaById;
+const readCharasById = (world_name, ids, callback) => {
+    let idsStrings = '(';
+    for (let id of ids) {
+        idsStrings += `"${id}"`;
+        if (id !== ids[ids.length - 1]) {
+            idsStrings += ',';
+        }
+    }
+    idsStrings += ')';
+    data_1.successOrFailData(`
+      SELECT * FROM ${world_name}_${TABLE_NAME}
+      WHERE id IN ${idsStrings}
+      `, function (charaRes) {
+        if (charaRes && charaRes.length > 0) {
+            for (let i = 0; i < charaRes.length; i++) {
+                charaRes[i]['key'] = charaRes[i]['key_'];
+            }
+            callback(JSON.parse(JSON.stringify(charaRes)));
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.readCharasById = readCharasById;
 const readCharasByPositions = (world_name, positions, callback) => {
     let posRequete = "";
     for (let p of positions) {
@@ -222,7 +246,7 @@ const readCharasByPositions = (world_name, positions, callback) => {
     });
 };
 exports.readCharasByPositions = readCharasByPositions;
-const updateCharaPosition = (world_name, id, x, y, callback) => {
+const updateCharaPositionData = (world_name, id, x, y, callback) => {
     data_1.successOrFailData(`
           UPDATE ${world_name}_${TABLE_NAME}
           SET position = POINT( ${x},${y})
@@ -231,4 +255,4 @@ const updateCharaPosition = (world_name, id, x, y, callback) => {
         callback(res);
     });
 };
-exports.updateCharaPosition = updateCharaPosition;
+exports.updateCharaPositionData = updateCharaPositionData;

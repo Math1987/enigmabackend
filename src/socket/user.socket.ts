@@ -2,6 +2,7 @@ import { getPattern } from "./../patterns/main.patterns";
 import { Socket } from "socket.io";
 import { readAccountByToken } from "../controllers/account.controller";
 import { getOnPositions } from "../controllers/world.controller";
+import { initCharaSocket } from "./chara.socket";
 
 export const io: WebSocket = null;
 
@@ -18,25 +19,7 @@ export const runSocket = (http) => {
         if (account && account["world"] && account["chara"]) {
           socket["account"] = account;
           socket.join(account["world"]);
-
-          const id = account["id"];
-          const world_name = account["world"];
-
-          const key = account["chara"]["key_"];
-
-          console.log(id, key);
-
-          socket.on("getOnPositions", (positions: [], callback) => {
-            getOnPositions(account["world"], positions, callback);
-          });
-
-          socket.on("move", (x, y, callback) => {
-            console.log(id);
-            let pattern = getPattern(key);
-            if (pattern) {
-              pattern.move(world_name, id, x, y, callback);
-            }
-          });
+          initCharaSocket(socket, account);
         }
       });
     }

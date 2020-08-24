@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.attack = exports.makeAttack = exports.attackProba = exports.attackPower = void 0;
 const main_patterns_1 = require("./../patterns/main.patterns");
-const mobile_data_1 = require("./../data/mobile.data");
 const socket_controller_1 = require("./socket.controller");
 const calculation_controller_1 = require("./calculation.controller");
 exports.attackPower = (user, target, D100, callBack) => {
@@ -35,7 +34,7 @@ exports.attackPower = (user, target, D100, callBack) => {
     });
 };
 exports.attackProba = (user, userPattern, target, targetPattern, callBack) => {
-    if (targetPattern && targetPattern['values']['counter']) {
+    if (targetPattern && targetPattern["values"]["counter"]) {
         calculation_controller_1.getCalculation((calculs) => {
             let calculation = calculs["attack"];
             let proba_skillAttack = 10;
@@ -64,10 +63,10 @@ exports.attackProba = (user, userPattern, target, targetPattern, callBack) => {
                         calculation.proba_getFaith) *
                         calculation.proba_factor2)));
             if (Math.random() <= proba) {
-                callBack('attack');
+                callBack("attack");
             }
             else {
-                callBack('counter');
+                callBack("counter");
             }
         });
     }
@@ -76,7 +75,7 @@ exports.attackProba = (user, userPattern, target, targetPattern, callBack) => {
     }
 };
 exports.makeAttack = (world_name, user, patternUser, target, patternTarget, power, callback) => {
-    mobile_data_1.MobilesData.addValue(world_name, target["id"], "life", -power, (resTarget) => {
+    MobilesData.addValue(world_name, target["id"], "life", -power, (resTarget) => {
         if (resTarget) {
             if (target["life"] - power <= 0) {
                 console.log("kill");
@@ -85,7 +84,7 @@ exports.makeAttack = (world_name, user, patternUser, target, patternTarget, powe
                 });
             }
             else {
-                target['life'] = Math.max(0, target['life'] - power);
+                target["life"] = Math.max(0, target["life"] - power);
                 console.log("hurt");
                 callback("hurt");
             }
@@ -96,38 +95,38 @@ exports.makeAttack = (world_name, user, patternUser, target, patternTarget, powe
     });
 };
 exports.attack = (worldName, user, target, callBack) => {
-    let patternUser = main_patterns_1.getPattern(user['key_']);
-    let patternTarget = main_patterns_1.getPattern(target['key_']);
+    let patternUser = main_patterns_1.getPattern(user["key_"]);
+    let patternTarget = main_patterns_1.getPattern(target["key_"]);
     exports.attackProba(user, patternUser, target, patternTarget, (attackType) => {
         let D100 = 1 + Math.floor(Math.random() * 99);
         if (attackType == "attack") {
             exports.attackPower(user, target, D100, (dammage) => {
                 console.log("attack " + dammage);
                 exports.makeAttack(worldName, user, patternUser, target, patternTarget, dammage, (attackRes) => {
-                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", { type: "attack",
+                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", {
+                        type: "attack",
                         result: attackRes,
                         user: user,
                         target: target,
                         D100: D100,
-                        power: dammage
-                    }, (resSend) => {
-                    });
-                    callBack('attack', attackRes);
+                        power: dammage,
+                    }, (resSend) => { });
+                    callBack("attack", attackRes);
                 });
             });
         }
         else {
             exports.attackPower(target, user, D100, (dammage) => {
                 exports.makeAttack(worldName, target, patternTarget, user, patternUser, dammage * 0.5, (attackRes) => {
-                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", { type: "counter",
+                    socket_controller_1.sendToNear(worldName, user["position"], 5, "attack", {
+                        type: "counter",
                         result: attackRes,
                         user: user,
                         target: target,
                         D100: D100,
-                        power: dammage
-                    }, (resSend) => {
-                    });
-                    callBack('counter', "hurt");
+                        power: dammage,
+                    }, (resSend) => { });
+                    callBack("counter", "hurt");
                 });
             });
         }

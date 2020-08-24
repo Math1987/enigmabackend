@@ -65,14 +65,11 @@ export const checkNameRequest = (req, res) => {
   }
 };
 export const signUpRequest = (req, res) => {
-  console.log('signup');
   if (req.body && req.body.email && req.body.password && req.body.name) {
-    console.log('signup', req.body);
     checkEmailData(req.body.email, (accountRes) => {
       if (accountRes&& accountRes.length >0 ){
         res.status(401).send('already exist');
       }else{
-        console.log('signup', accountRes);
         checkAccountNameData(req.body.name, (nameRes) => {
           if (!nameRes || nameRes.length <= 0) {
             sendWelcomEmail(req.body);
