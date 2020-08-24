@@ -8,6 +8,7 @@ const socket_controller_1 = require("../controllers/socket.controller");
 const main_patterns_1 = require("./main.patterns");
 const patternPlayer_1 = require("../data/patternPlayer");
 const calculation_controller_1 = require("../controllers/calculation.controller");
+const rank_kill_data_1 = require("../data/rank_kill.data");
 class Player extends model_pattern_1.ModelPattern {
     constructor() {
         super();
@@ -70,7 +71,7 @@ class Player extends model_pattern_1.ModelPattern {
                     user.position.y === target.position.y) {
                     let patternTarget = main_patterns_1.getPattern(target["key"]);
                     if (patternTarget) {
-                        player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
+                        player_data_1.addCharaValueData(world_name, user.id, "action", 0, (actionRes) => {
                             if (actionRes) {
                                 patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
                                     if (!counterAttackRes) {
@@ -96,8 +97,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                 }
                                                 let power = Math.floor((D100 *
                                                     (Math.log10(skillAttack) +
-                                                        Math.log10((getMaterial +
-                                                            calculation.getMaterial_min) *
+                                                        Math.log10((getMaterial + calculation.getMaterial_min) *
                                                             calculation.getMaterial))) /
                                                     ((Math.log10(skillDefense) +
                                                         Math.log10((getWater + calculation.getWater_min) *
@@ -105,6 +105,9 @@ class Player extends model_pattern_1.ModelPattern {
                                                         calculation.factor));
                                                 patternTarget.getDammage(world_name, target, power, (dammageRes) => {
                                                     if (dammageRes) {
+                                                        if (dammageRes["die"]) {
+                                                            rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
+                                                        }
                                                         player_data_1.readCharasById(world_name, [userId, targetId], (charas) => {
                                                             if (charas && charas.length == 2) {
                                                                 let newUser = null;
@@ -239,6 +242,9 @@ class Player extends model_pattern_1.ModelPattern {
                         calculation.factor)) *
                     0.5);
                 patternAttacker.getDammage(world_name, attacker, power, (dammageRes) => {
+                    if (dammageRes["die"]) {
+                        rank_kill_data_1.addRankKillData(world_name, counterAttacker["id"], attacker["id"], (resKillRank) => { });
+                    }
                     player_data_1.readCharasById(world_name, [counterAttacker.id, attacker.id], (charas) => {
                         if (charas && charas.length == 2) {
                             let newCounterAttacker = null;
@@ -268,7 +274,7 @@ class Player extends model_pattern_1.ModelPattern {
             player_data_1.readCharaValue(world_name, user.id, "life", (lifeRes) => {
                 if (lifeRes <= 0) {
                     this.die(world_name, user, (dieRes) => {
-                        callback(dieRes);
+                        callback({ die: true });
                     });
                 }
                 else {

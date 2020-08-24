@@ -8,6 +8,7 @@ const meta_data_1 = require("./meta.data");
 const valuesPatterns_data_1 = require("./valuesPatterns.data");
 const calcul_data_1 = require("./calcul.data");
 const environment_1 = require("./../environment/environment");
+const rank_kill_data_1 = require("./rank_kill.data");
 const HOST = environment_1.environment.db.host;
 const USER = environment_1.environment.db.user;
 const PASSWORD = environment_1.environment.db.password;
@@ -27,13 +28,15 @@ const initData = (callBack) => {
         password: PASSWORD,
         database: DB_NAME,
     });
-    meta_data_1.initMetaData(function (metaDatasInit) {
+    meta_data_1.initMetaData((metaDatasInit) => {
         calcul_data_1.initCalculationData((calculation) => {
             patternPlayer_1.initPatternPlayerData((patternPlayerRes) => {
-                valuesPatterns_data_1.initPatternValueData(function (patternData) {
-                    account_data_1.initAccountData(function (account) {
-                        world_data_1.initWorldData(function (worldInit) {
-                            callBack("init");
+                valuesPatterns_data_1.initPatternValueData((patternData) => {
+                    account_data_1.initAccountData((account) => {
+                        rank_kill_data_1.initRankKillData((resRankKill) => {
+                            world_data_1.initWorldData((worldInit) => {
+                                callBack("init");
+                            });
                         });
                     });
                 });

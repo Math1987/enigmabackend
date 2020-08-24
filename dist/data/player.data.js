@@ -225,25 +225,31 @@ const readCharasByPositions = (world_name, positions, callback) => {
         }
         posRequete += `POINT(${p.x},${p.y})`;
     }
-    data_1.successOrFailData(`
-      SELECT * FROM ${world_name}_${TABLE_NAME}
-      WHERE position IN (${posRequete})
-      `, function (res) {
-        if (res) {
-            let finalObj = [];
-            for (let row of res) {
-                let newObj = row;
-                newObj["x"] = row["position"]["x"];
-                newObj["y"] = row["position"]["y"];
-                newObj["key"] = row["key_"];
-                finalObj.push(newObj);
+    if (posRequete.length > 0) {
+        data_1.successOrFailData(`
+        SELECT * FROM ${world_name}_${TABLE_NAME}
+        WHERE position IN (${posRequete})
+        `, function (res) {
+            if (res) {
+                let finalObj = [];
+                for (let row of res) {
+                    let newObj = row;
+                    newObj["x"] = row["position"]["x"];
+                    newObj["y"] = row["position"]["y"];
+                    newObj["key"] = row["key_"];
+                    finalObj.push(newObj);
+                }
+                callback(JSON.parse(JSON.stringify(finalObj)));
             }
-            callback(JSON.parse(JSON.stringify(finalObj)));
-        }
-        else {
-            callback(null);
-        }
-    });
+            else {
+                callback(null);
+            }
+        });
+    }
+    else {
+        callback(null);
+    }
+    ;
 };
 exports.readCharasByPositions = readCharasByPositions;
 const updateCharaPositionData = (world_name, id, x, y, callback) => {

@@ -5,6 +5,7 @@ import { initMetaData } from "./meta.data";
 import { initPatternValueData } from "./valuesPatterns.data";
 import { initCalculationData } from "./calcul.data";
 import { environment } from "./../environment/environment";
+import { initRankKillData } from "./rank_kill.data";
 
 const HOST = environment.db.host;
 const USER = environment.db.user;
@@ -30,13 +31,15 @@ const initData = (callBack: CallableFunction) => {
     password: PASSWORD,
     database: DB_NAME,
   });
-  initMetaData(function (metaDatasInit) {
+  initMetaData((metaDatasInit) => {
     initCalculationData((calculation) => {
       initPatternPlayerData((patternPlayerRes) => {
-        initPatternValueData(function (patternData) {
-          initAccountData(function (account) {
-            initWorldData(function (worldInit) {
-              callBack("init");
+        initPatternValueData((patternData) => {
+          initAccountData((account) => {
+            initRankKillData((resRankKill) => {
+              initWorldData((worldInit) => {
+                callBack("init");
+              });
             });
           });
         });

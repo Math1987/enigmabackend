@@ -4,6 +4,7 @@ import { initData } from "./data/data";
 import { initWorld } from "./controllers/world.controller";
 import { routerApi } from "./routes/api.router";
 import { routerMetadata } from "./routes/metadata.router";
+import { routerRank } from "./routes/rank.router";
 import { routerAccount } from "./routes/account.router";
 import { routerUser } from "./routes/user.router";
 import { routerAdmin } from "./routes/admin.router";
@@ -67,6 +68,7 @@ app.get("", (req, res) => {
 
 app.use("/api", routerApi);
 app.use("/api/metadatas", routerMetadata);
+app.use("/api/rank", routerRank);
 app.use("/api/admin", routerAdmin);
 app.use("/api/account", routerAccount);
 app.use("/api/u", routerUser);

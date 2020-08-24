@@ -257,27 +257,30 @@ const readCharasByPositions = (
     posRequete += `POINT(${p.x},${p.y})`;
   }
 
-  successOrFailData(
-    `
-      SELECT * FROM ${world_name}_${TABLE_NAME}
-      WHERE position IN (${posRequete})
-      `,
-    function (res) {
-      if (res) {
-        let finalObj = [];
-        for (let row of res) {
-          let newObj = row;
-          newObj["x"] = row["position"]["x"];
-          newObj["y"] = row["position"]["y"];
-          newObj["key"] = row["key_"];
-          finalObj.push(newObj);
+  if ( posRequete.length > 0 ){
+    successOrFailData(
+      `
+        SELECT * FROM ${world_name}_${TABLE_NAME}
+        WHERE position IN (${posRequete})
+        `,
+      function (res) {
+        if (res) {
+          let finalObj = [];
+          for (let row of res) {
+            let newObj = row;
+            newObj["x"] = row["position"]["x"];
+            newObj["y"] = row["position"]["y"];
+            newObj["key"] = row["key_"];
+            finalObj.push(newObj);
+          }
+          callback(JSON.parse(JSON.stringify(finalObj)));
+        } else {
+          callback(null);
         }
-        callback(JSON.parse(JSON.stringify(finalObj)));
-      } else {
-        callback(null);
       }
-    }
-  );
+    );
+  }else{callback(null)};
+
 };
 const updateCharaPositionData = (world_name:string, id: string, x : number, y : number, callback => {
 

@@ -9,6 +9,7 @@ const data_1 = require("./data/data");
 const world_controller_1 = require("./controllers/world.controller");
 const api_router_1 = require("./routes/api.router");
 const metadata_router_1 = require("./routes/metadata.router");
+const rank_router_1 = require("./routes/rank.router");
 const account_router_1 = require("./routes/account.router");
 const user_router_1 = require("./routes/user.router");
 const admin_router_1 = require("./routes/admin.router");
@@ -61,6 +62,7 @@ app.get("", (req, res) => {
 });
 app.use("/api", api_router_1.routerApi);
 app.use("/api/metadatas", metadata_router_1.routerMetadata);
+app.use("/api/rank", rank_router_1.routerRank);
 app.use("/api/admin", admin_router_1.routerAdmin);
 app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/u", user_router_1.routerUser);
