@@ -76,3 +76,10 @@ data_1.initData(function (data) {
         });
     });
 });
+const cron = require("node-cron");
+cron.schedule("0 00 0 * * *", () => {
+    world_controller_1.passWorlds((res) => { });
+}, {
+    sheduled: true,
+    timezone: "Europe/Paris",
+});

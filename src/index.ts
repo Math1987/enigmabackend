@@ -2,7 +2,7 @@ import { routerWorld } from "./routes/world.router";
 import { initMainPatterns } from "./patterns/main.patterns";
 import express from "express";
 import { initData } from "./data/data";
-import { initWorld } from "./controllers/world.controller";
+import { initWorld, passWorlds } from "./controllers/world.controller";
 import { routerApi } from "./routes/api.router";
 import { routerMetadata } from "./routes/metadata.router";
 import { routerRank } from "./routes/rank.router";
@@ -83,3 +83,15 @@ initData(function (data) {
     });
   });
 });
+
+const cron = require("node-cron");
+cron.schedule(
+  "0 00 0 * * *",
+  () => {
+    passWorlds((res) => {});
+  },
+  {
+    sheduled: true,
+    timezone: "Europe/Paris",
+  }
+);
