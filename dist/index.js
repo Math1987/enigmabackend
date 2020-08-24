@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const world_router_1 = require("./routes/world.router");
 const main_patterns_1 = require("./patterns/main.patterns");
 const express_1 = __importDefault(require("express"));
 const data_1 = require("./data/data");
@@ -64,6 +65,7 @@ app.use("/api", api_router_1.routerApi);
 app.use("/api/metadatas", metadata_router_1.routerMetadata);
 app.use("/api/rank", rank_router_1.routerRank);
 app.use("/api/admin", admin_router_1.routerAdmin);
+app.use("/api/world", world_router_1.routerWorld);
 app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);

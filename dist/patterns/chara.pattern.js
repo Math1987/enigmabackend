@@ -19,6 +19,27 @@ class Player extends model_pattern_1.ModelPattern {
     readKey() {
         return "player";
     }
+    pass(world_name, callback) {
+        player_data_1.readAllPlayersData(world_name, (players) => {
+            for (let player of players) {
+                player["move"] = this.values["move_max"];
+                player["action"] = this.values["action_max"];
+            }
+            let i = 0;
+            let func = () => {
+                player_data_1.updateCharaData(world_name, players[i], (updateRes) => {
+                    if (i < players.length - 1) {
+                        i++;
+                        func();
+                    }
+                    else {
+                        callback("done");
+                    }
+                });
+            };
+            func();
+        });
+    }
     move(world_name, id, x, y, callback) {
         player_data_1.readCharaById(world_name, id, (chara) => {
             let moveCost = Math.abs(x) + Math.abs(y);
@@ -71,7 +92,7 @@ class Player extends model_pattern_1.ModelPattern {
                     user.position.y === target.position.y) {
                     let patternTarget = main_patterns_1.getPattern(target["key"]);
                     if (patternTarget) {
-                        player_data_1.addCharaValueData(world_name, user.id, "action", 0, (actionRes) => {
+                        player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
                             if (actionRes) {
                                 patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
                                     if (!counterAttackRes) {
@@ -97,7 +118,8 @@ class Player extends model_pattern_1.ModelPattern {
                                                 }
                                                 let power = Math.floor((D100 *
                                                     (Math.log10(skillAttack) +
-                                                        Math.log10((getMaterial + calculation.getMaterial_min) *
+                                                        Math.log10((getMaterial +
+                                                            calculation.getMaterial_min) *
                                                             calculation.getMaterial))) /
                                                     ((Math.log10(skillDefense) +
                                                         Math.log10((getWater + calculation.getWater_min) *

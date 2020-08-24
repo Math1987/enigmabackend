@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPattern = exports.initMainPatterns = void 0;
+exports.passPatterns = exports.getPattern = exports.initMainPatterns = void 0;
 const chara_pattern_1 = require("./chara.pattern");
 let PATTERNS = {};
 const initMainPatterns = (callBack) => {
@@ -21,3 +21,21 @@ const getPattern = (key) => {
     return PATTERNS[key];
 };
 exports.getPattern = getPattern;
+const passPatterns = (world_name, callback) => {
+    let i = Object.keys(PATTERNS).length - 1;
+    let func = () => {
+        let key = Object.keys(PATTERNS)[i];
+        let targetPattern = PATTERNS[key];
+        targetPattern.pass(world_name, (resPass) => {
+            if (i > 0) {
+                i--;
+                func();
+            }
+            else {
+                callback("done");
+            }
+        });
+    };
+    func();
+};
+exports.passPatterns = passPatterns;

@@ -1,6 +1,7 @@
 import { readWorldData, buildWorldData, initWorldData, readWorldsData } from "./../data/world.data";
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
+import { passPatterns } from "../patterns/main.patterns";
 
 const initWorld = (callback) =>{
   readWorldsData( (worlds: Array<string>) => {
@@ -37,4 +38,14 @@ const getOnPositions = (
 const getWorld = (world_name, callback) => {
   readWorldData(world_name, callback);
 };
-export { initWorld, getOnPositions, getWorld };
+const passWorlds = (callback){
+  readWorldsData( worlds => {
+    passPatterns(worlds[0]['name'], patternsRes=>{
+      callback('done');
+    });
+  })
+
+}
+
+
+export { initWorld, getOnPositions, getWorld, passWorlds };

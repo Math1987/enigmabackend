@@ -29,7 +29,6 @@ const checkAccountNameData = (name: String, callback: CallableFunction) => {
       `;
 
   successOrFailData(sql, (res) => {
-    console.log(res);
     callback(res);
   });
 };

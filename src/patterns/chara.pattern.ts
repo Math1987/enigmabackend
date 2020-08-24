@@ -6,6 +6,8 @@ import {
   addCharaValueData,
   readCharaValue,
   readCharasById,
+  readAllPlayersData,
+  updateCharaData,
 } from "../data/player.data";
 import {
   sendToNear,
@@ -26,6 +28,26 @@ export class Player extends ModelPattern {
   }
   readKey() {
     return "player";
+  }
+  pass(world_name, callback) {
+    readAllPlayersData(world_name, (players) => {
+      for (let player of players) {
+        player["move"] = this.values["move_max"];
+        player["action"] = this.values["action_max"];
+      }
+      let i = 0;
+      let func = () => {
+        updateCharaData(world_name, players[i], (updateRes) => {
+          if (i < players.length - 1) {
+            i++;
+            func();
+          } else {
+            callback("done");
+          }
+        });
+      };
+      func();
+    });
   }
   move(
     world_name: string,
@@ -100,128 +122,135 @@ export class Player extends ModelPattern {
         ) {
           let patternTarget = getPattern(target["key"]);
           if (patternTarget) {
-            addCharaValueData(world_name, user.id, "action", 0, (actionRes) => {
-              if (actionRes) {
-                patternTarget.counterAttack(
-                  world_name,
-                  target,
-                  this,
-                  user,
-                  (counterAttackRes) => {
-                    if (!counterAttackRes) {
-                      getCalculation((calculs) => {
-                        if (calculs) {
-                          let calculation = calculs["attack"];
-                          let D100 = Math.floor(Math.random() * 99 + 1);
-                          let skillAttack = 10;
-                          let getMaterial = 10;
-                          let skillDefense = 10;
-                          let getWater = 10;
-                          if ("attack" in user) {
-                            skillAttack = user["attack"];
-                          }
-                          if ("wood" in user) {
-                            getMaterial = user["wood"];
-                          }
-                          if ("defense" in target) {
-                            skillDefense = target["defense"];
-                          }
-                          if ("dowser" in target) {
-                            getWater = target["dowser"];
-                          }
-                          let power = Math.floor(
-                            (D100 *
-                              (Math.log10(skillAttack) +
-                                Math.log10(
-                                  (getMaterial + calculation.getMaterial_min) *
-                                    calculation.getMaterial
-                                ))) /
-                              ((Math.log10(skillDefense) +
-                                Math.log10(
-                                  (getWater + calculation.getWater_min) *
-                                    calculation.getWater
-                                )) *
-                                calculation.factor)
-                          );
-                          patternTarget.getDammage(
-                            world_name,
-                            target,
-                            power,
-                            (dammageRes) => {
-                              if (dammageRes) {
-                                if (dammageRes["die"]) {
-                                  addRankKillData(
+            addCharaValueData(
+              world_name,
+              user.id,
+              "action",
+              -1,
+              (actionRes) => {
+                if (actionRes) {
+                  patternTarget.counterAttack(
+                    world_name,
+                    target,
+                    this,
+                    user,
+                    (counterAttackRes) => {
+                      if (!counterAttackRes) {
+                        getCalculation((calculs) => {
+                          if (calculs) {
+                            let calculation = calculs["attack"];
+                            let D100 = Math.floor(Math.random() * 99 + 1);
+                            let skillAttack = 10;
+                            let getMaterial = 10;
+                            let skillDefense = 10;
+                            let getWater = 10;
+                            if ("attack" in user) {
+                              skillAttack = user["attack"];
+                            }
+                            if ("wood" in user) {
+                              getMaterial = user["wood"];
+                            }
+                            if ("defense" in target) {
+                              skillDefense = target["defense"];
+                            }
+                            if ("dowser" in target) {
+                              getWater = target["dowser"];
+                            }
+                            let power = Math.floor(
+                              (D100 *
+                                (Math.log10(skillAttack) +
+                                  Math.log10(
+                                    (getMaterial +
+                                      calculation.getMaterial_min) *
+                                      calculation.getMaterial
+                                  ))) /
+                                ((Math.log10(skillDefense) +
+                                  Math.log10(
+                                    (getWater + calculation.getWater_min) *
+                                      calculation.getWater
+                                  )) *
+                                  calculation.factor)
+                            );
+                            patternTarget.getDammage(
+                              world_name,
+                              target,
+                              power,
+                              (dammageRes) => {
+                                if (dammageRes) {
+                                  if (dammageRes["die"]) {
+                                    addRankKillData(
+                                      world_name,
+                                      userId,
+                                      targetId,
+                                      (resKillRank) => {}
+                                    );
+                                  }
+                                  readCharasById(
                                     world_name,
-                                    userId,
-                                    targetId,
-                                    (resKillRank) => {}
-                                  );
-                                }
-                                readCharasById(
-                                  world_name,
-                                  [userId, targetId],
-                                  (charas) => {
-                                    if (charas && charas.length == 2) {
-                                      let newUser = null;
-                                      let newTarget = null;
-                                      for (let chara of charas) {
-                                        if (chara["id"] === userId) {
-                                          newUser = chara;
-                                        } else if (chara["id"] === targetId) {
-                                          newTarget = chara;
+                                    [userId, targetId],
+                                    (charas) => {
+                                      if (charas && charas.length == 2) {
+                                        let newUser = null;
+                                        let newTarget = null;
+                                        for (let chara of charas) {
+                                          if (chara["id"] === userId) {
+                                            newUser = chara;
+                                          } else if (chara["id"] === targetId) {
+                                            newTarget = chara;
+                                          }
                                         }
-                                      }
-                                      if (newUser && newTarget) {
-                                        callback({ user: newUser });
-                                        sendToNear(
-                                          world_name,
-                                          user.position,
-                                          8,
-                                          "attack",
-                                          {
-                                            user: newUser,
-                                            target: newTarget,
-                                          },
-                                          (sendRes) => {}
-                                        );
+                                        if (newUser && newTarget) {
+                                          callback({ user: newUser });
+                                          sendToNear(
+                                            world_name,
+                                            user.position,
+                                            8,
+                                            "attack",
+                                            {
+                                              user: newUser,
+                                              target: newTarget,
+                                            },
+                                            (sendRes) => {}
+                                          );
+                                        } else {
+                                          callback({
+                                            err: "compatibility datas pb",
+                                          });
+                                        }
                                       } else {
                                         callback({
-                                          err: "compatibility datas pb",
+                                          err: "no datas at end",
                                         });
                                       }
-                                    } else {
-                                      callback({
-                                        err: "no datas at end",
-                                      });
                                     }
-                                  }
-                                );
-                              } else {
-                                callback({
-                                  err: "problem target getting damage",
-                                });
+                                  );
+                                } else {
+                                  callback({
+                                    err: "problem target getting damage",
+                                  });
+                                }
                               }
-                            }
-                          );
-                        } else {
-                          callback({ err: "no calculation found" });
-                        }
-                      });
-                    } else {
-                      readCharaById(world_name, userId, (chara) => {
-                        if (chara) {
-                          callback({ user: chara });
-                        } else {
-                          callback({ err: "no datas at end", user: chara });
-                        }
-                      });
+                            );
+                          } else {
+                            callback({ err: "no calculation found" });
+                          }
+                        });
+                      } else {
+                        readCharaById(world_name, userId, (chara) => {
+                          if (chara) {
+                            callback({ user: chara });
+                          } else {
+                            callback({ err: "no datas at end", user: chara });
+                          }
+                        });
+                      }
                     }
-                  }
-                );
-              } else {
-                callback({ err: "problen updating action" });
+                  );
+                } else {
+                  callback({ err: "problen updating action" });
+                }
               }
-            });
+            );
           } else {
             callback({ err: "target pattern not found" });
           }

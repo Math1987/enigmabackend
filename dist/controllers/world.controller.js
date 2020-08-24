@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
+exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
+const main_patterns_1 = require("../patterns/main.patterns");
 const initWorld = (callback) => {
     world_data_1.readWorldsData((worlds) => {
         if (!(worlds && worlds.length > 0)) {
@@ -38,3 +39,11 @@ const getWorld = (world_name, callback) => {
     world_data_1.readWorldData(world_name, callback);
 };
 exports.getWorld = getWorld;
+const passWorlds = (callback) => {
+    world_data_1.readWorldsData(worlds => {
+        main_patterns_1.passPatterns(worlds[0]['name'], patternsRes => {
+            callback('done');
+        });
+    });
+};
+exports.passWorlds = passWorlds;

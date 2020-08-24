@@ -8,7 +8,6 @@ router.get("/", (req, res) => {
 });
 
 router.get("/kills", (req, res) => {
-  console.log(req.query);
   if (req.query["world"] && req.query["id"]) {
     readRankKillsData(req.query["world"], req.query["id"], (kills) => {
       res.status(200).send(kills);

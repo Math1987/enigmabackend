@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCharaPositionData = exports.readCharasByPositions = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
+exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -252,6 +252,14 @@ const readCharasByPositions = (world_name, positions, callback) => {
     ;
 };
 exports.readCharasByPositions = readCharasByPositions;
+const readAllPlayersData = (world_name, callback) => {
+    data_1.successOrFailData(`
+  SELECT * FROM ${world_name}_${TABLE_NAME}
+  `, players => {
+        callback(players);
+    });
+};
+exports.readAllPlayersData = readAllPlayersData;
 const updateCharaPositionData = (world_name, id, x, y, callback) => {
     data_1.successOrFailData(`
           UPDATE ${world_name}_${TABLE_NAME}
@@ -262,3 +270,25 @@ const updateCharaPositionData = (world_name, id, x, y, callback) => {
     });
 };
 exports.updateCharaPositionData = updateCharaPositionData;
+const updateCharaData = (world_name, chara, callback) => {
+    let stringCharas = '';
+    for (let key in chara) {
+        if (typeof chara[key] === "number") {
+            stringCharas += `${key} = ${chara[key]},`;
+        }
+    }
+    if (stringCharas.length > 0) {
+        stringCharas = stringCharas.substring(0, stringCharas.length - 1);
+        data_1.successOrFailData(`
+      UPDATE ${world_name}_${TABLE_NAME}  
+      SET ${stringCharas}
+      WHERE id = "${chara['id']}"
+    `, updateRes => {
+            callback(updateRes);
+        });
+    }
+    else {
+        callback(null);
+    }
+};
+exports.updateCharaData = updateCharaData;

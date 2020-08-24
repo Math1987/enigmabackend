@@ -20,7 +20,6 @@ const createChara = (world_name, datas, callback) => {
                         pattern.move(world_name, finalObj["id"], 0, 0, (moveRes) => { });
                     }
                 }
-                console.log(chara);
                 callback(chara);
             });
         }

@@ -52,7 +52,6 @@ const readRankKillsData = (world_name, id, callback) => {
         }
       }
       readCharasById(world_name, ids, (charas) => {
-        console.log(charas);
         if (charas) {
           for (let i = 0; i < charas.length; i++) {
             let kills = 0;
@@ -61,7 +60,6 @@ const readRankKillsData = (world_name, id, callback) => {
                 kills++;
               }
             }
-            console.log(kills);
             if (kills > 0) {
               charas[i]["kills"] = kills;
             }

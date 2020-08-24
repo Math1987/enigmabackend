@@ -19,5 +19,21 @@ const initMainPatterns = (callBack) => {
 const getPattern = (key: string) => {
   return PATTERNS[key];
 };
+const passPatterns = (world_name, callback) => {
+  let i = Object.keys(PATTERNS).length - 1;
+  let func = () => {
+    let key = Object.keys(PATTERNS)[i];
+    let targetPattern = PATTERNS[key];
+    targetPattern.pass(world_name, (resPass) => {
+      if (i > 0) {
+        i--;
+        func();
+      } else {
+        callback("done");
+      }
+    });
+  };
+  func();
+};
 
-export { initMainPatterns, getPattern };
+export { initMainPatterns, getPattern, passPatterns };

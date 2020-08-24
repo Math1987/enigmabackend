@@ -1,3 +1,4 @@
+import { routerWorld } from "./routes/world.router";
 import { initMainPatterns } from "./patterns/main.patterns";
 import express from "express";
 import { initData } from "./data/data";
@@ -70,6 +71,7 @@ app.use("/api", routerApi);
 app.use("/api/metadatas", routerMetadata);
 app.use("/api/rank", routerRank);
 app.use("/api/admin", routerAdmin);
+app.use("/api/world", routerWorld);
 app.use("/api/account", routerAccount);
 app.use("/api/u", routerUser);
 app.use("/api/u/chara", routerChara);

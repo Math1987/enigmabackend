@@ -282,6 +282,15 @@ const readCharasByPositions = (
   }else{callback(null)};
 
 };
+const readAllPlayersData = (world_name, callback) =>{
+
+  successOrFailData(`
+  SELECT * FROM ${world_name}_${TABLE_NAME}
+  `, players =>{
+    callback(players);
+  })
+
+}
 const updateCharaPositionData = (world_name:string, id: string, x : number, y : number, callback => {
 
   successOrFailData(
@@ -297,6 +306,29 @@ const updateCharaPositionData = (world_name:string, id: string, x : number, y : 
     
 
 });
+const updateCharaData = (world_name:string, chara, callback )=>{
+
+  let stringCharas = '' ;
+  for ( let key in chara ){
+    if ( typeof chara[key] === "number" ){
+      stringCharas += `${key} = ${chara[key]},`;
+    } 
+  }
+  if ( stringCharas.length > 0 ){
+    stringCharas = stringCharas.substring(0, stringCharas.length-1);
+    successOrFailData(`
+      UPDATE ${world_name}_${TABLE_NAME}  
+      SET ${stringCharas}
+      WHERE id = "${chara['id']}"
+    `, updateRes => {
+      callback(updateRes);
+    })
+  }else{
+    callback(null);
+  }
+
+
+}
 
 export {buildWorldPlayerData, 
   insertCharaData,
@@ -306,6 +338,8 @@ export {buildWorldPlayerData,
   addCharaValuesData,
   readCharaById,
   readCharasById,
+  readAllPlayersData,
+  updateCharaData,
    readCharasByPositions,
    updateCharaPositionData
   };

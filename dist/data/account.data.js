@@ -31,7 +31,6 @@ const checkAccountNameData = (name, callback) => {
           WHERE name = "${name}"
       `;
     data_1.successOrFailData(sql, (res) => {
-        console.log(res);
         callback(res);
     });
 };
