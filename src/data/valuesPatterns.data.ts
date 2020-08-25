@@ -53,25 +53,25 @@ const initValuesData = (callBack: CallableFunction) => {
     //RESOURCES
     {
       key_: "water",
-      icon: 53,
-      user: "player",
-      start: 10,
-    },
-    {
-      key_: "food",
-      icon: 55,
-      user: "player",
-      start: 10,
-    },
-    {
-      key_: "faith",
       icon: 7,
       user: "player",
       start: 10,
     },
     {
+      key_: "food",
+      icon: 9,
+      user: "player",
+      start: 10,
+    },
+    {
+      key_: "faith",
+      icon: 8,
+      user: "player",
+      start: 10,
+    },
+    {
       key_: "wood",
-      icon: 18,
+      icon: 2,
       user: "player",
       start: 10,
     },
@@ -79,25 +79,25 @@ const initValuesData = (callBack: CallableFunction) => {
     //SKILLS
     {
       key_: "skill_attack",
-      icon: 32,
+      icon: 1,
       user: "player",
       start: 10,
     },
     {
       key_: "skill_defense",
-      icon: 34,
+      icon: 5,
       user: "player",
       start: 10,
     },
     {
       key_: "skill_food",
-      icon: 32,
+      icon: 9,
       user: "player",
       start: 10,
     },
     {
       key_: "skill_water",
-      icon: 17,
+      icon: 7,
       user: "player",
       start: 10,
     },
@@ -109,7 +109,7 @@ const initValuesData = (callBack: CallableFunction) => {
     },
     {
       key_: "skill_wood",
-      icon: 35,
+      icon: 10,
       user: "player",
       start: 10,
     },
@@ -117,13 +117,13 @@ const initValuesData = (callBack: CallableFunction) => {
     //STOCK
     {
       key_: "move",
-      icon: 36,
+      icon: 6,
       user: "player",
       start: 20,
     },
     {
       key_: "action",
-      icon: 16,
+      icon: 0,
       user: "player",
       start: 8,
     },

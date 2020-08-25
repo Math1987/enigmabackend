@@ -13,7 +13,7 @@ const initCharaSocket = (socket, account) => {
             world_controller_1.getOnPositions(account["world"], positions, callback);
         });
         socket.on("move", (x, y, callback) => {
-            pattern.move(world_name, id, x, y, callback);
+            pattern.move(world_name, id, x, y, false, callback);
         });
         socket.on("attack", (targetId, callback) => {
             pattern.attack(world_name, id, targetId, callback);

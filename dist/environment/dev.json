@@ -1,4 +1,5 @@
 {
+  "mode": "dev",
   "ssl": {
     "key": "ssl/localhost.key",
     "cert": "ssl/localhost.crt"

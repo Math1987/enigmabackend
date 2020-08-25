@@ -1,4 +1,5 @@
 {
+  "mode": "prod",
   "ssl": {
     "key": "ssl/key.pem",
     "cert": "ssl/crt.pem"

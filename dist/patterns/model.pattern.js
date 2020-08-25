@@ -12,7 +12,7 @@ class ModelPattern {
     pass(world_name, callback) {
         callback("done");
     }
-    move(world_name, id, x, y, callback) {
+    move(world_name, id, x, y, free, callback) {
         callback(null);
     }
     attack(world_name, user, target, callBack) { }

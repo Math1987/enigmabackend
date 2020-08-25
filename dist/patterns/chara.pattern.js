@@ -40,33 +40,50 @@ class Player extends model_pattern_1.ModelPattern {
             func();
         });
     }
-    move(world_name, id, x, y, callback) {
+    move(world_name, id, x, y, free, callback) {
         player_data_1.readCharaById(world_name, id, (chara) => {
             let moveCost = Math.abs(x) + Math.abs(y);
             let newX = chara["position"]["x"] + x;
             let newY = chara["position"]["y"] + y;
             world_controller_1.getWorld(world_name, (world) => {
-                if (chara["move"] >= moveCost &&
+                if ((free || chara["move"] >= moveCost) &&
                     newX >= -world.width / 2 &&
                     newX <= world.width / 2 &&
                     newY >= -world.height / 2 &&
                     newY <= world.height / 2) {
-                    player_data_1.updateCharaPositionData(world_name, id, newX, newY, (updateRes) => {
-                        if (updateRes) {
-                            chara["position"]["x"] = newX;
-                            chara["position"]["y"] = newY;
-                            socket_controller_1.sendToNear(world_name, { x: chara["position"]["x"], y: chara["position"]["y"] }, 8, "move", chara, (moveRes) => {
-                                socket_controller_1.updateSocketAccountChara(world_name, chara);
-                                callback(true);
+                    player_data_1.addCharaValueData(world_name, id, "move", 0, (moveRes) => {
+                        if (moveRes) {
+                            player_data_1.updateCharaPositionData(world_name, id, newX, newY, (updateRes) => {
+                                if (updateRes) {
+                                    player_data_1.readCharaById(world_name, id, (newChara) => {
+                                        if (newChara) {
+                                            chara["position"]["x"] = newX;
+                                            chara["position"]["y"] = newY;
+                                            callback({ chara: newChara });
+                                            socket_controller_1.sendToNear(world_name, {
+                                                x: newChara["position"]["x"],
+                                                y: newChara["position"]["y"],
+                                            }, 8, "move", newChara, (sendRes) => {
+                                                socket_controller_1.updateSocketAccountChara(world_name, newChara);
+                                            });
+                                        }
+                                        else {
+                                            callback({ err: "no chara updated found" });
+                                        }
+                                    });
+                                }
+                                else {
+                                    callback({ err: "update position fail" });
+                                }
                             });
                         }
                         else {
-                            callback(null);
+                            callback({ err: "update move value fail" });
                         }
                     });
                 }
                 else {
-                    callback(false);
+                    callback({ err: "move value insufficient or move out of map" });
                 }
             });
         });
@@ -92,7 +109,7 @@ class Player extends model_pattern_1.ModelPattern {
                     user.position.y === target.position.y) {
                     let patternTarget = main_patterns_1.getPattern(target["key"]);
                     if (patternTarget) {
-                        player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
+                        player_data_1.addCharaValueData(world_name, user.id, "action", 0, (actionRes) => {
                             if (actionRes) {
                                 patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
                                     if (!counterAttackRes) {
@@ -116,7 +133,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                 if ("dowser" in target) {
                                                     getWater = target["dowser"];
                                                 }
-                                                let power = Math.floor((D100 *
+                                                let power = Math.max(1, Math.floor((D100 *
                                                     (Math.log10(skillAttack) +
                                                         Math.log10((getMaterial +
                                                             calculation.getMaterial_min) *
@@ -124,7 +141,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                     ((Math.log10(skillDefense) +
                                                         Math.log10((getWater + calculation.getWater_min) *
                                                             calculation.getWater)) *
-                                                        calculation.factor));
+                                                        calculation.factor)));
                                                 patternTarget.getDammage(world_name, target, power, (dammageRes) => {
                                                     if (dammageRes) {
                                                         if (dammageRes["die"]) {
@@ -232,7 +249,7 @@ class Player extends model_pattern_1.ModelPattern {
                     Math.log10((proba_getFaith + calculation.proba_getFaith_min) *
                         calculation.proba_getFaith) *
                         calculation.proba_factor2)));
-            let rand = Math.random();
+            let rand = 0; // Math.random();
             if (rand <= proba) {
                 callback(false);
             }
@@ -307,7 +324,7 @@ class Player extends model_pattern_1.ModelPattern {
         });
     }
     die(world_name, user, callback) {
-        this.move(world_name, user.id, -user["position"]["x"], -user["position"]["y"], (updatePosition) => {
+        this.move(world_name, user.id, -user["position"]["x"], -user["position"]["y"], true, (updatePosition) => {
             if (this.values["life_max"]) {
                 player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], callback);
             }
