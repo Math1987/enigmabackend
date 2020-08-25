@@ -61,6 +61,25 @@ const sendToNear = (
     callBack(targets);
   });
 };
+const sendToSocketId = (world_name, id, emitAttribute, emiteObj, callback) => {
+  io.in(world_name).clients((err, clients) => {
+    let targets = {};
+
+    for (let socketID of clients) {
+      let targetSocket = io["sockets"]["connected"][socketID];
+      if (
+        targetSocket["account"] &&
+        targetSocket["account"]["chara"] &&
+        targetSocket["account"]["chara"]["id"] === id
+      ) {
+        targets[socketID] = targetSocket;
+        targets[socketID].emit(emitAttribute, emiteObj);
+        callback(targets);
+        break;
+      }
+    }
+  });
+};
 const updateSocketAccountChara = (world_name, chara) => {
   io.in(world_name).clients((err, clients) => {
     let targets = {};
@@ -84,4 +103,4 @@ const updateSocketAccountChara = (world_name, chara) => {
   });
 };
 
-export { getSocketsNear, sendToNear, updateSocketAccountChara };
+export { getSocketsNear, sendToNear, sendToSocketId, updateSocketAccountChara };

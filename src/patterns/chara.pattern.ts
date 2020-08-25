@@ -12,6 +12,7 @@ import {
 import {
   sendToNear,
   updateSocketAccountChara,
+  sendToSocketId,
 } from "../controllers/socket.controller";
 import { getPattern } from "./main.patterns";
 import { readPlayerPatternData } from "../data/patternPlayer";
@@ -447,7 +448,19 @@ export class Player extends ModelPattern {
             user.id,
             "life",
             this.values["life_max"],
-            callback
+            (addLifeRes) => {
+              readCharaById(world_name, user["id"], (newChara) => {
+                sendToSocketId(
+                  world_name,
+                  user["id"],
+                  "die",
+                  { chara: newChara },
+                  (sendSocketRes) => {
+                    console.log(sendSocketRes);
+                  }
+                );
+              });
+            }
           );
         }
       }

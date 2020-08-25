@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSocketAccountChara = exports.sendToNear = exports.getSocketsNear = void 0;
+exports.updateSocketAccountChara = exports.sendToSocketId = exports.sendToNear = exports.getSocketsNear = void 0;
 const user_socket_1 = require("./../socket/user.socket");
 const player_data_1 = require("../data/player.data");
 const getSocketsNear = (world_name, x, y, rayon, callBack) => {
@@ -48,6 +48,23 @@ const sendToNear = (world_name, position, rayon, emitAttribute, emitValues, call
     });
 };
 exports.sendToNear = sendToNear;
+const sendToSocketId = (world_name, id, emitAttribute, emiteObj, callback) => {
+    user_socket_1.io.in(world_name).clients((err, clients) => {
+        let targets = {};
+        for (let socketID of clients) {
+            let targetSocket = user_socket_1.io["sockets"]["connected"][socketID];
+            if (targetSocket["account"] &&
+                targetSocket["account"]["chara"] &&
+                targetSocket["account"]["chara"]["id"] === id) {
+                targets[socketID] = targetSocket;
+                targets[socketID].emit(emitAttribute, emiteObj);
+                callback(targets);
+                break;
+            }
+        }
+    });
+};
+exports.sendToSocketId = sendToSocketId;
 const updateSocketAccountChara = (world_name, chara) => {
     user_socket_1.io.in(world_name).clients((err, clients) => {
         let targets = {};

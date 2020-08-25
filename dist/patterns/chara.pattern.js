@@ -326,7 +326,13 @@ class Player extends model_pattern_1.ModelPattern {
     die(world_name, user, callback) {
         this.move(world_name, user.id, -user["position"]["x"], -user["position"]["y"], true, (updatePosition) => {
             if (this.values["life_max"]) {
-                player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], callback);
+                player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], (addLifeRes) => {
+                    player_data_1.readCharaById(world_name, user["id"], (newChara) => {
+                        socket_controller_1.sendToSocketId(world_name, user["id"], "die", { chara: newChara }, (sendSocketRes) => {
+                            console.log(sendSocketRes);
+                        });
+                    });
+                });
             }
         });
     }

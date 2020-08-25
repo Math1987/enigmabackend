@@ -6,6 +6,7 @@ let PATTERNS = {};
 const initMainPatterns = (callBack) => {
     PATTERNS = {
         humanmasculin: new chara_pattern_1.Player(),
+        humanfeminine: new chara_pattern_1.Player(),
         dwarhumanfeminine: new chara_pattern_1.Player(),
         dwarfmasculin: new chara_pattern_1.Player(),
         dwarffeminine: new chara_pattern_1.Player(),
