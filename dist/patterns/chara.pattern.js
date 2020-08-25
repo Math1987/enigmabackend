@@ -51,7 +51,7 @@ class Player extends model_pattern_1.ModelPattern {
                     newX <= world.width / 2 &&
                     newY >= -world.height / 2 &&
                     newY <= world.height / 2) {
-                    player_data_1.addCharaValueData(world_name, id, "move", 0, (moveRes) => {
+                    player_data_1.addCharaValueData(world_name, id, "move", -1, (moveRes) => {
                         if (moveRes) {
                             player_data_1.updateCharaPositionData(world_name, id, newX, newY, (updateRes) => {
                                 if (updateRes) {
@@ -109,7 +109,7 @@ class Player extends model_pattern_1.ModelPattern {
                     user.position.y === target.position.y) {
                     let patternTarget = main_patterns_1.getPattern(target["key"]);
                     if (patternTarget) {
-                        player_data_1.addCharaValueData(world_name, user.id, "action", 0, (actionRes) => {
+                        player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
                             if (actionRes) {
                                 patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
                                     if (!counterAttackRes) {
@@ -249,7 +249,7 @@ class Player extends model_pattern_1.ModelPattern {
                     Math.log10((proba_getFaith + calculation.proba_getFaith_min) *
                         calculation.proba_getFaith) *
                         calculation.proba_factor2)));
-            let rand = 0; // Math.random();
+            let rand = Math.random();
             if (rand <= proba) {
                 callback(false);
             }
