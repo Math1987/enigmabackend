@@ -17,7 +17,7 @@ export class ModelPattern {
     id: number,
     x: number,
     y: number,
-    free: number,
+    free: boolean,
     callback: Function
   ) {
     callback(null);

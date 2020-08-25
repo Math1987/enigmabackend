@@ -17,7 +17,7 @@ const createChara = (world_name, datas, callback) => {
                 if (chara) {
                     let pattern = main_patterns_1.getPattern(finalObj["key_"]);
                     if (pattern) {
-                        pattern.move(world_name, finalObj["id"], 0, 0, (moveRes) => { });
+                        pattern.move(world_name, finalObj["id"], 0, 0, true, (moveRes) => { });
                     }
                 }
                 callback(chara);
@@ -71,8 +71,10 @@ exports.createCharaRequest = (req, res) => {
         createChara("world1", objFinal, (chara) => {
             if (chara) {
                 account_data_1.updateAccountWorldData(req["account"]["id"], "world1", (accountRes) => {
-                    console.log("chara created succesfully");
-                    res.status(200).send(chara);
+                    player_data_1.readCharaById("world1", objFinal["id"], (newChara) => {
+                        console.log("chara created succesfully");
+                        res.status(200).send({ chara: newChara });
+                    });
                 });
             }
             else {

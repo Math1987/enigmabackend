@@ -4,6 +4,7 @@ import {
   insertCharaData,
   addCharaValuesData,
   readCharaValues,
+  readCharaById,
 } from "./../data/player.data";
 import { io } from "./../socket/user.socket";
 import { readPlayerPatternData } from "../data/patternPlayer";
@@ -20,7 +21,14 @@ const createChara = (world_name: string, datas: {}, callback) => {
         if (chara) {
           let pattern = getPattern(finalObj["key_"]);
           if (pattern) {
-            pattern.move(world_name, finalObj["id"], 0, 0, (moveRes) => {});
+            pattern.move(
+              world_name,
+              finalObj["id"],
+              0,
+              0,
+              true,
+              (moveRes) => {}
+            );
           }
         }
         callback(chara);
@@ -79,12 +87,13 @@ export const createCharaRequest = (req: Request, res: Response) => {
   ) {
     let objFinal = {};
     Object.assign(objFinal, req.body, req["account"]);
-
     createChara("world1", objFinal, (chara) => {
       if (chara) {
         updateAccountWorldData(req["account"]["id"], "world1", (accountRes) => {
-          console.log("chara created succesfully");
-          res.status(200).send(chara);
+          readCharaById("world1", objFinal["id"], (newChara) => {
+            console.log("chara created succesfully");
+            res.status(200).send({ chara: newChara });
+          });
         });
       } else {
         res.status(401).json("erreur de création du personnage");

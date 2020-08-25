@@ -354,19 +354,22 @@ export class Player extends ModelPattern {
         if ("dowser" in attacker) {
           getWater = attacker["dowser"];
         }
-        let power = Math.floor(
-          ((D100 *
-            (Math.log10(skillAttack) +
-              Math.log10(
-                (getMaterial + calculation.getMaterial_min) *
-                  calculation.getMaterial
-              ))) /
-            ((Math.log10(skillDefense) +
-              Math.log10(
-                (getWater + calculation.getWater_min) * calculation.getWater
-              )) *
-              calculation.factor)) *
-            0.5
+        let power = Math.max(
+          1,
+          Math.floor(
+            ((D100 *
+              (Math.log10(skillAttack) +
+                Math.log10(
+                  (getMaterial + calculation.getMaterial_min) *
+                    calculation.getMaterial
+                ))) /
+              ((Math.log10(skillDefense) +
+                Math.log10(
+                  (getWater + calculation.getWater_min) * calculation.getWater
+                )) *
+                calculation.factor)) *
+              0.5
+          )
         );
         patternAttacker.getDammage(
           world_name,
@@ -402,7 +405,7 @@ export class Player extends ModelPattern {
                       8,
                       "counterAttack",
                       {
-                        couterAttacker: newCounterAttacker,
+                        counterAttacker: newCounterAttacker,
                         attacker: newAttacker,
                       },
                       (sendRes) => {}

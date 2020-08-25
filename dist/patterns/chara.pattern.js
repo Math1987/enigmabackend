@@ -272,14 +272,14 @@ class Player extends model_pattern_1.ModelPattern {
                 if ("dowser" in attacker) {
                     getWater = attacker["dowser"];
                 }
-                let power = Math.floor(((D100 *
+                let power = Math.max(1, Math.floor(((D100 *
                     (Math.log10(skillAttack) +
                         Math.log10((getMaterial + calculation.getMaterial_min) *
                             calculation.getMaterial))) /
                     ((Math.log10(skillDefense) +
                         Math.log10((getWater + calculation.getWater_min) * calculation.getWater)) *
                         calculation.factor)) *
-                    0.5);
+                    0.5));
                 patternAttacker.getDammage(world_name, attacker, power, (dammageRes) => {
                     if (dammageRes["die"]) {
                         rank_kill_data_1.addRankKillData(world_name, counterAttacker["id"], attacker["id"], (resKillRank) => { });
@@ -298,7 +298,7 @@ class Player extends model_pattern_1.ModelPattern {
                             }
                             if (newCounterAttacker && newAttacker) {
                                 socket_controller_1.sendToNear(world_name, newCounterAttacker["position"], 8, "counterAttack", {
-                                    couterAttacker: newCounterAttacker,
+                                    counterAttacker: newCounterAttacker,
                                     attacker: newAttacker,
                                 }, (sendRes) => { });
                             }
