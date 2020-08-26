@@ -19,7 +19,6 @@ const initRankKillData = (callback) => {
 };
 
 const addRankKillData = (world_name, killerId, targetId, callback) => {
-  console.log("kill", world_name, killerId, targetId);
   successOrFailData(
     `
   INSERT INTO ${TABLE_NAME}
@@ -49,7 +48,6 @@ const readRankKillsData = (world_name, id, callback) => {
             ids[killsRes[i]["id"]]["kills"] = 1;
           }
         }
-        console.log(ids);
         let finalArray = [];
         for (let key in ids) {
           let insertOk = false;
@@ -64,7 +62,6 @@ const readRankKillsData = (world_name, id, callback) => {
             finalArray.push(JSON.parse(JSON.stringify(ids[key])));
           }
         }
-        console.log(finalArray);
         callback(finalArray);
       } else {
         callback([]);

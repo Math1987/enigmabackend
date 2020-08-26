@@ -200,7 +200,6 @@ export class Player extends ModelPattern {
                               target,
                               power,
                               (dammageRes) => {
-                                console.log("dammage res", dammageRes);
                                 if (dammageRes) {
                                   if (dammageRes["die"]) {
                                     addRankKillData(
@@ -378,7 +377,6 @@ export class Player extends ModelPattern {
           attacker,
           power,
           (dammageRes) => {
-            console.log(dammageRes);
             if (dammageRes["die"]) {
               addRankKillData(
                 world_name,
