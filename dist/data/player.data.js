@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = void 0;
+exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = exports.TABLE_PLAYERS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
 const TABLE_NAME = "players";
+exports.TABLE_PLAYERS = TABLE_NAME;
 const buildWorldPlayerData = (datas, callBack) => {
     data_1.successOrFailData(`
       CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}

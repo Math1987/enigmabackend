@@ -8,7 +8,6 @@ router.get("/", (req, res) => {
 });
 
 router.get("/pass", (req, res) => {
-  console.log("passworld");
   passWorlds((passWorldRes) => {
     res.status(200).send(passWorldRes);
   });

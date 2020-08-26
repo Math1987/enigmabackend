@@ -7,6 +7,7 @@ import { World } from "../models/world";
  * Each world got tables named as: nameOfWorld + "_" + nameOfTable
  */
 const TABLE_NAME = "players" ;
+export const TABLE_PLAYERS = TABLE_NAME ;
 const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
   successOrFailData(
     `

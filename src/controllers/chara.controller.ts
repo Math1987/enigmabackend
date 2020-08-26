@@ -91,7 +91,6 @@ export const createCharaRequest = (req: Request, res: Response) => {
       if (chara) {
         updateAccountWorldData(req["account"]["id"], "world1", (accountRes) => {
           readCharaById("world1", objFinal["id"], (newChara) => {
-            console.log("chara created succesfully");
             res.status(200).send({ chara: newChara });
           });
         });

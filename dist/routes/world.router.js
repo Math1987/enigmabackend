@@ -8,7 +8,6 @@ router.get("/", (req, res) => {
     res.status(200).send("world router.");
 });
 router.get("/pass", (req, res) => {
-    console.log("passworld");
     world_controller_1.passWorlds((passWorldRes) => {
         res.status(200).send(passWorldRes);
     });

@@ -72,7 +72,6 @@ exports.createCharaRequest = (req, res) => {
             if (chara) {
                 account_data_1.updateAccountWorldData(req["account"]["id"], "world1", (accountRes) => {
                     player_data_1.readCharaById("world1", objFinal["id"], (newChara) => {
-                        console.log("chara created succesfully");
                         res.status(200).send({ chara: newChara });
                     });
                 });

@@ -4,7 +4,6 @@ exports.readAllPlayerPatternData = exports.readPlayerPatternData = exports.initV
 const data_1 = require("./data");
 const TABLE_NAME = "PatternPlayer";
 const initPatternPlayerData = (callBack) => {
-    console.log("init patternPlayer");
     data_1.successOrFailData(`
       DROP TABLE ${TABLE_NAME}
       `, function (res) { });

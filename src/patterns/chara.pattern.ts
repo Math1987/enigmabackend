@@ -200,6 +200,7 @@ export class Player extends ModelPattern {
                               target,
                               power,
                               (dammageRes) => {
+                                console.log("dammage res", dammageRes);
                                 if (dammageRes) {
                                   if (dammageRes["die"]) {
                                     addRankKillData(
@@ -377,6 +378,7 @@ export class Player extends ModelPattern {
           attacker,
           power,
           (dammageRes) => {
+            console.log(dammageRes);
             if (dammageRes["die"]) {
               addRankKillData(
                 world_name,
@@ -429,7 +431,7 @@ export class Player extends ModelPattern {
           });
         } else {
           user["life"] = lifeRes;
-          callback(user);
+          callback({});
         }
       });
     });
@@ -450,18 +452,19 @@ export class Player extends ModelPattern {
             this.values["life_max"],
             (addLifeRes) => {
               readCharaById(world_name, user["id"], (newChara) => {
+                callback(true);
                 sendToSocketId(
                   world_name,
                   user["id"],
                   "die",
                   { chara: newChara },
-                  (sendSocketRes) => {
-                    console.log(sendSocketRes);
-                  }
+                  (sendSocketRes) => {}
                 );
               });
             }
           );
+        } else {
+          callback(true);
         }
       }
     );

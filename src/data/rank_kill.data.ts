@@ -1,5 +1,5 @@
 import { successOrFailData } from "./data";
-import { readCharasById } from "./player.data";
+import { readCharasById, TABLE_PLAYERS } from "./player.data";
 
 const TABLE_NAME = "rank_kills";
 const initRankKillData = (callback) => {
@@ -19,6 +19,7 @@ const initRankKillData = (callback) => {
 };
 
 const addRankKillData = (world_name, killerId, targetId, callback) => {
+  console.log("kill", world_name, killerId, targetId);
   successOrFailData(
     `
   INSERT INTO ${TABLE_NAME}
@@ -34,39 +35,42 @@ const addRankKillData = (world_name, killerId, targetId, callback) => {
 const readRankKillsData = (world_name, id, callback) => {
   successOrFailData(
     `
-  SELECT * FROM ${TABLE_NAME}
-  WHERE world = "${world_name}" AND id = "${id}"
+    SELECT k.*, p.*  FROM ${TABLE_NAME} as k LEFT JOIN ${world_name}_${TABLE_PLAYERS} as p ON k.
+    id = p.id  WHERE k.world = "world1";
   `,
     (killsRes) => {
-      let ids = [];
-      for (let row of killsRes) {
-        let got = false;
-        for (let row2 of ids) {
-          if (row2 === row["id"]) {
-            got = true;
-            break;
+      if (killsRes && killsRes.length > 0) {
+        let ids = {};
+        for (let i = killsRes.length - 1; i >= 0; i--) {
+          if (ids[killsRes[i]["id"]]) {
+            ids[killsRes[i]["id"]].kills++;
+          } else {
+            ids[killsRes[i]["id"]] = killsRes[i];
+            ids[killsRes[i]["id"]]["kills"] = 1;
           }
         }
-        if (!got) {
-          ids.push(row["id"]);
-        }
-      }
-      readCharasById(world_name, ids, (charas) => {
-        if (charas) {
-          for (let i = 0; i < charas.length; i++) {
-            let kills = 0;
-            for (let row of killsRes) {
-              if (charas[i]["id"] === row["id"]) {
-                kills++;
+        let finalArray = [];
+        for (let key in ids) {
+          if (finalArray.length <= 0) {
+            finalArray.push(JSON.parse(JSON.stringify(ids[key])));
+          } else {
+            let insertOk = false;
+            for (let i = 0; i < finalArray.length; i++) {
+              if (ids[key]["kills"] > finalArray[i]["kills"]) {
+                finalArray.splice(i, JSON.parse(JSON.stringify(ids[key])));
+                insertOk = true;
+                break;
               }
             }
-            if (kills > 0) {
-              charas[i]["kills"] = kills;
+            if (!insertOk) {
+              finalArray.push(JSON.parse(JSON.stringify(ids[key])));
             }
           }
         }
-        callback(charas);
-      });
+        callback(finalArray);
+      } else {
+        callback([]);
+      }
     }
   );
 };

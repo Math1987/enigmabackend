@@ -3,7 +3,6 @@ import { successOrFailData } from "./data";
 const TABLE_NAME = "PatternPlayer";
 
 const initPatternPlayerData = (callBack: CallableFunction) => {
-  console.log("init patternPlayer");
   successOrFailData(
     `
       DROP TABLE ${TABLE_NAME}

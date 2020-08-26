@@ -143,6 +143,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                             calculation.getWater)) *
                                                         calculation.factor)));
                                                 patternTarget.getDammage(world_name, target, power, (dammageRes) => {
+                                                    console.log("dammage res", dammageRes);
                                                     if (dammageRes) {
                                                         if (dammageRes["die"]) {
                                                             rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
@@ -281,6 +282,7 @@ class Player extends model_pattern_1.ModelPattern {
                         calculation.factor)) *
                     0.5));
                 patternAttacker.getDammage(world_name, attacker, power, (dammageRes) => {
+                    console.log(dammageRes);
                     if (dammageRes["die"]) {
                         rank_kill_data_1.addRankKillData(world_name, counterAttacker["id"], attacker["id"], (resKillRank) => { });
                     }
@@ -318,7 +320,7 @@ class Player extends model_pattern_1.ModelPattern {
                 }
                 else {
                     user["life"] = lifeRes;
-                    callback(user);
+                    callback({});
                 }
             });
         });
@@ -328,11 +330,13 @@ class Player extends model_pattern_1.ModelPattern {
             if (this.values["life_max"]) {
                 player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], (addLifeRes) => {
                     player_data_1.readCharaById(world_name, user["id"], (newChara) => {
-                        socket_controller_1.sendToSocketId(world_name, user["id"], "die", { chara: newChara }, (sendSocketRes) => {
-                            console.log(sendSocketRes);
-                        });
+                        callback(true);
+                        socket_controller_1.sendToSocketId(world_name, user["id"], "die", { chara: newChara }, (sendSocketRes) => { });
                     });
                 });
+            }
+            else {
+                callback(true);
             }
         });
     }
