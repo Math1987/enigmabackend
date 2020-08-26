@@ -22,6 +22,20 @@ exports.initMetaData = initMetaData;
 const initMetaValuesData = (callBack) => {
     let values = [
         {
+            key_: "desert",
+            type: "ground",
+            name_fr: "désert",
+            description_fr: "case de désert...il fait chaud.",
+            img: "",
+        },
+        {
+            key_: "attack",
+            type: "action",
+            name_fr: "attaquer",
+            description_fr: "attaquer!",
+            img: "",
+        },
+        {
             key_: "water",
             type: "resource",
             name_fr: "eau",

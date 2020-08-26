@@ -125,6 +125,13 @@ const initValuesData = (callBack) => {
             user: "player",
             start: 50,
         },
+        //ACTIONS
+        {
+            key_: "attack",
+            icon: 1,
+            user: "player",
+            start: 20,
+        },
     ];
     let valString = "";
     for (let row of values) {
