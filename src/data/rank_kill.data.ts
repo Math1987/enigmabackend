@@ -49,24 +49,22 @@ const readRankKillsData = (world_name, id, callback) => {
             ids[killsRes[i]["id"]]["kills"] = 1;
           }
         }
+        console.log(ids);
         let finalArray = [];
         for (let key in ids) {
-          if (finalArray.length <= 0) {
-            finalArray.push(JSON.parse(JSON.stringify(ids[key])));
-          } else {
-            let insertOk = false;
-            for (let i = 0; i < finalArray.length; i++) {
-              if (ids[key]["kills"] > finalArray[i]["kills"]) {
-                finalArray.splice(i, JSON.parse(JSON.stringify(ids[key])));
-                insertOk = true;
-                break;
-              }
-            }
-            if (!insertOk) {
-              finalArray.push(JSON.parse(JSON.stringify(ids[key])));
+          let insertOk = false;
+          for (let i = 0; i < finalArray.length; i++) {
+            if (ids[key]["kills"] > finalArray[i]["kills"]) {
+              finalArray.splice(i, 0, JSON.parse(JSON.stringify(ids[key])));
+              insertOk = true;
+              break;
             }
           }
+          if (!insertOk) {
+            finalArray.push(JSON.parse(JSON.stringify(ids[key])));
+          }
         }
+        console.log(finalArray);
         callback(finalArray);
       } else {
         callback([]);
