@@ -85,8 +85,6 @@ const readHistoricData = (world_name, id, callback) => {
   `,
     (res) => {
       if (res && res.length > 0) {
-        let mess = {};
-
         let arr = [];
         for (let row of res) {
           let got = false;
@@ -107,7 +105,6 @@ const readHistoricData = (world_name, id, callback) => {
           Reflect.deleteProperty(ar, "attribute");
           Reflect.deleteProperty(ar, "value");
         }
-        console.log("arr historic", arr);
         callback(arr);
       } else {
         callback(null);

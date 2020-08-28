@@ -167,7 +167,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                         calculation.factor)));
                                                 patternTarget.getDammage(world_name, target, power, (dammageRes) => {
                                                     if (dammageRes) {
-                                                        historic_data_1.addInHistoric(world_name, userId, "attack", "attaque contre " + target["name"], { D100: D100, power: power }, (historicRes) => {
+                                                        historic_data_1.addInHistoric(world_name, userId, "attack", "vous avez attaqué " + target["name"], { D100: D100, power: power }, (historicRes) => {
                                                             console.log("historic res", historicRes);
                                                             historic_data_1.addInHistoric(world_name, targetId, "attack", user["name"] + " vous a attaqué.", { D100: D100, power: power }, (historicRes) => { });
                                                             chara_controller_1.readCharas(world_name, [userId, targetId], (charas) => {
@@ -204,6 +204,7 @@ class Player extends model_pattern_1.ModelPattern {
                                                             });
                                                         });
                                                         if (dammageRes["die"]) {
+                                                            historic_data_1.addInHistoric(world_name, userId, "kill", "vous avez tué " + target["name"], {}, (historicRes) => { });
                                                             rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
                                                         }
                                                     }
@@ -343,9 +344,8 @@ class Player extends model_pattern_1.ModelPattern {
         player_data_1.addCharaValueData(world_name, user.id, "life", -value, (addValueRes) => {
             player_data_1.readCharaValue(world_name, user.id, "life", (lifeRes) => {
                 if (lifeRes <= 0) {
-                    this.die(world_name, user, (dieRes) => {
-                        callback({ die: true });
-                    });
+                    callback({ die: true });
+                    this.die(world_name, user, (dieRes) => { });
                 }
                 else {
                     user["life"] = lifeRes;
@@ -357,12 +357,15 @@ class Player extends model_pattern_1.ModelPattern {
     die(world_name, user, callback) {
         this.move(world_name, user.id, -user["position"]["x"], -user["position"]["y"], true, (updatePosition) => {
             if (this.values["life_max"]) {
-                player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], (addLifeRes) => {
-                    player_data_1.readCharaById(world_name, user["id"], (newChara) => {
-                        callback(true);
-                        socket_controller_1.sendToSocketId(world_name, user["id"], "die", { chara: newChara }, (sendSocketRes) => { });
+                setTimeout(() => {
+                    player_data_1.addCharaValueData(world_name, user.id, "life", this.values["life_max"], (addLifeRes) => {
+                        historic_data_1.addInHistoric(world_name, user["id"], "death", "vous êtes mort.", {}, (historicRes) => { });
+                        chara_controller_1.readChara(world_name, user["id"], (newChara) => {
+                            callback(true);
+                            socket_controller_1.sendToSocketId(world_name, user["id"], "die", { chara: newChara }, (sendSocketRes) => { });
+                        });
                     });
-                });
+                }, 1000);
             }
             else {
                 callback(true);

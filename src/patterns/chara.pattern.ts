@@ -232,7 +232,7 @@ export class Player extends ModelPattern {
                                     world_name,
                                     userId,
                                     "attack",
-                                    "attaque contre " + target["name"],
+                                    "vous avez attaqué " + target["name"],
                                     { D100: D100, power: power },
                                     (historicRes) => {
                                       console.log("historic res", historicRes);
@@ -291,6 +291,15 @@ export class Player extends ModelPattern {
                                   );
 
                                   if (dammageRes["die"]) {
+                                    addInHistoric(
+                                      world_name,
+                                      userId,
+                                      "kill",
+                                      "vous avez tué " + target["name"],
+                                      {},
+                                      (historicRes) => {}
+                                    );
+
                                     addRankKillData(
                                       world_name,
                                       userId,
@@ -493,9 +502,8 @@ export class Player extends ModelPattern {
     addCharaValueData(world_name, user.id, "life", -value, (addValueRes) => {
       readCharaValue(world_name, user.id, "life", (lifeRes) => {
         if (lifeRes <= 0) {
-          this.die(world_name, user, (dieRes) => {
-            callback({ die: true });
-          });
+          callback({ die: true });
+          this.die(world_name, user, (dieRes) => {});
         } else {
           user["life"] = lifeRes;
           callback({});
@@ -512,24 +520,35 @@ export class Player extends ModelPattern {
       true,
       (updatePosition) => {
         if (this.values["life_max"]) {
-          addCharaValueData(
-            world_name,
-            user.id,
-            "life",
-            this.values["life_max"],
-            (addLifeRes) => {
-              readCharaById(world_name, user["id"], (newChara) => {
-                callback(true);
-                sendToSocketId(
+          setTimeout(() => {
+            addCharaValueData(
+              world_name,
+              user.id,
+              "life",
+              this.values["life_max"],
+              (addLifeRes) => {
+                addInHistoric(
                   world_name,
                   user["id"],
-                  "die",
-                  { chara: newChara },
-                  (sendSocketRes) => {}
+                  "death",
+                  "vous êtes mort.",
+                  {},
+                  (historicRes) => {}
                 );
-              });
-            }
-          );
+
+                readChara(world_name, user["id"], (newChara) => {
+                  callback(true);
+                  sendToSocketId(
+                    world_name,
+                    user["id"],
+                    "die",
+                    { chara: newChara },
+                    (sendSocketRes) => {}
+                  );
+                });
+              }
+            );
+          }, 1000);
         } else {
           callback(true);
         }
