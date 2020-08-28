@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.10](https://github.com/Math1987/enigmabackend/compare/v0.0.9...v0.0.10) (2020-08-28)
+
+
+### Features
+
+* add sendToSocketId function, used in pattern when a chara die ([e094ca4](https://github.com/Math1987/enigmabackend/commit/e094ca4637d48234118cd6292ed7e3dc202e260b))
+* add values in metadatas (and valuesPatterns), as desert, attack, grounds ([b01b3de](https://github.com/Math1987/enigmabackend/commit/b01b3de1ccbd18f210912d5ebe489cae6113a6b0))
+* historic ([a65d668](https://github.com/Math1987/enigmabackend/commit/a65d66823dd9c9d8668a7ff3013b7ab2b276109c))
+* implement node-cron for passing eatch day ([a8f96ef](https://github.com/Math1987/enigmabackend/commit/a8f96efac8d896add99102ac73eb7196cb0318e1))
+* rank_kill ([c49e190](https://github.com/Math1987/enigmabackend/commit/c49e1909d750e68eada43e2afc070358f697460d))
+
+
+### Bug Fixes
+
+* add free boolean in pattern's move function (to allow move without move cost if free is true) ([b292705](https://github.com/Math1987/enigmabackend/commit/b292705eb53171a93de3c940999e883d28dfbfcd))
+* historic ([51a0a4d](https://github.com/Math1987/enigmabackend/commit/51a0a4d73c2004cc1af5fdaec22f7e3507ab3840))
+* kill.data for rank, chara pattern for attack (die callback upgreat kill rank) ([b31ce51](https://github.com/Math1987/enigmabackend/commit/b31ce5107366df8c5f123e81e272306b4243f1e7))
+* rank_kill.data, sort array ([028502b](https://github.com/Math1987/enigmabackend/commit/028502b9137d6f9c27a698aef81aebc201503729))
+* restore move cost, add cost, counter attack ([29b5a98](https://github.com/Math1987/enigmabackend/commit/29b5a98c90b7a41b4316ca7bf370556e25d1fea3))
+* send chara in chara creation instead of mysql res ([555e924](https://github.com/Math1987/enigmabackend/commit/555e9240cbe47d75b829af663541852d90829467))
+* use array instead of obj in historic data response ([84f3431](https://github.com/Math1987/enigmabackend/commit/84f3431533135dd9d597a0bcddcf1aabf07462ec))
+
 ### [0.0.9](https://github.com/Math1987/enigmabackend/compare/v0.0.8...v0.0.9) (2020-08-24)
 
 
