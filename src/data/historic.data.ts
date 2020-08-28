@@ -81,23 +81,34 @@ const readHistoricData = (world_name, id, callback) => {
     `
     SELECT t.*, vs.* FROM ${TABLE_NAME}  as t LEFT JOIN ${TABLE_NAME_VALUES} as vs ON t.message_id = vs.message_id
     WHERE t.world = "${world_name}" AND t.id = "${id}" 
+    ORDER BY t.time DESC;
   `,
     (res) => {
       if (res && res.length > 0) {
         let mess = {};
+
+        let arr = [];
         for (let row of res) {
-          if (mess[row["message_id"]]) {
-            mess[row["message_id"]][row["attribute"]] = row["value"];
-          } else {
-            mess[row["message_id"]] = row;
-            mess[row["message_id"]][row["attribute"]] = row["value"];
+          let got = false;
+          for (let ar of arr) {
+            if (ar["message_id"] == row["message_id"]) {
+              ar[row["attribute"]] = row["value"];
+              got = true;
+              break;
+            }
+          }
+          if (!got) {
+            let newRow = JSON.parse(JSON.stringify(row));
+            newRow[row["attribute"]] = row["value"];
+            arr.push(newRow);
           }
         }
-        for (let obj in mess) {
-          Reflect.deleteProperty(mess[obj], "attribute");
-          Reflect.deleteProperty(mess[obj], "value");
+        for (let ar of arr) {
+          Reflect.deleteProperty(ar, "attribute");
+          Reflect.deleteProperty(ar, "value");
         }
-        callback(JSON.parse(JSON.stringify(mess)));
+        console.log("arr historic", arr);
+        callback(arr);
       } else {
         callback(null);
       }
