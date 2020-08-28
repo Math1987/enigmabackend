@@ -9,10 +9,12 @@ const main_patterns_1 = require("./main.patterns");
 const patternPlayer_1 = require("../data/patternPlayer");
 const calculation_controller_1 = require("../controllers/calculation.controller");
 const rank_kill_data_1 = require("../data/rank_kill.data");
+const historic_data_1 = require("../data/historic.data");
+const chara_controller_1 = require("../controllers/chara.controller");
 class Player extends model_pattern_1.ModelPattern {
-    constructor() {
+    constructor(key) {
         super();
-        patternPlayer_1.readPlayerPatternData("humanmasculin", (res) => {
+        patternPlayer_1.readPlayerPatternData(key, (res) => {
             this.values = res;
         });
     }
@@ -20,14 +22,35 @@ class Player extends model_pattern_1.ModelPattern {
         return "player";
     }
     pass(world_name, callback) {
+        console.log("pass", this.values["key_"]);
         player_data_1.readAllPlayersData(world_name, (players) => {
             for (let player of players) {
+                player["moveAdder"] = this.values["move_max"] - player["move"];
+                player["actionAdder"] = this.values["action_max"] - player["action"];
                 player["move"] = this.values["move_max"];
                 player["action"] = this.values["action_max"];
             }
             let i = 0;
             let func = () => {
-                player_data_1.updateCharaData(world_name, players[i], (updateRes) => {
+                console.log(players[i]["key_"], this.values["key_"]);
+                if (players[i]["key_"] === this.values["key_"]) {
+                    console.log(this.values);
+                    player_data_1.updateCharaData(world_name, players[i], this.values, (updateRes) => {
+                        historic_data_1.addInHistoric(world_name, players[i]["id"], "pass", "passage de tour", {
+                            move: players[i]["moveAdder"],
+                            action: players[i]["actionAdder"],
+                        }, (historicRes) => { });
+                        if (i < players.length - 1) {
+                            i++;
+                            func();
+                        }
+                        else {
+                            callback("done");
+                        }
+                    });
+                    console.log("update pass");
+                }
+                else {
                     if (i < players.length - 1) {
                         i++;
                         func();
@@ -35,7 +58,7 @@ class Player extends model_pattern_1.ModelPattern {
                     else {
                         callback("done");
                     }
-                });
+                }
             };
             func();
         });
@@ -55,7 +78,7 @@ class Player extends model_pattern_1.ModelPattern {
                         if (moveRes) {
                             player_data_1.updateCharaPositionData(world_name, id, newX, newY, (updateRes) => {
                                 if (updateRes) {
-                                    player_data_1.readCharaById(world_name, id, (newChara) => {
+                                    chara_controller_1.readChara(world_name, id, (newChara) => {
                                         if (newChara) {
                                             chara["position"]["x"] = newX;
                                             chara["position"]["y"] = newY;
@@ -144,40 +167,45 @@ class Player extends model_pattern_1.ModelPattern {
                                                         calculation.factor)));
                                                 patternTarget.getDammage(world_name, target, power, (dammageRes) => {
                                                     if (dammageRes) {
-                                                        if (dammageRes["die"]) {
-                                                            rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
-                                                        }
-                                                        player_data_1.readCharasById(world_name, [userId, targetId], (charas) => {
-                                                            if (charas && charas.length == 2) {
-                                                                let newUser = null;
-                                                                let newTarget = null;
-                                                                for (let chara of charas) {
-                                                                    if (chara["id"] === userId) {
-                                                                        newUser = chara;
+                                                        historic_data_1.addInHistoric(world_name, userId, "attack", "attaque contre " + target["name"], { D100: D100, power: power }, (historicRes) => {
+                                                            console.log("historic res", historicRes);
+                                                            historic_data_1.addInHistoric(world_name, targetId, "attack", user["name"] + " vous a attaqué.", { D100: D100, power: power }, (historicRes) => { });
+                                                            chara_controller_1.readCharas(world_name, [userId, targetId], (charas) => {
+                                                                console.log(charas);
+                                                                if (charas && charas.length == 2) {
+                                                                    let newUser = null;
+                                                                    let newTarget = null;
+                                                                    for (let chara of charas) {
+                                                                        if (chara["id"] === userId) {
+                                                                            newUser = chara;
+                                                                        }
+                                                                        else if (chara["id"] === targetId) {
+                                                                            newTarget = chara;
+                                                                        }
                                                                     }
-                                                                    else if (chara["id"] === targetId) {
-                                                                        newTarget = chara;
+                                                                    if (newUser && newTarget) {
+                                                                        callback({ user: newUser });
+                                                                        socket_controller_1.sendToNear(world_name, user.position, 8, "attack", {
+                                                                            user: newUser,
+                                                                            target: newTarget,
+                                                                        }, (sendRes) => { });
                                                                     }
-                                                                }
-                                                                if (newUser && newTarget) {
-                                                                    callback({ user: newUser });
-                                                                    socket_controller_1.sendToNear(world_name, user.position, 8, "attack", {
-                                                                        user: newUser,
-                                                                        target: newTarget,
-                                                                    }, (sendRes) => { });
+                                                                    else {
+                                                                        callback({
+                                                                            err: "compatibility datas pb",
+                                                                        });
+                                                                    }
                                                                 }
                                                                 else {
                                                                     callback({
-                                                                        err: "compatibility datas pb",
+                                                                        err: "no datas at end",
                                                                     });
                                                                 }
-                                                            }
-                                                            else {
-                                                                callback({
-                                                                    err: "no datas at end",
-                                                                });
-                                                            }
+                                                            });
                                                         });
+                                                        if (dammageRes["die"]) {
+                                                            rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
+                                                        }
                                                     }
                                                     else {
                                                         callback({
@@ -192,7 +220,7 @@ class Player extends model_pattern_1.ModelPattern {
                                         });
                                     }
                                     else {
-                                        player_data_1.readCharaById(world_name, userId, (chara) => {
+                                        chara_controller_1.readChara(world_name, userId, (chara) => {
                                             if (chara) {
                                                 callback({ user: chara });
                                             }
@@ -284,25 +312,28 @@ class Player extends model_pattern_1.ModelPattern {
                     if (dammageRes["die"]) {
                         rank_kill_data_1.addRankKillData(world_name, counterAttacker["id"], attacker["id"], (resKillRank) => { });
                     }
-                    player_data_1.readCharasById(world_name, [counterAttacker.id, attacker.id], (charas) => {
-                        if (charas && charas.length == 2) {
-                            let newCounterAttacker = null;
-                            let newAttacker = null;
-                            for (let chara of charas) {
-                                if (chara["id"] === counterAttacker.id) {
-                                    newCounterAttacker = chara;
+                    historic_data_1.addInHistoric(world_name, attacker["id"], "counterAttack", counterAttacker["name"] + " vous a contre-attaqué.", { D100: D100, power: power }, (historicRes) => { });
+                    historic_data_1.addInHistoric(world_name, counterAttacker["id"], "counterAttack", "vous contre-attaquez " + attacker["name"], { D100: D100, power: power }, (historicRes) => {
+                        chara_controller_1.readCharas(world_name, [counterAttacker.id, attacker.id], (charas) => {
+                            if (charas && charas.length == 2) {
+                                let newCounterAttacker = null;
+                                let newAttacker = null;
+                                for (let chara of charas) {
+                                    if (chara["id"] === counterAttacker.id) {
+                                        newCounterAttacker = chara;
+                                    }
+                                    else if (chara["id"] === attacker.id) {
+                                        newAttacker = chara;
+                                    }
                                 }
-                                else if (chara["id"] === attacker.id) {
-                                    newAttacker = chara;
+                                if (newCounterAttacker && newAttacker) {
+                                    socket_controller_1.sendToNear(world_name, newCounterAttacker["position"], 8, "counterAttack", {
+                                        counterAttacker: newCounterAttacker,
+                                        attacker: newAttacker,
+                                    }, (sendRes) => { });
                                 }
                             }
-                            if (newCounterAttacker && newAttacker) {
-                                socket_controller_1.sendToNear(world_name, newCounterAttacker["position"], 8, "counterAttack", {
-                                    counterAttacker: newCounterAttacker,
-                                    attacker: newAttacker,
-                                }, (sendRes) => { });
-                            }
-                        }
+                        });
                     });
                 });
             }

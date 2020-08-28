@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSocketAccountChara = exports.sendToSocketId = exports.sendToNear = exports.getSocketsNear = void 0;
 const user_socket_1 = require("./../socket/user.socket");
-const player_data_1 = require("../data/player.data");
+const chara_controller_1 = require("./chara.controller");
 const getSocketsNear = (world_name, x, y, rayon, callBack) => {
     user_socket_1.io.in(world_name).clients((err, clients) => {
         let targets = {};
@@ -39,6 +39,7 @@ const sendToNear = (world_name, position, rayon, emitAttribute, emitValues, call
                     targetPos.x <= position.x + rayon &&
                     targetPos.y >= position.y - rayon &&
                     targetPos.y <= position.y + rayon) {
+                    console.log("sendnear", emitAttribute, emitValues);
                     targets[socketID] = targetSocket;
                     targets[socketID].emit(emitAttribute, emitValues);
                 }
@@ -73,7 +74,7 @@ const updateSocketAccountChara = (world_name, chara) => {
             if (targetSocket["account"] &&
                 targetSocket["account"]["chara"] &&
                 targetSocket["account"]["chara"]["id"] === chara["id"]) {
-                player_data_1.readCharaById(world_name, chara["id"], (newChara) => {
+                chara_controller_1.readChara(world_name, chara["id"], (newChara) => {
                     if (newChara) {
                         targetSocket["account"]["chara"] = newChara;
                     }

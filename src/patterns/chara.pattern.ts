@@ -18,12 +18,13 @@ import { getPattern } from "./main.patterns";
 import { readPlayerPatternData } from "../data/patternPlayer";
 import { getCalculation } from "../controllers/calculation.controller";
 import { addRankKillData } from "../data/rank_kill.data";
+import { addInHistoric } from "../data/historic.data";
+import { readChara, readCharas } from "../controllers/chara.controller";
 
 export class Player extends ModelPattern {
-  constructor() {
+  constructor(key: string) {
     super();
-
-    readPlayerPatternData("humanmasculin", (res) => {
+    readPlayerPatternData(key, (res) => {
       this.values = res;
     });
   }
@@ -31,21 +32,47 @@ export class Player extends ModelPattern {
     return "player";
   }
   pass(world_name, callback) {
+    console.log("pass", this.values["key_"]);
     readAllPlayersData(world_name, (players) => {
       for (let player of players) {
+        player["moveAdder"] = this.values["move_max"] - player["move"];
+        player["actionAdder"] = this.values["action_max"] - player["action"];
         player["move"] = this.values["move_max"];
         player["action"] = this.values["action_max"];
       }
       let i = 0;
       let func = () => {
-        updateCharaData(world_name, players[i], (updateRes) => {
+        console.log(players[i]["key_"], this.values["key_"]);
+        if (players[i]["key_"] === this.values["key_"]) {
+          console.log(this.values);
+          updateCharaData(world_name, players[i], this.values, (updateRes) => {
+            addInHistoric(
+              world_name,
+              players[i]["id"],
+              "pass",
+              "passage de tour",
+              {
+                move: players[i]["moveAdder"],
+                action: players[i]["actionAdder"],
+              },
+              (historicRes) => {}
+            );
+            if (i < players.length - 1) {
+              i++;
+              func();
+            } else {
+              callback("done");
+            }
+          });
+          console.log("update pass");
+        } else {
           if (i < players.length - 1) {
             i++;
             func();
           } else {
             callback("done");
           }
-        });
+        }
       };
       func();
     });
@@ -79,7 +106,7 @@ export class Player extends ModelPattern {
                 newY,
                 (updateRes) => {
                   if (updateRes) {
-                    readCharaById(world_name, id, (newChara) => {
+                    readChara(world_name, id, (newChara) => {
                       if (newChara) {
                         chara["position"]["x"] = newX;
                         chara["position"]["y"] = newY;
@@ -201,6 +228,68 @@ export class Player extends ModelPattern {
                               power,
                               (dammageRes) => {
                                 if (dammageRes) {
+                                  addInHistoric(
+                                    world_name,
+                                    userId,
+                                    "attack",
+                                    "attaque contre " + target["name"],
+                                    { D100: D100, power: power },
+                                    (historicRes) => {
+                                      console.log("historic res", historicRes);
+                                      addInHistoric(
+                                        world_name,
+                                        targetId,
+                                        "attack",
+                                        user["name"] + " vous a attaqué.",
+                                        { D100: D100, power: power },
+                                        (historicRes) => {}
+                                      );
+
+                                      readCharas(
+                                        world_name,
+                                        [userId, targetId],
+                                        (charas) => {
+                                          console.log(charas);
+                                          if (charas && charas.length == 2) {
+                                            let newUser = null;
+                                            let newTarget = null;
+                                            for (let chara of charas) {
+                                              if (chara["id"] === userId) {
+                                                newUser = chara;
+                                              } else if (
+                                                chara["id"] === targetId
+                                              ) {
+                                                newTarget = chara;
+                                              }
+                                            }
+                                            if (newUser && newTarget) {
+                                              callback({ user: newUser });
+                                              sendToNear(
+                                                world_name,
+                                                user.position,
+                                                8,
+                                                "attack",
+                                                {
+                                                  user: newUser,
+                                                  target: newTarget,
+                                                },
+                                                (sendRes) => {}
+                                              );
+                                            } else {
+                                              callback({
+                                                err: "compatibility datas pb",
+                                              });
+                                            }
+                                          } else {
+                                            callback({
+                                              err: "no datas at end",
+                                            });
+                                          }
+                                        }
+                                      );
+                                    }
+                                  );
+
                                   if (dammageRes["die"]) {
                                     addRankKillData(
                                       world_name,
@@ -209,45 +298,6 @@ export class Player extends ModelPattern {
                                       (resKillRank) => {}
                                     );
                                   }
-                                  readCharasById(
-                                    world_name,
-                                    [userId, targetId],
-                                    (charas) => {
-                                      if (charas && charas.length == 2) {
-                                        let newUser = null;
-                                        let newTarget = null;
-                                        for (let chara of charas) {
-                                          if (chara["id"] === userId) {
-                                            newUser = chara;
-                                          } else if (chara["id"] === targetId) {
-                                            newTarget = chara;
-                                          }
-                                        }
-                                        if (newUser && newTarget) {
-                                          callback({ user: newUser });
-                                          sendToNear(
-                                            world_name,
-                                            user.position,
-                                            8,
-                                            "attack",
-                                            {
-                                              user: newUser,
-                                              target: newTarget,
-                                            },
-                                            (sendRes) => {}
-                                          );
-                                        } else {
-                                          callback({
-                                            err: "compatibility datas pb",
-                                          });
-                                        }
-                                      } else {
-                                        callback({
-                                          err: "no datas at end",
-                                        });
-                                      }
-                                    }
-                                  );
                                 } else {
                                   callback({
                                     err: "problem target getting damage",
@@ -260,7 +310,7 @@ export class Player extends ModelPattern {
                           }
                         });
                       } else {
-                        readCharaById(world_name, userId, (chara) => {
+                        readChara(world_name, userId, (chara) => {
                           if (chara) {
                             callback({ user: chara });
                           } else {
@@ -385,34 +435,53 @@ export class Player extends ModelPattern {
                 (resKillRank) => {}
               );
             }
-            readCharasById(
+
+            addInHistoric(
               world_name,
-              [counterAttacker.id, attacker.id],
-              (charas) => {
-                if (charas && charas.length == 2) {
-                  let newCounterAttacker = null;
-                  let newAttacker = null;
-                  for (let chara of charas) {
-                    if (chara["id"] === counterAttacker.id) {
-                      newCounterAttacker = chara;
-                    } else if (chara["id"] === attacker.id) {
-                      newAttacker = chara;
+              attacker["id"],
+              "counterAttack",
+              counterAttacker["name"] + " vous a contre-attaqué.",
+              { D100: D100, power: power },
+              (historicRes) => {}
+            );
+
+            addInHistoric(
+              world_name,
+              counterAttacker["id"],
+              "counterAttack",
+              "vous contre-attaquez " + attacker["name"],
+              { D100: D100, power: power },
+              (historicRes) => {
+                readCharas(
+                  world_name,
+                  [counterAttacker.id, attacker.id],
+                  (charas) => {
+                    if (charas && charas.length == 2) {
+                      let newCounterAttacker = null;
+                      let newAttacker = null;
+                      for (let chara of charas) {
+                        if (chara["id"] === counterAttacker.id) {
+                          newCounterAttacker = chara;
+                        } else if (chara["id"] === attacker.id) {
+                          newAttacker = chara;
+                        }
+                      }
+                      if (newCounterAttacker && newAttacker) {
+                        sendToNear(
+                          world_name,
+                          newCounterAttacker["position"],
+                          8,
+                          "counterAttack",
+                          {
+                            counterAttacker: newCounterAttacker,
+                            attacker: newAttacker,
+                          },
+                          (sendRes) => {}
+                        );
+                      }
                     }
                   }
-                  if (newCounterAttacker && newAttacker) {
-                    sendToNear(
-                      world_name,
-                      newCounterAttacker["position"],
-                      8,
-                      "counterAttack",
-                      {
-                        counterAttacker: newCounterAttacker,
-                        attacker: newAttacker,
-                      },
-                      (sendRes) => {}
-                    );
-                  }
-                }
+                );
               }
             );
           }

@@ -2,6 +2,8 @@ import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountD
 import { sendWelcomEmail, confirmEmail } from "./email.controller";
 import { createToken, readToken } from "./token.controller";
 import { readCharaById } from "../data/player.data";
+import { readHistoricData } from "../data/historic.data";
+import { readChara } from "./chara.controller";
 
 const checkEmail = (email: string, callback: Function) => {
   checkEmailData(email, (accountRes) => {
@@ -27,10 +29,14 @@ const readAccountByToken = (token: string, callback: Function ) => {
       if ( tokenRes && tokenRes['id'] ){
         readAccountDataById( tokenRes['id'], accountRes =>{
           if ( accountRes && accountRes['world'] ){
-            readCharaById( accountRes['world'], accountRes['id'], charaRes => {
-              accountRes['chara'] = charaRes ;
+
+            readChara(accountRes['world'], accountRes['id'], charaRes => {
+              if ( charaRes ){
+                accountRes['chara'] = charaRes ;
+              }
               callback(accountRes);
             });
+            
           }else{
             callback(accountRes);
           }

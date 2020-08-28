@@ -6,6 +6,7 @@ import { initPatternValueData } from "./valuesPatterns.data";
 import { initCalculationData } from "./calcul.data";
 import { environment } from "./../environment/environment";
 import { initRankKillData } from "./rank_kill.data";
+import { initHistoricData } from "./historic.data";
 
 const HOST = environment.db.host;
 const USER = environment.db.user;
@@ -36,9 +37,11 @@ const initData = (callBack: CallableFunction) => {
       initPatternPlayerData((patternPlayerRes) => {
         initPatternValueData((patternData) => {
           initAccountData((account) => {
-            initRankKillData((resRankKill) => {
-              initWorldData((worldInit) => {
-                callBack("init");
+            initHistoricData((resHistoric) => {
+              initRankKillData((resRankKill) => {
+                initWorldData((worldInit) => {
+                  callBack("init");
+                });
               });
             });
           });
@@ -50,7 +53,7 @@ const initData = (callBack: CallableFunction) => {
 const successOrFailData = (sql: String, callBack: CallableFunction) => {
   co.query(sql, function (err, res) {
     if (err) {
-      console.log("error data");
+      console.log("error data", err);
       callBack(null);
     } else {
       callBack(res);

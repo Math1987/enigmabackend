@@ -6,8 +6,8 @@ import {
   readCharaValues,
   readCharaById,
 } from "./../data/player.data";
-import { io } from "./../socket/user.socket";
 import { readPlayerPatternData } from "../data/patternPlayer";
+import { readHistoricData } from "../data/historic.data";
 
 const createChara = (world_name: string, datas: {}, callback) => {
   if (datas["sexe"] && datas["race"]) {
@@ -45,6 +45,35 @@ const getCharasOnPositions = (
 ) => {
   callback(null);
 };
+const readChara = (world_name: string, id: string, callback: Function) => {
+  readCharaById(world_name, id, (charaRes) => {
+    readHistoricData(world_name, id, (historic) => {
+      if (charaRes) {
+        charaRes["historic"] = historic;
+      }
+      callback(charaRes);
+    });
+  });
+};
+const readCharas = (world_name: string, ids: string[], callback: Function) => {
+  let i = 0;
+  let arr = [];
+  let func = () => {
+    readChara(world_name, ids[i], (res) => {
+      arr.push(res);
+      if (i < ids.length - 1) {
+        i++;
+        func();
+      } else {
+        callback(arr);
+      }
+    });
+  };
+  func();
+};
+
+export { createChara, getCharasOnPositions, readChara, readCharas, addSkill };
+
 const addSkill = (req: Request, res: Response) => {
   const user = req["user"];
   const values = req["chara"];
@@ -73,8 +102,6 @@ const addSkill = (req: Request, res: Response) => {
     res.status(204).send("not found");
   }
 };
-export { createChara, getCharasOnPositions, addSkill };
-
 export const createCharaRequest = (req: Request, res: Response) => {
   if (
     req["account"] &&

@@ -12,6 +12,7 @@ import { routerAdmin } from "./routes/admin.router";
 import { routerChara } from "./routes/chara.router";
 import { runSocket } from "./socket/user.socket";
 import { environment } from "./environment/environment";
+import { addInHistoric, readHistoric } from "./data/historic.data";
 /**
  * Index.ts is the presentation page
  * init static handlers for exress and socket

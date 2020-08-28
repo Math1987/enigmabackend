@@ -9,6 +9,7 @@ const valuesPatterns_data_1 = require("./valuesPatterns.data");
 const calcul_data_1 = require("./calcul.data");
 const environment_1 = require("./../environment/environment");
 const rank_kill_data_1 = require("./rank_kill.data");
+const historic_data_1 = require("./historic.data");
 const HOST = environment_1.environment.db.host;
 const USER = environment_1.environment.db.user;
 const PASSWORD = environment_1.environment.db.password;
@@ -33,9 +34,11 @@ const initData = (callBack) => {
             patternPlayer_1.initPatternPlayerData((patternPlayerRes) => {
                 valuesPatterns_data_1.initPatternValueData((patternData) => {
                     account_data_1.initAccountData((account) => {
-                        rank_kill_data_1.initRankKillData((resRankKill) => {
-                            world_data_1.initWorldData((worldInit) => {
-                                callBack("init");
+                        historic_data_1.initHistoricData((resHistoric) => {
+                            rank_kill_data_1.initRankKillData((resRankKill) => {
+                                world_data_1.initWorldData((worldInit) => {
+                                    callBack("init");
+                                });
                             });
                         });
                     });
@@ -48,7 +51,7 @@ exports.initData = initData;
 const successOrFailData = (sql, callBack) => {
     co.query(sql, function (err, res) {
         if (err) {
-            console.log("error data");
+            console.log("error data", err);
             callBack(null);
         }
         else {

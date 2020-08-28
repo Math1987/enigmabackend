@@ -307,11 +307,11 @@ const updateCharaPositionData = (world_name:string, id: string, x : number, y : 
     
 
 });
-const updateCharaData = (world_name:string, chara, callback )=>{
+const updateCharaData = (world_name:string, chara, pattern, callback )=>{
 
   let stringCharas = '' ;
   for ( let key in chara ){
-    if ( typeof chara[key] === "number" ){
+    if ( typeof chara[key] === "number" && key in pattern ){
       stringCharas += `${key} = ${chara[key]},`;
     } 
   }

@@ -271,10 +271,10 @@ const updateCharaPositionData = (world_name, id, x, y, callback) => {
     });
 };
 exports.updateCharaPositionData = updateCharaPositionData;
-const updateCharaData = (world_name, chara, callback) => {
+const updateCharaData = (world_name, chara, pattern, callback) => {
     let stringCharas = '';
     for (let key in chara) {
-        if (typeof chara[key] === "number") {
+        if (typeof chara[key] === "number" && key in pattern) {
             stringCharas += `${key} = ${chara[key]},`;
         }
     }

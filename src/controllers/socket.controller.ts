@@ -1,5 +1,6 @@
 import { io } from "./../socket/user.socket";
 import { readCharaValue, readCharaById } from "../data/player.data";
+import { readChara } from "./chara.controller";
 
 const getSocketsNear = (world_name, x, y, rayon, callBack) => {
   io.in(world_name).clients((err, clients) => {
@@ -52,6 +53,7 @@ const sendToNear = (
           targetPos.y >= position.y - rayon &&
           targetPos.y <= position.y + rayon
         ) {
+          console.log("sendnear", emitAttribute, emitValues);
           targets[socketID] = targetSocket;
           targets[socketID].emit(emitAttribute, emitValues);
         }
@@ -91,7 +93,7 @@ const updateSocketAccountChara = (world_name, chara) => {
         targetSocket["account"]["chara"] &&
         targetSocket["account"]["chara"]["id"] === chara["id"]
       ) {
-        readCharaById(world_name, chara["id"], (newChara) => {
+        readChara(world_name, chara["id"], (newChara) => {
           if (newChara) {
             targetSocket["account"]["chara"] = newChara;
           }

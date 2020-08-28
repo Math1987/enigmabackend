@@ -5,6 +5,7 @@ const account_data_1 = require("./../data/account.data");
 const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
 const player_data_1 = require("../data/player.data");
+const chara_controller_1 = require("./chara.controller");
 const checkEmail = (email, callback) => {
     account_data_1.checkEmailData(email, (accountRes) => {
         if (accountRes && accountRes.length > 0) {
@@ -31,8 +32,10 @@ const readAccountByToken = (token, callback) => {
             if (tokenRes && tokenRes['id']) {
                 account_data_1.readAccountDataById(tokenRes['id'], accountRes => {
                     if (accountRes && accountRes['world']) {
-                        player_data_1.readCharaById(accountRes['world'], accountRes['id'], charaRes => {
-                            accountRes['chara'] = charaRes;
+                        chara_controller_1.readChara(accountRes['world'], accountRes['id'], charaRes => {
+                            if (charaRes) {
+                                accountRes['chara'] = charaRes;
+                            }
                             callback(accountRes);
                         });
                     }

@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addSkillRequest = exports.createCharaRequest = exports.addSkill = exports.getCharasOnPositions = exports.createChara = void 0;
+exports.addSkillRequest = exports.createCharaRequest = exports.addSkill = exports.readCharas = exports.readChara = exports.getCharasOnPositions = exports.createChara = void 0;
 const main_patterns_1 = require("./../patterns/main.patterns");
 const account_data_1 = require("./../data/account.data");
 const player_data_1 = require("./../data/player.data");
 const patternPlayer_1 = require("../data/patternPlayer");
+const historic_data_1 = require("../data/historic.data");
 const createChara = (world_name, datas, callback) => {
     if (datas["sexe"] && datas["race"]) {
         datas["key_"] = `${datas["race"]}${datas["sexe"]}`;
@@ -33,6 +34,35 @@ const getCharasOnPositions = (world_name, positions, callback) => {
     callback(null);
 };
 exports.getCharasOnPositions = getCharasOnPositions;
+const readChara = (world_name, id, callback) => {
+    player_data_1.readCharaById(world_name, id, (charaRes) => {
+        historic_data_1.readHistoricData(world_name, id, (historic) => {
+            if (charaRes) {
+                charaRes["historic"] = historic;
+            }
+            callback(charaRes);
+        });
+    });
+};
+exports.readChara = readChara;
+const readCharas = (world_name, ids, callback) => {
+    let i = 0;
+    let arr = [];
+    let func = () => {
+        readChara(world_name, ids[i], (res) => {
+            arr.push(res);
+            if (i < ids.length - 1) {
+                i++;
+                func();
+            }
+            else {
+                callback(arr);
+            }
+        });
+    };
+    func();
+};
+exports.readCharas = readCharas;
 const addSkill = (req, res) => {
     const user = req["user"];
     const values = req["chara"];

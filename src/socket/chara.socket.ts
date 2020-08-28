@@ -18,6 +18,7 @@ const initCharaSocket = (socket, account) => {
     });
 
     socket.on("attack", (targetId, callback) => {
+      console.log("attack!");
       pattern.attack(world_name, id, targetId, callback);
     });
   }

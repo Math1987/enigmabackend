@@ -4,15 +4,14 @@ let PATTERNS = {};
 
 const initMainPatterns = (callBack) => {
   PATTERNS = {
-    humanmasculin: new Player(),
-    humanfeminine: new Player(),
-    dwarhumanfeminine: new Player(),
-    dwarfmasculin: new Player(),
-    dwarffeminine: new Player(),
-    elfmasculin: new Player(),
-    elffeminine: new Player(),
-    vampiremasculin: new Player(),
-    vampirefeminine: new Player(),
+    humanmasculin: new Player("humanmasculin"),
+    humanfeminine: new Player("humanfeminine"),
+    dwarfmasculin: new Player("dwarfmasculin"),
+    dwarffeminine: new Player("dwarffeminine"),
+    elfmasculin: new Player("elfmasculin"),
+    elffeminine: new Player("elffeminine"),
+    vampiremasculin: new Player("vampiremasculin"),
+    vampirefeminine: new Player("vampirefeminine"),
   };
 
   callBack("ok");

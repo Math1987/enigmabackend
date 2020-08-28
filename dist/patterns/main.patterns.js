@@ -5,15 +5,14 @@ const chara_pattern_1 = require("./chara.pattern");
 let PATTERNS = {};
 const initMainPatterns = (callBack) => {
     PATTERNS = {
-        humanmasculin: new chara_pattern_1.Player(),
-        humanfeminine: new chara_pattern_1.Player(),
-        dwarhumanfeminine: new chara_pattern_1.Player(),
-        dwarfmasculin: new chara_pattern_1.Player(),
-        dwarffeminine: new chara_pattern_1.Player(),
-        elfmasculin: new chara_pattern_1.Player(),
-        elffeminine: new chara_pattern_1.Player(),
-        vampiremasculin: new chara_pattern_1.Player(),
-        vampirefeminine: new chara_pattern_1.Player(),
+        humanmasculin: new chara_pattern_1.Player("humanmasculin"),
+        humanfeminine: new chara_pattern_1.Player("humanfeminine"),
+        dwarfmasculin: new chara_pattern_1.Player("dwarfmasculin"),
+        dwarffeminine: new chara_pattern_1.Player("dwarffeminine"),
+        elfmasculin: new chara_pattern_1.Player("elfmasculin"),
+        elffeminine: new chara_pattern_1.Player("elffeminine"),
+        vampiremasculin: new chara_pattern_1.Player("vampiremasculin"),
+        vampirefeminine: new chara_pattern_1.Player("vampirefeminine"),
     };
     callBack("ok");
 };
