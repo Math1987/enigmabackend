@@ -7,7 +7,7 @@ let transporter = null;
 if (environment.mode === "prod") {
   transporter = nodemailer.createTransport(
     sparkPostTransport({
-      sparkPostApiKey: "a85b730b332f3feccd149c8d61ed531e94d77ab8",
+      sparkPostApiKey: environment.sparkPost, //"a85b730b332f3feccd149c8d61ed531e94d77ab8",
       //endpoint: "https://api.eu.sparkpost.com",
     })
   );
@@ -25,15 +25,15 @@ if (environment.mode === "prod") {
 const emailChecker = {};
 const crypto = require("crypto");
 const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+const IV = crypto.randomBytes(16);
 
-function encrypt(text) {
-  let cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(key), iv);
+const encrypt = (text) => {
+  let cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(key), IV);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return { iv: iv.toString("hex"), encryptedData: encrypted.toString("hex") };
+  return { iv: IV.toString("hex"), encryptedData: encrypted.toString("hex") };
 }
-function decrypt(text) {
+const decrypt = (text) => {
   let iv = Buffer.from(text.iv, "hex");
   let encryptedText = Buffer.from(text.encryptedData, "hex");
   let decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(key), iv);
@@ -44,7 +44,7 @@ function decrypt(text) {
 
 const confirmEmail = (code: string, callBack) => {
   if (emailChecker[code]) {
-    let email = decrypt({ iv: iv, encryptedData: code });
+    let email = decrypt({ iv: IV, encryptedData: code });
     if (emailChecker[code]["email"] === email) {
       createAccountData(
         emailChecker[code].email,
@@ -72,10 +72,10 @@ async function sendWelcomEmail(user: Object) {
     const data = await transporter.sendMail({
       from: "enigma@terrajdr.com",
       to: user["email"],
-      subject: "Bienvenue sur Enigma!",
+      subject: "Votre inscription sur Enigma!",
       text: `Bonjour ${user["name"]}. 
-      \n Bienvenue sur Enigma! 
-      \n Cliquez sur ce lien pour activer votre compte: 
+      \n Votre inscription sur Enigma a bien été prise en compte. 
+      \n Cliquez sur ce lien pour finaliser votre inscription: 
       \n ${environment.frontURL}/confirmer?${crypter.encryptedData}`,
     });
 
@@ -85,4 +85,28 @@ async function sendWelcomEmail(user: Object) {
   }
 }
 
-export { confirmEmail, sendWelcomEmail };
+async function sendResetEmail(email) {
+  try {
+
+    console.log('crypte', email);
+    var crypter = encrypt(email);
+    console.log(crypter);
+    emailChecker[crypter.encryptedData] = email;
+
+    const data = await transporter.sendMail({
+      from: "enigma@terrajdr.com",
+      to: email,
+      subject: "réinitialisation de votre mot de passe",
+      text: `Bonjour. 
+      \n Pour réinitialiser votre mot de passe,
+      \n Cliquez sur ce lien: 
+      \n ${environment.frontURL}/connexion/reinitialiserMotDePasse?code=${crypter.encryptedData}`,
+    });
+
+    console.log("email ok");
+  } catch (e) {
+    console.log("error crypter ", e);
+  }
+}
+
+export { IV, confirmEmail, sendWelcomEmail, encrypt, decrypt, sendResetEmail };

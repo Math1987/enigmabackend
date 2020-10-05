@@ -1,8 +1,7 @@
-import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData } from "./../data/account.data";
-import { sendWelcomEmail, confirmEmail } from "./email.controller";
+import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData, replacePasswordData } from "./../data/account.data";
+import { IV, sendWelcomEmail, confirmEmail, encrypt, sendResetEmail, decrypt } from "./email.controller";
 import { createToken, readToken } from "./token.controller";
 import { readCharaById } from "../data/player.data";
-import { readHistoricData } from "../data/historic.data";
 import { readChara } from "./chara.controller";
 
 const checkEmail = (email: string, callback: Function) => {
@@ -141,4 +140,33 @@ export const readAccountRequest = (req: Request, res: Response ) => {
   }else{
     res.status(401).send(null);
   }
+}
+export const resetPasswordRequest = (req: Request, res : Response ) => {
+
+  checkEmail(req.body['email'], resEmail => {
+
+    if ( resEmail ){
+
+      sendResetEmail(req.body['email']);
+
+      res.status(200).send('ok');
+
+    }else{
+      res.status(404).send('email not found');
+    }
+  })
+}
+
+export const confirmResetPasswordRequest = (req: Request, res : Response ) => {
+
+  console.log(req.body['code']);
+  const email = decrypt({ iv: IV, encryptedData: req.body['code'] });
+  if ( email ){
+
+    replacePasswordData(email, req.body['password'], resData => {
+      res.status(200).send(resData);
+    });
+
+  }
+
 }

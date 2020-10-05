@@ -24,19 +24,26 @@ const environment_1 = require("./environment/environment");
  * init the database with Data
  */
 const app = express_1.default();
-const PORT = 4040;
+let PORT = 4040;
 app.set("port", PORT);
 const path = require("path");
 var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
+const http = require("http");
 const https = require("https");
 console.log(environment_1.environment);
-const server = https.createServer({
+const serverHttp = http.createServer((req, res) => {
+    res.writeHead(301, {
+        Location: `https://${req.headers.host}${req.url}`,
+    });
+    res.end();
+});
+const serverHttps = https.createServer({
     key: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.key)),
     cert: fs.readFileSync(path.join(__dirname, environment_1.environment.ssl.cert)),
 }, app);
-user_socket_1.runSocket(server);
+user_socket_1.runSocket(serverHttps);
 const morgan = require("morgan");
 app.use(morgan("short"));
 app.use(cookieParser());
@@ -49,7 +56,6 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     next();
 });
-//app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
     if (req.method === "OPTIONS") {
         res.status(200).send("");
@@ -57,9 +63,6 @@ app.use((req, res, next) => {
     else {
         next();
     }
-});
-app.get("", (req, res) => {
-    res.status(200).send("OK");
 });
 app.use("/api", api_router_1.routerApi);
 app.use("/api/metadatas", metadata_router_1.routerMetadata);
@@ -69,10 +72,17 @@ app.use("/api/world", world_router_1.routerWorld);
 app.use("/api/account", account_router_1.routerAccount);
 app.use("/api/u", user_router_1.routerUser);
 app.use("/api/u/chara", chara_router_1.routerChara);
+app.use(express_1.default.static(path.join(__dirname, "public")));
+app.get("/*", (req, res) => {
+    res.sendFile(process.cwd() + "/public/index.html");
+});
 data_1.initData(function (data) {
     main_patterns_1.initMainPatterns((patterns) => {
         world_controller_1.initWorld((worlds) => {
-            server.listen(PORT);
+            serverHttp.listen(environment_1.environment.portHttp);
+            serverHttps.listen(environment_1.environment.portHttps);
+            console.log("runing http on " + environment_1.environment.portHttp);
+            console.log("runing https on " + environment_1.environment.portHttps);
         });
     });
 });

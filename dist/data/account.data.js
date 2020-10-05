@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
+exports.replacePasswordData = exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
 const data_1 = require("./data");
 const TABLE_NAME = `accounts`;
 const initAccountData = (callBack) => {
@@ -92,3 +92,18 @@ const readAccountDataById = (id, callBack) => {
     });
 };
 exports.readAccountDataById = readAccountDataById;
+const replacePasswordData = (email, password, callback) => {
+    data_1.successOrFailData(`
+  UPDATE ${TABLE_NAME} 
+  SET password =  MD5("${password}")
+  WHERE email = "${email}" 
+  `, (res) => {
+        if (res && res.length > 0) {
+            callback(true);
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.replacePasswordData = replacePasswordData;

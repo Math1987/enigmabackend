@@ -13,4 +13,6 @@ router.post("/signup", account_controller_1.signUpRequest);
 router.post("/confirm", account_controller_1.confirmRequest);
 router.post("/signIn", account_controller_1.singInRequest);
 router.post("/readAccount", account_controller_1.readAccountRequest);
+router.post("/resetPassword", account_controller_1.resetPasswordRequest);
+router.post("/confirmResetPassword", account_controller_1.confirmResetPasswordRequest);
 exports.routerAccount = router;

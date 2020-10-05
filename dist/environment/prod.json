@@ -1,14 +1,17 @@
 {
   "mode": "prod",
+  "portHttp": "80",
+  "portHttps": "443",
   "ssl": {
     "key": "ssl/key.pem",
     "cert": "ssl/crt.pem"
   },
   "db": {
-    "host": "www.terrajdr.com",
-    "user": "terrajdr_enigmajdr",
-    "password": "Hr9saKxnuz8phyR",
-    "name": "terrajdr_enigma_db"
+    "host": "localhost",
+    "user": "root",
+    "password": "test",
+    "name": "enigma_db"
   },
-  "frontURL": "https://www.terrajdr.com"
+  "frontURL": "https://www.enigmajdr.com",
+  "sparkPost": "4a72e13aba49c841f45c9574b11308e034894b85"
 }

@@ -4,7 +4,9 @@ import {
   confirmRequest,
   signUpRequest,
   singInRequest,
-  readAccountRequest,
+  readAccountRequest, 
+  resetPasswordRequest,
+  confirmResetPasswordRequest
 } from "./../controllers/account.controller";
 const express = require("express");
 const router = express.Router();
@@ -19,5 +21,7 @@ router.post("/signup", signUpRequest);
 router.post("/confirm", confirmRequest);
 router.post("/signIn", singInRequest);
 router.post("/readAccount", readAccountRequest);
+router.post("/resetPassword", resetPasswordRequest);
+router.post("/confirmResetPassword", confirmResetPasswordRequest);
 
 export const routerAccount = router;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
+exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
 const account_data_1 = require("./../data/account.data");
 const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
@@ -148,5 +148,25 @@ exports.readAccountRequest = (req, res) => {
     }
     else {
         res.status(401).send(null);
+    }
+};
+exports.resetPasswordRequest = (req, res) => {
+    checkEmail(req.body['email'], resEmail => {
+        if (resEmail) {
+            email_controller_1.sendResetEmail(req.body['email']);
+            res.status(200).send('ok');
+        }
+        else {
+            res.status(404).send('email not found');
+        }
+    });
+};
+exports.confirmResetPasswordRequest = (req, res) => {
+    console.log(req.body['code']);
+    const email = email_controller_1.decrypt({ iv: email_controller_1.IV, encryptedData: req.body['code'] });
+    if (email) {
+        account_data_1.replacePasswordData(email, req.body['password'], resData => {
+            res.status(200).send(resData);
+        });
     }
 };

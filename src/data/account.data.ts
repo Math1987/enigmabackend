@@ -105,6 +105,25 @@ const readAccountDataById = (id: String, callBack: CallableFunction) => {
   );
 };
 
+const replacePasswordData = (email : string, password : string, callback : CallableFunction){
+
+  successOrFailData(
+    `
+  UPDATE ${TABLE_NAME} 
+  SET password =  MD5("${password}")
+  WHERE email = "${email}" 
+  `,
+    (res) => {
+      if (res && res.length > 0) {
+        callback(true);
+      } else {
+        callback(null);
+      }
+    }
+  );
+
+}
+
 export {
   initAccountData,
   checkEmailData,
@@ -113,4 +132,5 @@ export {
   createAccountData,
   readAccountData,
   readAccountDataById,
+  replacePasswordData
 };
