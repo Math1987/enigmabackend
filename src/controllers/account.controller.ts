@@ -121,7 +121,7 @@ export const singInRequest  = (req: Request, res: Response) => {
         }
 
       } else {
-        res.status(401).json("error");
+        res.status(401).json( {error : "wrong password"});
       }
     });
   } else {
