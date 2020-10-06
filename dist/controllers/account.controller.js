@@ -127,7 +127,7 @@ exports.singInRequest = (req, res) => {
                 }
             }
             else {
-                res.status(401).json({ error: 'wrong password' });
+                res.status(401).json({ error: "wrong password" });
             }
         });
     }
