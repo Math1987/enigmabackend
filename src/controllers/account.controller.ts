@@ -1,7 +1,7 @@
-import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData, replacePasswordData } from "./../data/account.data";
+import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData, replacePasswordData, removeAccountDataById } from "./../data/account.data";
 import { IV, sendWelcomEmail, confirmEmail, encrypt, sendResetEmail, decrypt } from "./email.controller";
 import { createToken, readToken } from "./token.controller";
-import { readCharaById } from "../data/player.data";
+import { readCharaById, removeCharaDataById } from "../data/player.data";
 import { readChara } from "./chara.controller";
 
 const checkEmail = (email: string, callback: Function) => {
@@ -168,5 +168,40 @@ export const confirmResetPasswordRequest = (req: Request, res : Response ) => {
     });
 
   }
+
+}
+export const removeAccountRequest = ( req:Request, res : Response ) => {
+    console.log('REMOVE ACCOUNT', req['account'], req['account']['chara']);
+    if ( req['account']['chara'] ){
+
+      removeCharaDataById(req['account']['world'], req['account']['chara']['id'], removeCharaRes => {
+
+        console.log(removeCharaRes);
+
+        removeAccountDataById(req['account']['id'], removeAccountRes => {
+
+          console.log(removeAccountRes);
+          res.status(200).send('ok');
+
+        });
+
+      });
+
+    }
+
+
+}
+
+export const midleWearTokenSecur = (req:Request, res: Response, next ) => {
+
+    const token = req.headers['authtoken'];
+    if (token) {
+      readAccountByToken(token, (values) => {
+        req["account"] = values;
+        next();
+      });
+    } else {
+      res.status(401).send("need token");
+    }
 
 }

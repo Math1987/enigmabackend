@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = exports.TABLE_PLAYERS = void 0;
+exports.removeCharaDataById = exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = exports.TABLE_PLAYERS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -293,3 +293,18 @@ const updateCharaData = (world_name, chara, pattern, callback) => {
     }
 };
 exports.updateCharaData = updateCharaData;
+const removeCharaDataById = (world_name, id, callback) => {
+    data_1.successOrFailData(`
+  DELETE FROM ${world_name}_${TABLE_NAME}  
+  WHERE id = "${id}"
+          `, (res) => {
+        if (res) {
+            console.log('remove done', res);
+            callback('done');
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.removeCharaDataById = removeCharaDataById;

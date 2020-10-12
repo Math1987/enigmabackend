@@ -13,7 +13,14 @@ const initAccountData = (callBack: CallableFunction) => {
           admin INT
           )
       `;
-  successOrFailData(sql, callBack);
+  successOrFailData(sql, createRes => {
+
+    successOrFailData( ` 
+    ALTER TABLE ${TABLE_NAME}
+    ADD inscription TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    `, callBack);
+
+  });
 };
 const checkEmailData = (email: String, callBack: CallableFunction) => {
   let sql = `
@@ -104,6 +111,22 @@ const readAccountDataById = (id: String, callBack: CallableFunction) => {
     }
   );
 };
+const removeAccountDataById = (id: String, callback : CallableFunction) => {
+  successOrFailData(
+    `
+  DELETE FROM ${TABLE_NAME} 
+  WHERE id = "${id}"
+          `,
+    (res) => {
+      if (res ) {
+        console.log('remove done', res);
+        callback('done');
+      } else {
+        callback(null);
+      }
+    }
+  );
+}
 
 const replacePasswordData = (email : string, password : string, callback : CallableFunction){
 
@@ -132,5 +155,6 @@ export {
   createAccountData,
   readAccountData,
   readAccountDataById,
-  replacePasswordData
+  replacePasswordData,
+  removeAccountDataById
 };

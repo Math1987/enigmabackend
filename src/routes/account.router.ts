@@ -6,7 +6,10 @@ import {
   singInRequest,
   readAccountRequest, 
   resetPasswordRequest,
-  confirmResetPasswordRequest
+  confirmResetPasswordRequest,
+  readAccountByToken,
+  midleWearTokenSecur,
+  removeAccountRequest
 } from "./../controllers/account.controller";
 const express = require("express");
 const router = express.Router();
@@ -23,5 +26,9 @@ router.post("/signIn", singInRequest);
 router.post("/readAccount", readAccountRequest);
 router.post("/resetPassword", resetPasswordRequest);
 router.post("/confirmResetPassword", confirmResetPasswordRequest);
+
+router.use(midleWearTokenSecur);
+
+router.get("/removeAccount", removeAccountRequest);
 
 export const routerAccount = router;

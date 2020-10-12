@@ -15,4 +15,6 @@ router.post("/signIn", account_controller_1.singInRequest);
 router.post("/readAccount", account_controller_1.readAccountRequest);
 router.post("/resetPassword", account_controller_1.resetPasswordRequest);
 router.post("/confirmResetPassword", account_controller_1.confirmResetPasswordRequest);
+router.use(account_controller_1.midleWearTokenSecur);
+router.get("/removeAccount", account_controller_1.removeAccountRequest);
 exports.routerAccount = router;

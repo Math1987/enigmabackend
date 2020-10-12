@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
+exports.midleWearTokenSecur = exports.removeAccountRequest = exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
 const account_data_1 = require("./../data/account.data");
 const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
@@ -168,5 +168,29 @@ exports.confirmResetPasswordRequest = (req, res) => {
         account_data_1.replacePasswordData(email, req.body['password'], resData => {
             res.status(200).send(resData);
         });
+    }
+};
+exports.removeAccountRequest = (req, res) => {
+    console.log('REMOVE ACCOUNT', req['account'], req['account']['chara']);
+    if (req['account']['chara']) {
+        player_data_1.removeCharaDataById(req['account']['world'], req['account']['chara']['id'], removeCharaRes => {
+            console.log(removeCharaRes);
+            account_data_1.removeAccountDataById(req['account']['id'], removeAccountRes => {
+                console.log(removeAccountRes);
+                res.status(200).send('ok');
+            });
+        });
+    }
+};
+exports.midleWearTokenSecur = (req, res, next) => {
+    const token = req.headers['authtoken'];
+    if (token) {
+        readAccountByToken(token, (values) => {
+            req["account"] = values;
+            next();
+        });
+    }
+    else {
+        res.status(401).send("need token");
     }
 };

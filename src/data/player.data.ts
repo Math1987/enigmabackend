@@ -331,7 +331,25 @@ const updateCharaData = (world_name:string, chara, pattern, callback )=>{
 
 }
 
-export {buildWorldPlayerData, 
+const removeCharaDataById = (  world_name: string, id: String,callback : CallableFunction) => {
+  successOrFailData(
+    `
+  DELETE FROM ${world_name}_${TABLE_NAME}  
+  WHERE id = "${id}"
+          `,
+    (res) => {
+      if (res ) {
+        console.log('remove done', res);
+        callback('done');
+      } else {
+        callback(null);
+      }
+    }
+  );
+}
+
+export {
+  buildWorldPlayerData, 
   insertCharaData,
   readCharaValue,
   readCharaValues,
@@ -341,6 +359,7 @@ export {buildWorldPlayerData,
   readCharasById,
   readAllPlayersData,
   updateCharaData,
-   readCharasByPositions,
-   updateCharaPositionData
-  };
+  readCharasByPositions,
+  updateCharaPositionData,
+  removeCharaDataById
+};

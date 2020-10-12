@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.replacePasswordData = exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
+exports.removeAccountDataById = exports.replacePasswordData = exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
 const data_1 = require("./data");
 const TABLE_NAME = `accounts`;
 const initAccountData = (callBack) => {
@@ -14,7 +14,12 @@ const initAccountData = (callBack) => {
           admin INT
           )
       `;
-    data_1.successOrFailData(sql, callBack);
+    data_1.successOrFailData(sql, createRes => {
+        data_1.successOrFailData(` 
+    ALTER TABLE ${TABLE_NAME}
+    ADD inscription TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    `, callBack);
+    });
 };
 exports.initAccountData = initAccountData;
 const checkEmailData = (email, callBack) => {
@@ -92,6 +97,21 @@ const readAccountDataById = (id, callBack) => {
     });
 };
 exports.readAccountDataById = readAccountDataById;
+const removeAccountDataById = (id, callback) => {
+    data_1.successOrFailData(`
+  DELETE FROM ${TABLE_NAME} 
+  WHERE id = "${id}"
+          `, (res) => {
+        if (res) {
+            console.log('remove done', res);
+            callback('done');
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.removeAccountDataById = removeAccountDataById;
 const replacePasswordData = (email, password, callback) => {
     data_1.successOrFailData(`
   UPDATE ${TABLE_NAME} 
