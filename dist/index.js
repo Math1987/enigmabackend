@@ -93,3 +93,6 @@ cron.schedule("0 00 0 * * *", () => {
     sheduled: true,
     timezone: "Europe/Paris",
 });
+
+
+console.log('running version 0.0.7');

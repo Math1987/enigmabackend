@@ -9,7 +9,7 @@
   "db": {
     "host": "localhost",
     "user": "root",
-    "password": "test",
+    "password": "",
     "name": "enigma_db"
   },
   "frontURL": "https://www.enigmajdr.com",
