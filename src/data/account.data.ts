@@ -51,6 +51,45 @@ const updateAccountWorldData = (id, value, callback) => {
     }
   );
 };
+
+const updateAccountStringsData = (account, values, callback ) => {
+
+
+  let updates_ = `UPDATE ${TABLE_NAME} SET `;
+
+  for ( let key in values ){
+
+      updates_ += `${key} = "${values[key]}",`
+
+  }
+  if ( updates_[updates_.length-1] === ","){
+    let dataReq = updates_.slice(0, -1) ;
+
+    dataReq += ` WHERE id = "${account.id}"` ;
+
+    successOrFailData(dataReq, res => {
+
+      if ( res ){
+
+        readAccountDataById(account.id, callback);
+
+      }else{
+
+        callback(res);
+
+      }
+
+
+    })
+
+
+  }
+
+
+  callback(null);
+
+}
+
 const createAccountData = (
   email: String,
   password: String,
@@ -94,6 +133,7 @@ const readAccountData = (
     }
   );
 };
+
 const readAccountDataById = (id: String, callBack: CallableFunction) => {
   successOrFailData(
     `
@@ -156,5 +196,6 @@ export {
   readAccountData,
   readAccountDataById,
   replacePasswordData,
-  removeAccountDataById
+  removeAccountDataById,
+  updateAccountStringsData
 };

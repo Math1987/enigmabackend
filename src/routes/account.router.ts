@@ -9,7 +9,8 @@ import {
   confirmResetPasswordRequest,
   readAccountByToken,
   midleWearTokenSecur,
-  removeAccountRequest
+  removeAccountRequest,
+  updateAccountRequest
 } from "./../controllers/account.controller";
 const express = require("express");
 const router = express.Router();
@@ -29,6 +30,7 @@ router.post("/confirmResetPassword", confirmResetPasswordRequest);
 
 router.use(midleWearTokenSecur);
 
+router.post('/update', updateAccountRequest);
 router.get("/removeAccount", removeAccountRequest);
 
 export const routerAccount = router;

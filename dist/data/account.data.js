@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAccountDataById = exports.replacePasswordData = exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
+exports.updateAccountStringsData = exports.removeAccountDataById = exports.replacePasswordData = exports.readAccountDataById = exports.readAccountData = exports.createAccountData = exports.updateAccountWorldData = exports.checkAccountNameData = exports.checkEmailData = exports.initAccountData = void 0;
 const data_1 = require("./data");
 const TABLE_NAME = `accounts`;
 const initAccountData = (callBack) => {
@@ -50,6 +50,26 @@ const updateAccountWorldData = (id, value, callback) => {
     });
 };
 exports.updateAccountWorldData = updateAccountWorldData;
+const updateAccountStringsData = (account, values, callback) => {
+    let updates_ = `UPDATE ${TABLE_NAME} SET `;
+    for (let key in values) {
+        updates_ += `${key} = "${values[key]}",`;
+    }
+    if (updates_[updates_.length - 1] === ",") {
+        let dataReq = updates_.slice(0, -1);
+        dataReq += ` WHERE id = "${account.id}"`;
+        data_1.successOrFailData(dataReq, res => {
+            if (res) {
+                readAccountDataById(account.id, callback);
+            }
+            else {
+                callback(res);
+            }
+        });
+    }
+    callback(null);
+};
+exports.updateAccountStringsData = updateAccountStringsData;
 const createAccountData = (email, password, name, admin, callBack) => {
     data_1.successOrFailData(`
   INSERT INTO ${TABLE_NAME}

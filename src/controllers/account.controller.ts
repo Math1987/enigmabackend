@@ -1,4 +1,4 @@
-import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData, replacePasswordData, removeAccountDataById } from "./../data/account.data";
+import { readAccountDataById, checkEmailData, checkAccountNameData, readAccountData, replacePasswordData, removeAccountDataById, updateAccountStringsData } from "./../data/account.data";
 import { IV, sendWelcomEmail, confirmEmail, encrypt, sendResetEmail, decrypt } from "./email.controller";
 import { createToken, readToken } from "./token.controller";
 import { readCharaById, removeCharaDataById } from "../data/player.data";
@@ -188,6 +188,24 @@ export const removeAccountRequest = ( req:Request, res : Response ) => {
       });
 
     }
+
+
+}
+
+export const updateAccountRequest = (req:Request, res:Response) => {
+
+  if ( req.body && req['account'] ){
+
+    updateAccountStringsData(req['account'],  req.body, callback => {
+
+      if ( callback ){
+        res.status(200).send(callback);
+      }
+
+    });
+
+  }
+
 
 
 }

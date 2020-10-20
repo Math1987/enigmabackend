@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.midleWearTokenSecur = exports.removeAccountRequest = exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
+exports.midleWearTokenSecur = exports.updateAccountRequest = exports.removeAccountRequest = exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
 const account_data_1 = require("./../data/account.data");
 const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
@@ -179,6 +179,15 @@ exports.removeAccountRequest = (req, res) => {
                 console.log(removeAccountRes);
                 res.status(200).send('ok');
             });
+        });
+    }
+};
+exports.updateAccountRequest = (req, res) => {
+    if (req.body && req['account']) {
+        account_data_1.updateAccountStringsData(req['account'], req.body, callback => {
+            if (callback) {
+                res.status(200).send(callback);
+            }
         });
     }
 };

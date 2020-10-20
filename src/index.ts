@@ -106,3 +106,4 @@ cron.schedule(
     timezone: "Europe/Paris",
   }
 );
+console.log('add version:', '0.0.7');
