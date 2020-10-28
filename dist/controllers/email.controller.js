@@ -67,6 +67,10 @@ const confirmEmail = (code, callBack) => {
         callBack(false);
     }
 };
+
+
+
+
 exports.confirmEmail = confirmEmail;
 function sendWelcomEmail(user) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -78,10 +82,11 @@ function sendWelcomEmail(user) {
                 from: "enigma@terrajdr.com",
                 to: user["email"],
                 subject: "Votre inscription sur Enigma!",
-                text: `Bonjour ${user["name"]}. 
-      \n Votre inscription sur Enigma a bien été prise en compte. 
-      \n Cliquez sur ce lien pour finaliser votre inscription: 
-      \n ${environment_1.environment.frontURL}/confirmer?${crypter.encryptedData}`,
+                text: `Hey ${user["name"]}!. 
+      \n Pour continuer l'avanture sur Enigma JDR, voici le chemin à suivre : 
+      \n ${environment_1.environment.frontURL}/confirmer?${crypter.encryptedData}
+      \n A trés bientôt.
+      `,
             });
             console.log("email ok");
         }

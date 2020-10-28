@@ -149,10 +149,10 @@ export const resetPasswordRequest = (req: Request, res : Response ) => {
 
       sendResetEmail(req.body['email']);
 
-      res.status(200).send('ok');
+      res.status(200).send({ status : "done"});
 
     }else{
-      res.status(404).send('email not found');
+      res.status(404).send({err : 'email not found'});
     }
   })
 }
@@ -171,17 +171,15 @@ export const confirmResetPasswordRequest = (req: Request, res : Response ) => {
 
 }
 export const removeAccountRequest = ( req:Request, res : Response ) => {
-    console.log('REMOVE ACCOUNT', req['account'], req['account']['chara']);
+
     if ( req['account']['chara'] ){
 
       removeCharaDataById(req['account']['world'], req['account']['chara']['id'], removeCharaRes => {
 
-        console.log(removeCharaRes);
-
         removeAccountDataById(req['account']['id'], removeAccountRes => {
 
           console.log(removeAccountRes);
-          res.status(200).send('ok');
+          res.status(200).send({status: 'ok'});
 
         });
 

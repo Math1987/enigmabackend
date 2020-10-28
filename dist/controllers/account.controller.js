@@ -154,10 +154,10 @@ exports.resetPasswordRequest = (req, res) => {
     checkEmail(req.body['email'], resEmail => {
         if (resEmail) {
             email_controller_1.sendResetEmail(req.body['email']);
-            res.status(200).send('ok');
+            res.status(200).send({ status: "done" });
         }
         else {
-            res.status(404).send('email not found');
+            res.status(404).send({ err: 'email not found' });
         }
     });
 };
@@ -171,13 +171,11 @@ exports.confirmResetPasswordRequest = (req, res) => {
     }
 };
 exports.removeAccountRequest = (req, res) => {
-    console.log('REMOVE ACCOUNT', req['account'], req['account']['chara']);
     if (req['account']['chara']) {
         player_data_1.removeCharaDataById(req['account']['world'], req['account']['chara']['id'], removeCharaRes => {
-            console.log(removeCharaRes);
             account_data_1.removeAccountDataById(req['account']['id'], removeAccountRes => {
                 console.log(removeAccountRes);
-                res.status(200).send('ok');
+                res.status(200).send({ status: 'ok' });
             });
         });
     }
