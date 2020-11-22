@@ -18,6 +18,8 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
       name VARCHAR(36),
       position POINT,
 
+      clan VARCHAR(55),
+
       life FLOAT ,
       life_max FLOAT,
 
@@ -43,6 +45,9 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
       callBack(res);
     }
   );
+
+
+
 }
 const insertCharaData = (world_name, chara, callBack) => {
   successOrFailData(
@@ -53,6 +58,7 @@ const insertCharaData = (world_name, chara, callBack) => {
         key_,
         name,
         position,
+        clan,
         life,
         life_max,
         water,
@@ -74,6 +80,7 @@ const insertCharaData = (world_name, chara, callBack) => {
         "${chara.key_}",
         "${chara.name}",
         POINT(0,0),
+        "${chara.clan}",
         ${chara.life},
         ${chara.life_max},
         ${chara.water},

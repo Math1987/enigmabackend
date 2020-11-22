@@ -73,10 +73,11 @@ async function sendWelcomEmail(user: Object) {
       from: "enigma@terrajdr.com",
       to: user["email"],
       subject: "Votre inscription sur Enigma!",
-      text: `Bonjour ${user["name"]}. 
-      \n Votre inscription sur Enigma a bien été prise en compte. 
-      \n Cliquez sur ce lien pour finaliser votre inscription: 
-      \n ${environment.frontURL}/confirmer?${crypter.encryptedData}`,
+      text: `Hey ${user["name"]}!. 
+      \n Pour continuer l'avanture sur Enigma JDR, voici le chemin à suivre: 
+      \n ${environment.frontURL}/confirmer?${crypter.encryptedData}
+      \n A trés bientôt.
+      `,
     });
 
     console.log("email ok");

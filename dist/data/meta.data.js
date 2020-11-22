@@ -196,6 +196,34 @@ const initMetaValuesData = (callBack) => {
             description_fr: `Dieu des ombres`,
             img: "/assets/images/ombre.png",
         },
+        {
+            key_: "darkclan",
+            type: "clan",
+            name_fr: `clan de la sombritude`,
+            description_fr: `Ce clan est sombre...et il fait froid.`,
+            img: "/assets/images/ombre.png",
+        },
+        {
+            key_: "niceclan",
+            type: "clan",
+            name_fr: `clan des gentils.`,
+            description_fr: `Ce clan est celui des gentils. Les méchants n'ont qu'à bien se tenir.`,
+            img: "/assets/images/ombre.png",
+        },
+        {
+            key_: "lightclan",
+            type: "clan",
+            name_fr: `clan de la lumière ardante`,
+            description_fr: `Ce clan est éblouïssant.`,
+            img: "/assets/images/ombre.png",
+        },
+        {
+            key_: "badclan",
+            type: "clan",
+            name_fr: `clan des méchants.`,
+            description_fr: `Ce clan est pour les méchants pas beaux qui veulent faire le mal.`,
+            img: "/assets/images/ombre.png",
+        },
     ];
     let valString = "";
     for (let row of values) {

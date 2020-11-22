@@ -7,6 +7,7 @@ const player_data_1 = require("./../data/player.data");
 const patternPlayer_1 = require("../data/patternPlayer");
 const historic_data_1 = require("../data/historic.data");
 const createChara = (world_name, datas, callback) => {
+    console.log('create chara', datas);
     if (datas["sexe"] && datas["race"]) {
         datas["key_"] = `${datas["race"]}${datas["sexe"]}`;
     }

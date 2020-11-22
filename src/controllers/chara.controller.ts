@@ -10,6 +10,7 @@ import { readPlayerPatternData } from "../data/patternPlayer";
 import { readHistoricData } from "../data/historic.data";
 
 const createChara = (world_name: string, datas: {}, callback) => {
+  console.log('create chara', datas);
   if (datas["sexe"] && datas["race"]) {
     datas["key_"] = `${datas["race"]}${datas["sexe"]}`;
   }
