@@ -150,6 +150,7 @@ export class Player extends ModelPattern {
     callback: Function
   ) {
     readCharasById(world_name, [userId, targetId], (charas) => {
+      console.log('attack, readChara', charas);
       if (charas && charas.length == 2) {
         let user = null;
         let target = null;
@@ -165,6 +166,7 @@ export class Player extends ModelPattern {
           user["action"] &&
           user["action"] > 0 &&
           target &&
+          target["clan"] !== user["clan"] &&
           user.position.x === target.position.x &&
           user.position.y === target.position.y
         ) {

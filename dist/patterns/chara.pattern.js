@@ -113,6 +113,7 @@ class Player extends model_pattern_1.ModelPattern {
     }
     attack(world_name, userId, targetId, callback) {
         player_data_1.readCharasById(world_name, [userId, targetId], (charas) => {
+            console.log('attack, readChara', charas);
             if (charas && charas.length == 2) {
                 let user = null;
                 let target = null;
@@ -128,6 +129,7 @@ class Player extends model_pattern_1.ModelPattern {
                     user["action"] &&
                     user["action"] > 0 &&
                     target &&
+                    target["clan"] !== user["clan"] &&
                     user.position.x === target.position.x &&
                     user.position.y === target.position.y) {
                     let patternTarget = main_patterns_1.getPattern(target["key"]);
