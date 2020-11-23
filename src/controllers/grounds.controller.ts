@@ -1,5 +1,20 @@
 import { getWorld } from "./world.controller";
 
+const NEUTRAL_ZONE_SIZE = 4 ;
+
+const isOnNeutralZone = (x:number, y:number) => {
+  if (
+    x >= -NEUTRAL_ZONE_SIZE/2 && 
+    x <= NEUTRAL_ZONE_SIZE/2 &&
+    y >= -NEUTRAL_ZONE_SIZE/2 &&
+    y <= NEUTRAL_ZONE_SIZE/2
+  ) {
+    return true ;
+  }else{
+    return false ;
+  }
+}
+
 const getGroundsOnPositions = (world_name, positions, callback) => {
   getWorld(world_name, (world) => {
     let grounds = [];
@@ -10,11 +25,16 @@ const getGroundsOnPositions = (world_name, positions, callback) => {
         pos.y >= -world.height / 2 &&
         pos.y <= world.height / 2
       ) {
-        grounds.push({ x: pos.x, y: pos.y, key: "desert" });
+        if ( isOnNeutralZone(pos.x, pos.y) ){
+            grounds.push({ x: pos.x, y: pos.y, key: "neutral" });
+        }else{
+          grounds.push({ x: pos.x, y: pos.y, key: "desert" });
+        }
+
       }
     }
     callback(grounds);
   });
 };
 
-export { getGroundsOnPositions };
+export { getGroundsOnPositions, isOnNeutralZone };

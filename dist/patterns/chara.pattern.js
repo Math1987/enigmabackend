@@ -11,6 +11,7 @@ const calculation_controller_1 = require("../controllers/calculation.controller"
 const rank_kill_data_1 = require("../data/rank_kill.data");
 const historic_data_1 = require("../data/historic.data");
 const chara_controller_1 = require("../controllers/chara.controller");
+const grounds_controller_1 = require("../controllers/grounds.controller");
 class Player extends model_pattern_1.ModelPattern {
     constructor(key) {
         super();
@@ -113,7 +114,6 @@ class Player extends model_pattern_1.ModelPattern {
     }
     attack(world_name, userId, targetId, callback) {
         player_data_1.readCharasById(world_name, [userId, targetId], (charas) => {
-            console.log('attack, readChara', charas);
             if (charas && charas.length == 2) {
                 let user = null;
                 let target = null;
@@ -125,126 +125,134 @@ class Player extends model_pattern_1.ModelPattern {
                         target = chara;
                     }
                 }
-                if (user &&
-                    user["action"] &&
-                    user["action"] > 0 &&
-                    target &&
-                    target["clan"] !== user["clan"] &&
-                    user.position.x === target.position.x &&
-                    user.position.y === target.position.y) {
-                    let patternTarget = main_patterns_1.getPattern(target["key"]);
-                    if (patternTarget) {
-                        player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
-                            if (actionRes) {
-                                patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
-                                    if (!counterAttackRes) {
-                                        calculation_controller_1.getCalculation((calculs) => {
-                                            if (calculs) {
-                                                let calculation = calculs["attack"];
-                                                let D100 = Math.floor(Math.random() * 99 + 1);
-                                                let skillAttack = 10;
-                                                let getMaterial = 10;
-                                                let skillDefense = 10;
-                                                let getWater = 10;
-                                                if ("attack" in user) {
-                                                    skillAttack = user["attack"];
-                                                }
-                                                if ("wood" in user) {
-                                                    getMaterial = user["wood"];
-                                                }
-                                                if ("defense" in target) {
-                                                    skillDefense = target["defense"];
-                                                }
-                                                if ("dowser" in target) {
-                                                    getWater = target["dowser"];
-                                                }
-                                                let power = Math.max(1, Math.floor((D100 *
-                                                    (Math.log10(skillAttack) +
-                                                        Math.log10((getMaterial +
-                                                            calculation.getMaterial_min) *
-                                                            calculation.getMaterial))) /
-                                                    ((Math.log10(skillDefense) +
-                                                        Math.log10((getWater + calculation.getWater_min) *
-                                                            calculation.getWater)) *
-                                                        calculation.factor)));
-                                                patternTarget.getDammage(world_name, target, power, (dammageRes) => {
-                                                    if (dammageRes) {
-                                                        historic_data_1.addInHistoric(world_name, userId, "attack", "vous avez attaqué " + target["name"], { D100: D100, power: power }, (historicRes) => {
-                                                            console.log("historic res", historicRes);
-                                                            historic_data_1.addInHistoric(world_name, targetId, "attack", user["name"] + " vous a attaqué.", { D100: D100, power: power }, (historicRes) => { });
-                                                            chara_controller_1.readCharas(world_name, [userId, targetId], (charas) => {
-                                                                console.log(charas);
-                                                                if (charas && charas.length == 2) {
-                                                                    let newUser = null;
-                                                                    let newTarget = null;
-                                                                    for (let chara of charas) {
-                                                                        if (chara["id"] === userId) {
-                                                                            newUser = chara;
-                                                                        }
-                                                                        else if (chara["id"] === targetId) {
-                                                                            newTarget = chara;
-                                                                        }
-                                                                    }
-                                                                    if (newUser && newTarget) {
-                                                                        callback({ user: newUser });
-                                                                        socket_controller_1.sendToNear(world_name, user.position, 8, "attack", {
-                                                                            user: newUser,
-                                                                            target: newTarget,
-                                                                        }, (sendRes) => { });
-                                                                    }
-                                                                    else {
-                                                                        callback({
-                                                                            err: "compatibility datas pb",
-                                                                        });
-                                                                    }
-                                                                }
-                                                                else {
-                                                                    callback({
-                                                                        err: "no datas at end",
-                                                                    });
-                                                                }
-                                                            });
-                                                        });
-                                                        if (dammageRes["die"]) {
-                                                            historic_data_1.addInHistoric(world_name, userId, "kill", "vous avez tué " + target["name"], {}, (historicRes) => { });
-                                                            rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
+                if (user && target) {
+                    if (!grounds_controller_1.isOnNeutralZone(user.position.x, user.position.y)) {
+                        if (user["action"] &&
+                            user["action"] > 0 &&
+                            target["clan"] !== user["clan"] &&
+                            user.position.x === target.position.x &&
+                            user.position.y === target.position.y) {
+                            let patternTarget = main_patterns_1.getPattern(target["key"]);
+                            if (patternTarget) {
+                                player_data_1.addCharaValueData(world_name, user.id, "action", -1, (actionRes) => {
+                                    if (actionRes) {
+                                        patternTarget.counterAttack(world_name, target, this, user, (counterAttackRes) => {
+                                            if (!counterAttackRes) {
+                                                calculation_controller_1.getCalculation((calculs) => {
+                                                    if (calculs) {
+                                                        let calculation = calculs["attack"];
+                                                        let D100 = Math.floor(Math.random() * 99 + 1);
+                                                        let skillAttack = 10;
+                                                        let getMaterial = 10;
+                                                        let skillDefense = 10;
+                                                        let getWater = 10;
+                                                        if ("attack" in user) {
+                                                            skillAttack = user["attack"];
                                                         }
+                                                        if ("wood" in user) {
+                                                            getMaterial = user["wood"];
+                                                        }
+                                                        if ("defense" in target) {
+                                                            skillDefense = target["defense"];
+                                                        }
+                                                        if ("dowser" in target) {
+                                                            getWater = target["dowser"];
+                                                        }
+                                                        let power = Math.max(1, Math.floor((D100 *
+                                                            (Math.log10(skillAttack) +
+                                                                Math.log10((getMaterial +
+                                                                    calculation.getMaterial_min) *
+                                                                    calculation.getMaterial))) /
+                                                            ((Math.log10(skillDefense) +
+                                                                Math.log10((getWater + calculation.getWater_min) *
+                                                                    calculation.getWater)) *
+                                                                calculation.factor)));
+                                                        patternTarget.getDammage(world_name, target, power, (dammageRes) => {
+                                                            if (dammageRes) {
+                                                                historic_data_1.addInHistoric(world_name, userId, "attack", "vous avez attaqué " + target["name"], { D100: D100, power: power }, (historicRes) => {
+                                                                    console.log("historic res", historicRes);
+                                                                    historic_data_1.addInHistoric(world_name, targetId, "attack", user["name"] + " vous a attaqué.", { D100: D100, power: power }, (historicRes) => { });
+                                                                    chara_controller_1.readCharas(world_name, [userId, targetId], (charas) => {
+                                                                        console.log(charas);
+                                                                        if (charas && charas.length == 2) {
+                                                                            let newUser = null;
+                                                                            let newTarget = null;
+                                                                            for (let chara of charas) {
+                                                                                if (chara["id"] === userId) {
+                                                                                    newUser = chara;
+                                                                                }
+                                                                                else if (chara["id"] === targetId) {
+                                                                                    newTarget = chara;
+                                                                                }
+                                                                            }
+                                                                            if (newUser && newTarget) {
+                                                                                callback({ user: newUser });
+                                                                                socket_controller_1.sendToNear(world_name, user.position, 8, "attack", {
+                                                                                    user: newUser,
+                                                                                    target: newTarget,
+                                                                                }, (sendRes) => { });
+                                                                            }
+                                                                            else {
+                                                                                callback({
+                                                                                    err: "compatibility datas pb",
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            callback({
+                                                                                err: "no datas at end",
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                });
+                                                                if (dammageRes["die"]) {
+                                                                    historic_data_1.addInHistoric(world_name, userId, "kill", "vous avez tué " + target["name"], {}, (historicRes) => { });
+                                                                    rank_kill_data_1.addRankKillData(world_name, userId, targetId, (resKillRank) => { });
+                                                                }
+                                                            }
+                                                            else {
+                                                                callback({
+                                                                    err: "problem target getting damage",
+                                                                });
+                                                            }
+                                                        });
                                                     }
                                                     else {
-                                                        callback({
-                                                            err: "problem target getting damage",
-                                                        });
+                                                        callback({ err: "no calculation found" });
                                                     }
                                                 });
                                             }
                                             else {
-                                                callback({ err: "no calculation found" });
+                                                chara_controller_1.readChara(world_name, userId, (chara) => {
+                                                    if (chara) {
+                                                        callback({ user: chara });
+                                                    }
+                                                    else {
+                                                        callback({ err: "no datas at end", user: chara });
+                                                    }
+                                                });
                                             }
                                         });
                                     }
                                     else {
-                                        chara_controller_1.readChara(world_name, userId, (chara) => {
-                                            if (chara) {
-                                                callback({ user: chara });
-                                            }
-                                            else {
-                                                callback({ err: "no datas at end", user: chara });
-                                            }
-                                        });
+                                        callback({ err: "problen updating action" });
                                     }
                                 });
                             }
                             else {
-                                callback({ err: "problen updating action" });
+                                callback({ err: "target pattern not found" });
                             }
-                        });
+                        }
+                        else {
+                            callback({ err: "need to be in same position or no action" });
+                        }
                     }
                     else {
-                        callback({ err: "target pattern not found" });
+                        callback({ err: "cannot attack in neutral zone" });
                     }
                 }
                 else {
-                    callback({ err: "need to be in same position or no action" });
+                    callback({ err: "need user and target values" });
                 }
             }
             else {

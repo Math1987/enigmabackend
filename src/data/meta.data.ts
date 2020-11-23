@@ -31,6 +31,13 @@ const initMetaValuesData = (callBack: CallableFunction) => {
       img: "",
     },
     {
+      key_: "neutral",
+      type: "ground",
+      name_fr: "zone neutre",
+      description_fr: "case neutre. Ici vous êtes en sécurité.",
+      img: "/assets/images/g_neutral.png",
+    },
+    {
       key_: "attack",
       type: "action",
       name_fr: "attaquer",

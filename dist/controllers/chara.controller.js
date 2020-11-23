@@ -90,6 +90,7 @@ const addSkill = (req, res) => {
 };
 exports.addSkill = addSkill;
 exports.createCharaRequest = (req, res) => {
+    console.log('createCharaRequest', req.body);
     if (req["account"] &&
         req["account"]["id"] &&
         !req["account"]["chara"] &&

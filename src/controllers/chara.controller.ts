@@ -104,6 +104,7 @@ const addSkill = (req: Request, res: Response) => {
   }
 };
 export const createCharaRequest = (req: Request, res: Response) => {
+  console.log('createCharaRequest', req.body);
   if (
     req["account"] &&
     req["account"]["id"] &&
