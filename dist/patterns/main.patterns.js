@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.passPatterns = exports.getPattern = exports.initMainPatterns = void 0;
 const chara_pattern_1 = require("./chara.pattern");
+const squeleton_pattern_1 = require("./squeleton.pattern");
 let PATTERNS = {};
 const initMainPatterns = (callBack) => {
     PATTERNS = {
@@ -13,6 +14,7 @@ const initMainPatterns = (callBack) => {
         elffeminine: new chara_pattern_1.Player("elffeminine"),
         vampiremasculin: new chara_pattern_1.Player("vampiremasculin"),
         vampirefeminine: new chara_pattern_1.Player("vampirefeminine"),
+        squeleton: new squeleton_pattern_1.Squeleton('squeleton')
     };
     callBack("ok");
 };
@@ -21,12 +23,12 @@ const getPattern = (key) => {
     return PATTERNS[key];
 };
 exports.getPattern = getPattern;
-const passPatterns = (world_name, callback) => {
+const passPatterns = (worldData, callback) => {
     let i = Object.keys(PATTERNS).length - 1;
     let func = () => {
         let key = Object.keys(PATTERNS)[i];
         let targetPattern = PATTERNS[key];
-        targetPattern.pass(world_name, (resPass) => {
+        targetPattern.pass(worldData, (resPass) => {
             if (i > 0) {
                 i--;
                 func();

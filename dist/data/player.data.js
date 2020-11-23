@@ -40,6 +40,7 @@ const buildWorldPlayerData = (datas, callBack) => {
 
       )
       `, function (res) {
+        console.log('PLAYER RES OK');
         callBack(res);
     });
 };

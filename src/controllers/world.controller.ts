@@ -38,11 +38,15 @@ const getOnPositions = (
 const getWorld = (world_name, callback) => {
   readWorldData(world_name, callback);
 };
-const passWorlds = (callback){
+const passWorlds = (callback) =>{
   readWorldsData( worlds => {
-    passPatterns(worlds[0]['name'], patternsRes=>{
-      callback('done');
-    });
+    console.log('pass worlds', worlds);
+    for ( let world of worlds ){
+      passPatterns(world, patternsRes=>{
+        callback('done');
+      });
+    }
+
   })
 
 }

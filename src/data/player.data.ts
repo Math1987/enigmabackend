@@ -42,6 +42,9 @@ const buildWorldPlayerData = (datas: World, callBack: CallableFunction) =>{
       )
       `,
     function (res) {
+
+      console.log('PLAYER RES OK')
+
       callBack(res);
     }
   );

@@ -41,9 +41,12 @@ const getWorld = (world_name, callback) => {
 exports.getWorld = getWorld;
 const passWorlds = (callback) => {
     world_data_1.readWorldsData(worlds => {
-        main_patterns_1.passPatterns(worlds[0]['name'], patternsRes => {
-            callback('done');
-        });
+        console.log('pass worlds', worlds);
+        for (let world of worlds) {
+            main_patterns_1.passPatterns(world, patternsRes => {
+                callback('done');
+            });
+        }
     });
 };
 exports.passWorlds = passWorlds;

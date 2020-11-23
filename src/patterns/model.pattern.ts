@@ -8,7 +8,7 @@ export class ModelPattern {
     return "";
   }
   create(world_name, id, callback) {}
-  pass(world_name, callback) {
+  pass(worldDatas, callback) {
     callback("done");
   }
 

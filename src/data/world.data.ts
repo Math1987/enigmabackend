@@ -1,6 +1,7 @@
 import { successOrFailData } from "./data";
 import { World } from "../models/world";
 import { buildWorldPlayerData } from "./player.data";
+import { buildWorldSqueletonData } from "./squeleton.data";
 
 const TABLE_NAME = "worlds";
 
@@ -17,6 +18,12 @@ const initWorldData = (callBack: CallableFunction) => {
       `,
     function (res) {
       readWorldsData(function (worlds: Array<World>) {
+
+        /**
+         * 
+         * @param i iterate to check all world and reload everything for each of them
+         * send call back when finish
+         */
         function buildWorld(i) {
           if (i < worlds.length) {
             buildWorldData(worlds[i], function (worldRes) {
@@ -26,6 +33,7 @@ const initWorldData = (callBack: CallableFunction) => {
             callBack("done");
           }
         }
+
         buildWorld(0);
       });
     }
@@ -71,8 +79,10 @@ const buildWorldData = (datas: World, callBack: CallableFunction) => {
       VALUES ("${datas.name}", ${datas.width}, ${datas.height})
       `,
     function (worldInsert) {
-      buildWorldPlayerData(datas, function (playerRes) {
-        callBack("done");
+      buildWorldPlayerData(datas, (playerRes) => {
+        buildWorldSqueletonData(datas, (squeletonsRes)=> {
+          callBack("done");
+        });
       });
     }
   );

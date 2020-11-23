@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildWorldData = exports.readWorldsData = exports.readWorldData = exports.initWorldData = void 0;
 const data_1 = require("./data");
 const player_data_1 = require("./player.data");
+const squeleton_data_1 = require("./squeleton.data");
 const TABLE_NAME = "worlds";
 const initWorldData = (callBack) => {
     data_1.successOrFailData(`
@@ -15,6 +16,11 @@ const initWorldData = (callBack) => {
       )
       `, function (res) {
         readWorldsData(function (worlds) {
+            /**
+             *
+             * @param i iterate to check all world and reload everything for each of them
+             * send call back when finish
+             */
             function buildWorld(i) {
                 if (i < worlds.length) {
                     buildWorldData(worlds[i], function (worldRes) {
@@ -63,8 +69,10 @@ const buildWorldData = (datas, callBack) => {
       (name, width, height)
       VALUES ("${datas.name}", ${datas.width}, ${datas.height})
       `, function (worldInsert) {
-        player_data_1.buildWorldPlayerData(datas, function (playerRes) {
-            callBack("done");
+        player_data_1.buildWorldPlayerData(datas, (playerRes) => {
+            squeleton_data_1.buildWorldSqueletonData(datas, (squeletonsRes) => {
+                callBack("done");
+            });
         });
     });
 };

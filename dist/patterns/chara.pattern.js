@@ -22,9 +22,9 @@ class Player extends model_pattern_1.ModelPattern {
     readKey() {
         return "player";
     }
-    pass(world_name, callback) {
+    pass(worldDatas, callback) {
         console.log("pass", this.values["key_"]);
-        player_data_1.readAllPlayersData(world_name, (players) => {
+        player_data_1.readAllPlayersData(worldDatas['name'], (players) => {
             for (let player of players) {
                 player["moveAdder"] = this.values["move_max"] - player["move"];
                 player["actionAdder"] = this.values["action_max"] - player["action"];
@@ -36,8 +36,8 @@ class Player extends model_pattern_1.ModelPattern {
                 console.log(players[i]["key_"], this.values["key_"]);
                 if (players[i]["key_"] === this.values["key_"]) {
                     console.log(this.values);
-                    player_data_1.updateCharaData(world_name, players[i], this.values, (updateRes) => {
-                        historic_data_1.addInHistoric(world_name, players[i]["id"], "pass", "passage de tour", {
+                    player_data_1.updateCharaData(worldDatas['name'], players[i], this.values, (updateRes) => {
+                        historic_data_1.addInHistoric(worldDatas['name'], players[i]["id"], "pass", "passage de tour", {
                             move: players[i]["moveAdder"],
                             action: players[i]["actionAdder"],
                         }, (historicRes) => { });

@@ -9,7 +9,7 @@ class ModelPattern {
         return "";
     }
     create(world_name, id, callback) { }
-    pass(world_name, callback) {
+    pass(worldDatas, callback) {
         callback("done");
     }
     move(world_name, id, x, y, free, callback) {
