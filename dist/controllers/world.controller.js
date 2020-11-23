@@ -5,6 +5,7 @@ const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
 const main_patterns_1 = require("../patterns/main.patterns");
+const squeleton_data_1 = require("../data/squeleton.data");
 const initWorld = (callback) => {
     world_data_1.readWorldsData((worlds) => {
         if (!(worlds && worlds.length > 0)) {
@@ -24,13 +25,23 @@ const getOnPositions = (world_name, positions, callback) => {
         for (let ground of grounds) {
             newPos.push(ground);
         }
+        console.log(positions);
         player_data_1.readCharasByPositions(world_name, positions, (charas) => {
             if (charas && charas.length > 0) {
                 for (let chara of charas) {
                     newPos.push(chara);
                 }
             }
-            callback(newPos);
+            console.log(positions);
+            squeleton_data_1.readSqueletonByPositions(world_name, positions, squeletons => {
+                console.log('squeletons found', squeletons);
+                if (squeletons && squeletons.length > 0) {
+                    for (let squeleton of squeletons) {
+                        newPos.push(squeleton);
+                    }
+                }
+                callback(newPos);
+            });
         });
     });
 };

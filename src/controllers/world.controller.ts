@@ -2,6 +2,7 @@ import { readWorldData, buildWorldData, initWorldData, readWorldsData } from "./
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
 import { passPatterns } from "../patterns/main.patterns";
+import { readSqueletonByPositions } from "../data/squeleton.data";
 
 const initWorld = (callback) =>{
   readWorldsData( (worlds: Array<string>) => {
@@ -25,13 +26,23 @@ const getOnPositions = (
     for (let ground of grounds) {
       newPos.push(ground);
     }
+    console.log(positions);
     readCharasByPositions(world_name, positions, (charas) => {
       if (charas && charas.length > 0) {
         for (let chara of charas) {
           newPos.push(chara);
         }
       }
-      callback(newPos);
+      console.log(positions);
+      readSqueletonByPositions(world_name, positions, squeletons => {
+        console.log('squeletons found', squeletons);
+        if (squeletons && squeletons.length > 0) {
+          for (let squeleton of squeletons) {
+            newPos.push(squeleton);
+          }
+        }
+        callback(newPos);
+      });
     });
   });
 };

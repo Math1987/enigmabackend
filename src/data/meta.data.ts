@@ -37,6 +37,17 @@ const initMetaValuesData = (callBack: CallableFunction) => {
       description_fr: "case neutre. Ici vous êtes en sécurité.",
       img: "/assets/images/g_neutral.png",
     },
+
+
+    {
+      key_: "squeleton",
+      type: "monster",
+      name_fr: "squelette",
+      description_fr: "squelette érant.",
+      img: "/assets/images/squeleton.png",
+    },
+
+
     {
       key_: "attack",
       type: "action",

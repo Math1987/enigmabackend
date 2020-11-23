@@ -36,6 +36,13 @@ const initMetaValuesData = (callBack) => {
             img: "/assets/images/g_neutral.png",
         },
         {
+            key_: "squeleton",
+            type: "monster",
+            name_fr: "squelette",
+            description_fr: "squelette érant.",
+            img: "/assets/images/squeleton.png",
+        },
+        {
             key_: "attack",
             type: "action",
             name_fr: "attaquer",

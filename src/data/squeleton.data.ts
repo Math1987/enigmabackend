@@ -34,7 +34,7 @@ const buildWorldSqueletonData = (datas: World, callBack: CallableFunction) =>{
 }
 const insertSqueletonData = (world_name, squeleton, callBack) => {
   
-  console.log('insert squeleton req')
+  console.log('insert squeleton', squeleton.x, squeleton.y);
 
   successOrFailData(
     `
@@ -222,6 +222,7 @@ const readSqueletonByPositions = (
     }
     posRequete += `POINT(${p.x},${p.y})`;
   }
+  console.log('pos request', posRequete);
 
   if ( posRequete.length > 0 ){
     successOrFailData(
@@ -236,7 +237,7 @@ const readSqueletonByPositions = (
             let newObj = row;
             newObj["x"] = row["position"]["x"];
             newObj["y"] = row["position"]["y"];
-            newObj["key"] = row["key_"];
+            newObj["key"] = "squeleton" ;
             finalObj.push(newObj);
           }
           callback(JSON.parse(JSON.stringify(finalObj)));
