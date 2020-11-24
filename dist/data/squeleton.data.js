@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeSqueletonDataById = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
+exports.removeSqueletonDataById = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonsData = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -15,10 +15,7 @@ const buildWorldSqueletonData = (datas, callBack) => {
       ( 
       id VARCHAR(36) primary key,
       position POINT,
-      life FLOAT ,
-      life_max FLOAT,
-      skill_attack FLOAT,
-      skill_defense FLOAT
+      life FLOAT
       )
       `, function (res) {
         callBack(res);
@@ -32,18 +29,12 @@ const insertSqueletonData = (world_name, squeleton, callBack) => {
         (
         id,
         position,
-        life,
-        life_max,
-        skill_attack,
-        skill_defense
+        life
         )
         VALUES ( 
         uuid(), 
         POINT(${squeleton.x},${squeleton.y}),
-        ${squeleton.life},
-        ${squeleton.life_max},
-        ${squeleton.skill_attack},
-        ${squeleton.skill_defense}
+        ${squeleton.life}
         )
         `, function (playerRes) {
         callBack(playerRes);
@@ -72,6 +63,36 @@ const insertSqueletonData = (world_name, squeleton, callBack) => {
     });
 };
 exports.insertSqueletonData = insertSqueletonData;
+const insertSqueletonsData = (world_name, squeletons, callback) => {
+    let values = '';
+    for (let squeleton of squeletons) {
+        values += '(';
+        values += `uuid(),`;
+        values += `POINT(${squeleton.x},${squeleton.y}),`;
+        values += `${squeleton.life}`;
+        values += ')';
+        if (squeleton !== squeletons[squeletons.length - 1]) {
+            values += ', ';
+        }
+    }
+    data_1.successOrFailData(`
+    INSERT INTO ${world_name}_${TABLE_NAME}
+    (
+    id,
+    position,
+    life
+    )
+    VALUES ${values}
+  `, (dataRes) => {
+        if (dataRes) {
+            callback(dataRes);
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.insertSqueletonsData = insertSqueletonsData;
 const readSqueletonValue = (world_name, id, key, callback) => {
     data_1.successOrFailData(`
     SELECT ${key} FROM ${world_name}_${TABLE_NAME}
@@ -110,7 +131,7 @@ exports.readSqueletonValues = readSqueletonValues;
 const addSqueletonValueData = (world_name, id, key, value, callback) => {
     data_1.successOrFailData(`
     UPDATE ${world_name}_${TABLE_NAME}
-    SET ${key} =  GREATEST(0,${key} + ${value})
+    SET ${key} = GREATEST(0,${key} + ${value})
     WHERE id = "${id}"
   `, (updateRes) => {
         callback(updateRes);
@@ -184,7 +205,6 @@ const readSqueletonByPositions = (world_name, positions, callback) => {
         }
         posRequete += `POINT(${p.x},${p.y})`;
     }
-    console.log('pos request', posRequete);
     if (posRequete.length > 0) {
         data_1.successOrFailData(`
         SELECT * FROM ${world_name}_${TABLE_NAME}

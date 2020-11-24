@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
+exports.getWorldsRequest = exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
@@ -25,16 +25,13 @@ const getOnPositions = (world_name, positions, callback) => {
         for (let ground of grounds) {
             newPos.push(ground);
         }
-        console.log(positions);
         player_data_1.readCharasByPositions(world_name, positions, (charas) => {
             if (charas && charas.length > 0) {
                 for (let chara of charas) {
                     newPos.push(chara);
                 }
             }
-            console.log(positions);
             squeleton_data_1.readSqueletonByPositions(world_name, positions, squeletons => {
-                console.log('squeletons found', squeletons);
                 if (squeletons && squeletons.length > 0) {
                     for (let squeleton of squeletons) {
                         newPos.push(squeleton);
@@ -46,6 +43,17 @@ const getOnPositions = (world_name, positions, callback) => {
     });
 };
 exports.getOnPositions = getOnPositions;
+const getWorldsRequest = (req, res) => {
+    world_data_1.readWorldsData(worlds => {
+        if (worlds) {
+            res.status(200).send(worlds);
+        }
+        else {
+            res.status(404).send(null);
+        }
+    });
+};
+exports.getWorldsRequest = getWorldsRequest;
 const getWorld = (world_name, callback) => {
     world_data_1.readWorldData(world_name, callback);
 };

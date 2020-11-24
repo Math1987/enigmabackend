@@ -14,6 +14,9 @@ const isOnNeutralZone = (x:number, y:number) => {
     return false ;
   }
 }
+const getNeutralZoneSize = () => {
+  return NEUTRAL_ZONE_SIZE ;
+}
 
 const getGroundsOnPositions = (world_name, positions, callback) => {
   getWorld(world_name, (world) => {
@@ -37,4 +40,4 @@ const getGroundsOnPositions = (world_name, positions, callback) => {
   });
 };
 
-export { getGroundsOnPositions, isOnNeutralZone };
+export { getGroundsOnPositions, isOnNeutralZone, getNeutralZoneSize };

@@ -26,16 +26,13 @@ const getOnPositions = (
     for (let ground of grounds) {
       newPos.push(ground);
     }
-    console.log(positions);
     readCharasByPositions(world_name, positions, (charas) => {
       if (charas && charas.length > 0) {
         for (let chara of charas) {
           newPos.push(chara);
         }
       }
-      console.log(positions);
       readSqueletonByPositions(world_name, positions, squeletons => {
-        console.log('squeletons found', squeletons);
         if (squeletons && squeletons.length > 0) {
           for (let squeleton of squeletons) {
             newPos.push(squeleton);
@@ -46,6 +43,17 @@ const getOnPositions = (
     });
   });
 };
+
+const getWorldsRequest = (req, res) => {
+  readWorldsData( worlds => {
+    if ( worlds ){
+      res.status(200).send(worlds);
+    }else{
+      res.status(404).send(null);
+    }
+  });
+}
+
 const getWorld = (world_name, callback) => {
   readWorldData(world_name, callback);
 };
@@ -63,4 +71,4 @@ const passWorlds = (callback) =>{
 }
 
 
-export { initWorld, getOnPositions, getWorld, passWorlds };
+export { initWorld, getOnPositions, getWorld, passWorlds, getWorldsRequest };

@@ -1,3 +1,6 @@
+import { midleWearTokenSecur } from "../controllers/account.controller";
+import { adminLoginReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
+import { getWorldsRequest } from "../controllers/world.controller";
 import { buildWorldData } from "../data/world.data";
 
 const express = require("express");
@@ -6,6 +9,13 @@ const router = express.Router();
 router.get("/", function (req: Request, res: Response) {
   res.status(200).send("welcom to admin api.");
 });
+
+router.post("/login", adminLoginReq);
+
+router.use(midleWearTokenSecurADMIN);
+
+router.get('/getWorlds', getWorldsRequest);
+
 
 router.post("/createWorld", (req: Request, res: Response) => {
   if (req.body && req.body.name && req.body.width && req.body.height) {

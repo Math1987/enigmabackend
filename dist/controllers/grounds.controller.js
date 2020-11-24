@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isOnNeutralZone = exports.getGroundsOnPositions = void 0;
+exports.getNeutralZoneSize = exports.isOnNeutralZone = exports.getGroundsOnPositions = void 0;
 const world_controller_1 = require("./world.controller");
 const NEUTRAL_ZONE_SIZE = 4;
 const isOnNeutralZone = (x, y) => {
@@ -15,6 +15,10 @@ const isOnNeutralZone = (x, y) => {
     }
 };
 exports.isOnNeutralZone = isOnNeutralZone;
+const getNeutralZoneSize = () => {
+    return NEUTRAL_ZONE_SIZE;
+};
+exports.getNeutralZoneSize = getNeutralZoneSize;
 const getGroundsOnPositions = (world_name, positions, callback) => {
     world_controller_1.getWorld(world_name, (world) => {
         let grounds = [];

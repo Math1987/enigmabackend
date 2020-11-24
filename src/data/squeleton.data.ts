@@ -1,5 +1,6 @@
 import { successOrFailData } from "./data";
 import { World } from "../models/world";
+import { Squeleton } from "../patterns/squeleton.pattern";
 
 
 /**
@@ -18,10 +19,7 @@ const buildWorldSqueletonData = (datas: World, callBack: CallableFunction) =>{
       ( 
       id VARCHAR(36) primary key,
       position POINT,
-      life FLOAT ,
-      life_max FLOAT,
-      skill_attack FLOAT,
-      skill_defense FLOAT
+      life FLOAT
       )
       `,
     function (res) {
@@ -42,18 +40,12 @@ const insertSqueletonData = (world_name, squeleton, callBack) => {
         (
         id,
         position,
-        life,
-        life_max,
-        skill_attack,
-        skill_defense
+        life
         )
         VALUES ( 
         uuid(), 
         POINT(${squeleton.x},${squeleton.y}),
-        ${squeleton.life},
-        ${squeleton.life_max},
-        ${squeleton.skill_attack},
-        ${squeleton.skill_defense}
+        ${squeleton.life}
         )
         `,
     function (playerRes) {
@@ -84,6 +76,43 @@ const insertSqueletonData = (world_name, squeleton, callBack) => {
     }
   );
 };
+
+const insertSqueletonsData = (world_name, squeletons, callback) => {
+
+  let values = '' ;
+  for ( let squeleton of squeletons ){
+    values += '(' ;
+    values += `uuid(),` ;
+    values += `POINT(${squeleton.x},${squeleton.y}),`;
+    values += `${squeleton.life}`;
+    values += ')' ;
+    if ( squeleton !== squeletons[squeletons.length-1]){
+      values += ', ' ;
+    }
+  }
+
+  successOrFailData(
+    `
+    INSERT INTO ${world_name}_${TABLE_NAME}
+    (
+    id,
+    position,
+    life
+    )
+    VALUES ${values}
+  `,
+    (dataRes) => {
+      if (dataRes) {
+        callback(dataRes);
+      } else {
+        callback(null);
+      }
+    }
+  );
+
+}
+
+
 const readSqueletonValue = (world_name, id, key, callback) => {
   successOrFailData(
     `
@@ -132,7 +161,7 @@ const addSqueletonValueData = (
   successOrFailData(
     `
     UPDATE ${world_name}_${TABLE_NAME}
-    SET ${key} =  GREATEST(0,${key} + ${value})
+    SET ${key} = GREATEST(0,${key} + ${value})
     WHERE id = "${id}"
   `,
     (updateRes) => {
@@ -222,7 +251,6 @@ const readSqueletonByPositions = (
     }
     posRequete += `POINT(${p.x},${p.y})`;
   }
-  console.log('pos request', posRequete);
 
   if ( posRequete.length > 0 ){
     successOrFailData(
@@ -317,6 +345,7 @@ const removeSqueletonDataById = (  world_name: string, id: String,callback : Cal
 export {
   buildWorldSqueletonData, 
   insertSqueletonData,
+  insertSqueletonsData,
   readSqueletonValue,
   readSqueletonValues,
   addSqueletonValueData,
