@@ -17,6 +17,23 @@ export const adminLoginReq = (req, res) => {
     }
 
 }
+export const adminReadTokenReq = (req, res) => {
+
+    const token = req.headers['authtoken'];
+    console.log('token test ', token);
+    if (token) {
+        readToken(token, values => {
+            if ( values['admin'] ){
+                res.status(200).send({ admin : values['admin'] });
+            }else{
+                res.status(401).send("wait a minute...you're not an admin!!!");
+            }
+        });
+    }else{
+        res.status(401).send("token not valid");
+    }
+    
+}
 
 
 export const midleWearTokenSecurADMIN = (req:Request, res: Response, next ) => {

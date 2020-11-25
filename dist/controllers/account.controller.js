@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.midleWearTokenSecurADMIN = exports.midleWearTokenSecur = exports.updateAccountRequest = exports.removeAccountRequest = exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
+exports.midleWearTokenSecur = exports.updateAccountRequest = exports.removeAccountRequest = exports.confirmResetPasswordRequest = exports.resetPasswordRequest = exports.readAccountRequest = exports.singInRequest = exports.confirmRequest = exports.signUpRequest = exports.checkNameRequest = exports.checkEmailRequest = exports.readAccountByToken = void 0;
 const account_data_1 = require("./../data/account.data");
 const email_controller_1 = require("./email.controller");
 const token_controller_1 = require("./token.controller");
@@ -195,25 +195,6 @@ exports.midleWearTokenSecur = (req, res, next) => {
         readAccountByToken(token, (values) => {
             req["account"] = values;
             next();
-        });
-    }
-    else {
-        res.status(401).send("need token");
-    }
-};
-exports.midleWearTokenSecurADMIN = (req, res, next) => {
-    const token = req.headers['authtoken'];
-    console.log('token', token);
-    if (token) {
-        readAccountByToken(token, (values) => {
-            console.log('values found from token', values);
-            req["account"] = values;
-            next();
-            // if ( values['admin'] ){
-            //   next();
-            // }else{
-            //   res.status(401).send("wait a minute...you're not an admin!!!");
-            // }
         });
     }
     else {

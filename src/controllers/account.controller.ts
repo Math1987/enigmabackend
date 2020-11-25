@@ -221,26 +221,3 @@ export const midleWearTokenSecur = (req:Request, res: Response, next ) => {
     }
 
 }
-}
-
-export const midleWearTokenSecurADMIN = (req:Request, res: Response, next ) => {
-
-    const token = req.headers['authtoken'];
-    console.log('token', token);
-    if (token) {
-      readAccountByToken(token, (values) => {
-        console.log('values found from token', values);
-        req["account"] = values;
-        next();
-        // if ( values['admin'] ){
-        //   next();
-        // }else{
-        //   res.status(401).send("wait a minute...you're not an admin!!!");
-        // }
-
-      });
-    } else {
-      res.status(401).send("need token");
-    }
-
-}

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.midleWearTokenSecurADMIN = exports.adminLoginReq = void 0;
+exports.midleWearTokenSecurADMIN = exports.adminReadTokenReq = exports.adminLoginReq = void 0;
 const token_controller_1 = require("./token.controller");
 exports.adminLoginReq = (req, res) => {
     if (req.body && req.body['user'] && req.body['password']) {
@@ -15,6 +15,23 @@ exports.adminLoginReq = (req, res) => {
     }
     else {
         res.status(401).send('need user and password');
+    }
+};
+exports.adminReadTokenReq = (req, res) => {
+    const token = req.headers['authtoken'];
+    console.log('token test ', token);
+    if (token) {
+        token_controller_1.readToken(token, values => {
+            if (values['admin']) {
+                res.status(200).send({ admin: values['admin'] });
+            }
+            else {
+                res.status(401).send("wait a minute...you're not an admin!!!");
+            }
+        });
+    }
+    else {
+        res.status(401).send("token not valid");
     }
 };
 exports.midleWearTokenSecurADMIN = (req, res, next) => {

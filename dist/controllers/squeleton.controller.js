@@ -6,7 +6,7 @@ const grounds_controller_1 = require("./grounds.controller");
 const passSqueletons = (worldDatas, callback) => {
     const width = parseInt(worldDatas['width']);
     const height = parseInt(worldDatas['height']);
-    const density = 0.1;
+    const density = 0.01;
     const numberOfSqueletons = Math.floor(density * (width * height - Math.pow(grounds_controller_1.getNeutralZoneSize(), 2)));
     console.log('number of squeleton', width, height, numberOfSqueletons);
     squeleton_data_1.readAllSqueletonsData(worldDatas['name'], squeletons => {

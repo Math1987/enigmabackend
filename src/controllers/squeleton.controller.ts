@@ -6,7 +6,7 @@ const passSqueletons = (worldDatas : Object, callback) => {
 
     const width = parseInt(worldDatas['width']);
     const height = parseInt(worldDatas['height']);
-    const density = 0.1 ;
+    const density = 0.01 ;
     const numberOfSqueletons = Math.floor(density*(width*height-Math.pow(getNeutralZoneSize(),2))) ;
     console.log('number of squeleton', width, height, numberOfSqueletons);
     

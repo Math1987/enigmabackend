@@ -1,5 +1,5 @@
 import { midleWearTokenSecur } from "../controllers/account.controller";
-import { adminLoginReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
+import { adminLoginReq, adminReadTokenReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
 import { getWorldsRequest } from "../controllers/world.controller";
 import { buildWorldData } from "../data/world.data";
 
@@ -11,6 +11,7 @@ router.get("/", function (req: Request, res: Response) {
 });
 
 router.post("/login", adminLoginReq);
+router.post("/readToken", adminReadTokenReq);
 
 router.use(midleWearTokenSecurADMIN);
 

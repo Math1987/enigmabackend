@@ -14,8 +14,11 @@ export const runSocket = (http) => {
       console.log(val);
     });
 
+    console.log('socket try connection', socket.handshake.query)
+
     if (socket.handshake.query["token"] != null) {
       readAccountByToken(socket.handshake.query["token"], (account) => {
+        console.log('someone try to connect with socket', account);
         if (account && account["world"] && account["chara"]) {
           socket["account"] = account;
           socket.join(account["world"]);

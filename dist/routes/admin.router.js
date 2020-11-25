@@ -10,6 +10,7 @@ router.get("/", function (req, res) {
     res.status(200).send("welcom to admin api.");
 });
 router.post("/login", admin_controller_1.adminLoginReq);
+router.post("/readToken", admin_controller_1.adminReadTokenReq);
 router.use(admin_controller_1.midleWearTokenSecurADMIN);
 router.get('/getWorlds', world_controller_1.getWorldsRequest);
 router.post("/createWorld", (req, res) => {
