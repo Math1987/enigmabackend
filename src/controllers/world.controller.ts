@@ -1,7 +1,7 @@
 import { readWorldData, buildWorldData, initWorldData, readWorldsData } from "./../data/world.data";
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
-import { passPatterns } from "../patterns/main.patterns";
+import { passPatterns, updateValueInPattern } from "../patterns/main.patterns";
 import { readSqueletonByPositions } from "../data/squeleton.data";
 
 const initWorld = (callback) =>{
@@ -71,4 +71,21 @@ const passWorlds = (callback) =>{
 }
 
 
-export { initWorld, getOnPositions, getWorld, passWorlds, getWorldsRequest };
+const updateWorldValueRequest = (req, res) => {
+
+  if ( req.body && req.body['worldName'] && req.body['target'] && req.body['key'] && req.body['value'] ){
+
+    updateValueInPattern(req.body['worldName'], req.body['target'], req.body['key'], req.body['value'], resPattern => {
+
+      res.status(200).send(resPattern);
+
+    });
+
+  }else{
+    res.status(401).send({ err : 'need datas'});
+  }
+
+
+}
+
+export { initWorld, getOnPositions, getWorld, passWorlds, getWorldsRequest, updateWorldValueRequest };

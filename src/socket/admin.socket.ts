@@ -2,9 +2,10 @@ import { getOnPositions } from "../controllers/world.controller";
 import { getPattern } from "../patterns/main.patterns";
 
 const initAdminSocket = (socket) => {
-  const id = account["id"];
 
-  let worldName = null ;
+    console.log('run admin socket connection');
+    let worldName = "world1" ;
+    socket.join(worldName);
 
     socket.on("switchWorld", (world, callback) => {
         console.log('switch world', world);
@@ -19,7 +20,10 @@ const initAdminSocket = (socket) => {
         }else{
             callback('need world name');
         }
+    });
 
+    socket.on("move", (x, y, callback) => {
+       //socket.emit('move', x, y, test=>{});
     });
 
 };

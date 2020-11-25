@@ -8,6 +8,7 @@ import {
   readCharasById,
   readAllPlayersData,
   updateCharaData,
+  updateCharaValueData
 } from "../data/player.data";
 import {
   sendToNear,
@@ -23,14 +24,18 @@ import { readChara, readCharas } from "../controllers/chara.controller";
 import { isOnNeutralZone } from "../controllers/grounds.controller";
 
 export class Player extends ModelPattern {
+
+  typeOfPlayer : string = "player" ;
+
   constructor(key: string) {
     super();
+    this.typeOfPlayer = key ;
     readPlayerPatternData(key, (res) => {
       this.values = res;
     });
   }
   readKey() {
-    return "player";
+    return this.typeOfPlayer ;
   }
   pass(worldDatas, callback) {
     console.log("pass", this.values["key_"]);
@@ -78,6 +83,13 @@ export class Player extends ModelPattern {
       func();
     });
   }
+  updateValue(world_name, id, key, value, callback ){
+    console.log('I am a pattern ready to update the value', this.readKey());
+    updateCharaValueData(world_name, id, key, value, res => {
+      callback({update: "ok"});
+    });
+  }
+
   move(
     world_name: string,
     id: number,

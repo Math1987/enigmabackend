@@ -314,6 +314,24 @@ const updateCharaPositionData = (world_name:string, id: string, x : number, y : 
     
 
 });
+const updateCharaValueData = (
+  world_name: string,
+  id: string,
+  key: string,
+  value,
+  callback
+) => {
+  successOrFailData(
+    `
+    UPDATE ${world_name}_${TABLE_NAME}
+    SET ${key} = ${value}
+    WHERE id = "${id}"
+  `,
+    (updateRes) => {
+      callback(updateRes);
+    }
+  );
+};
 const updateCharaData = (world_name:string, chara, pattern, callback )=>{
 
   let stringCharas = '' ;
@@ -367,6 +385,7 @@ export {
   readAllPlayersData,
   updateCharaData,
   readCharasByPositions,
+  updateCharaValueData,
   updateCharaPositionData,
   removeCharaDataById
 };

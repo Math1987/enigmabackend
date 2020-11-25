@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passPatterns = exports.getPattern = exports.initMainPatterns = void 0;
+exports.updateValueInPattern = exports.passPatterns = exports.getPattern = exports.initMainPatterns = void 0;
 const chara_pattern_1 = require("./chara.pattern");
 const squeleton_pattern_1 = require("./squeleton.pattern");
 let PATTERNS = {};
@@ -41,3 +41,16 @@ const passPatterns = (worldData, callback) => {
     func();
 };
 exports.passPatterns = passPatterns;
+const updateValueInPattern = (world_name, target, key, value, callback) => {
+    console.log('updating value in patterns', target);
+    for (let pattKey in PATTERNS) {
+        let patt = PATTERNS[pattKey];
+        console.log(patt.readKey(), target['key_']);
+        if (patt.readKey() === target['key_']) {
+            patt.updateValue(world_name, target['id'], key, value, callback);
+            break;
+        }
+    }
+    callback(true);
+};
+exports.updateValueInPattern = updateValueInPattern;

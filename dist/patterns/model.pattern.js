@@ -24,6 +24,10 @@ class ModelPattern {
     addValue(world_name, id, key, value, callback) {
         callback(null);
     }
+    updateValue(world_name, id, key, value, callback) {
+        console.log('I am a pattern ready to update the value', this.readKey());
+        callback(false);
+    }
     pops(world_name, user, callBack) {
         // if (this.values["life"]) {
         //   MobilesData.updateLifeAndPosition(

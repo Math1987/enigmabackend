@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWorldsRequest = exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
+exports.updateWorldValueRequest = exports.getWorldsRequest = exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
@@ -69,3 +69,14 @@ const passWorlds = (callback) => {
     });
 };
 exports.passWorlds = passWorlds;
+const updateWorldValueRequest = (req, res) => {
+    if (req.body && req.body['worldName'] && req.body['target'] && req.body['key'] && req.body['value']) {
+        main_patterns_1.updateValueInPattern(req.body['worldName'], req.body['target'], req.body['key'], req.body['value'], resPattern => {
+            res.status(200).send(resPattern);
+        });
+    }
+    else {
+        res.status(401).send({ err: 'need datas' });
+    }
+};
+exports.updateWorldValueRequest = updateWorldValueRequest;

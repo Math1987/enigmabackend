@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCharaDataById = exports.updateCharaPositionData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = exports.TABLE_PLAYERS = void 0;
+exports.removeCharaDataById = exports.updateCharaPositionData = exports.updateCharaValueData = exports.readCharasByPositions = exports.updateCharaData = exports.readAllPlayersData = exports.readCharasById = exports.readCharaById = exports.addCharaValuesData = exports.addCharaValueData = exports.readCharaValues = exports.readCharaValue = exports.insertCharaData = exports.buildWorldPlayerData = exports.TABLE_PLAYERS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -275,6 +275,16 @@ const updateCharaPositionData = (world_name, id, x, y, callback) => {
     });
 };
 exports.updateCharaPositionData = updateCharaPositionData;
+const updateCharaValueData = (world_name, id, key, value, callback) => {
+    data_1.successOrFailData(`
+    UPDATE ${world_name}_${TABLE_NAME}
+    SET ${key} = ${value}
+    WHERE id = "${id}"
+  `, (updateRes) => {
+        callback(updateRes);
+    });
+};
+exports.updateCharaValueData = updateCharaValueData;
 const updateCharaData = (world_name, chara, pattern, callback) => {
     let stringCharas = '';
     for (let key in chara) {

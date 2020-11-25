@@ -15,12 +15,14 @@ const grounds_controller_1 = require("../controllers/grounds.controller");
 class Player extends model_pattern_1.ModelPattern {
     constructor(key) {
         super();
+        this.typeOfPlayer = "player";
+        this.typeOfPlayer = key;
         patternPlayer_1.readPlayerPatternData(key, (res) => {
             this.values = res;
         });
     }
     readKey() {
-        return "player";
+        return this.typeOfPlayer;
     }
     pass(worldDatas, callback) {
         console.log("pass", this.values["key_"]);
@@ -62,6 +64,12 @@ class Player extends model_pattern_1.ModelPattern {
                 }
             };
             func();
+        });
+    }
+    updateValue(world_name, id, key, value, callback) {
+        console.log('I am a pattern ready to update the value', this.readKey());
+        player_data_1.updateCharaValueData(world_name, id, key, value, res => {
+            callback({ update: "ok" });
         });
     }
     move(world_name, id, x, y, free, callback) {

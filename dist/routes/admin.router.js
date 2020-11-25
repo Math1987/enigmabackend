@@ -19,4 +19,5 @@ router.post("/createWorld", (req, res) => {
     }
     res.status(200).send("ok");
 });
+router.post("/updateWorldValue", world_controller_1.updateWorldValueRequest);
 exports.routerAdmin = router;

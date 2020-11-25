@@ -1,6 +1,6 @@
 import { midleWearTokenSecur } from "../controllers/account.controller";
 import { adminLoginReq, adminReadTokenReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
-import { getWorldsRequest } from "../controllers/world.controller";
+import { getWorldsRequest, updateWorldValueRequest } from "../controllers/world.controller";
 import { buildWorldData } from "../data/world.data";
 
 const express = require("express");
@@ -16,13 +16,13 @@ router.post("/readToken", adminReadTokenReq);
 router.use(midleWearTokenSecurADMIN);
 
 router.get('/getWorlds', getWorldsRequest);
-
-
 router.post("/createWorld", (req: Request, res: Response) => {
   if (req.body && req.body.name && req.body.width && req.body.height) {
     buildWorldData(req.body, (worldBuild) => {});
   }
   res.status(200).send("ok");
 });
+
+router.post("/updateWorldValue", updateWorldValueRequest);
 
 export const routerAdmin = router;

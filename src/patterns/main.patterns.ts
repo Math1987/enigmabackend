@@ -39,4 +39,21 @@ const passPatterns = (worldData, callback) => {
   func();
 };
 
-export { initMainPatterns, getPattern, passPatterns };
+const updateValueInPattern = (world_name, target, key, value, callback) => {
+
+  console.log('updating value in patterns', target);
+
+  for ( let pattKey in PATTERNS ){
+    let patt = PATTERNS[pattKey];
+    console.log( patt.readKey(), target['key_']);
+    if ( patt.readKey() === target['key_'] ){
+      patt.updateValue(world_name, target['id'], key, value, callback);
+      break ;
+    }
+  }
+
+  callback(true);
+
+}
+
+export { initMainPatterns, getPattern, passPatterns, updateValueInPattern };

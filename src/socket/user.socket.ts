@@ -3,6 +3,8 @@ import { Socket } from "socket.io";
 import { readAccountByToken } from "../controllers/account.controller";
 import { getOnPositions } from "../controllers/world.controller";
 import { initCharaSocket } from "./chara.socket";
+import { readToken } from "../controllers/token.controller";
+import { initAdminSocket } from "./admin.socket";
 
 export const io: WebSocket = null;
 
@@ -17,14 +19,27 @@ export const runSocket = (http) => {
     console.log('socket try connection', socket.handshake.query)
 
     if (socket.handshake.query["token"] != null) {
-      readAccountByToken(socket.handshake.query["token"], (account) => {
-        console.log('someone try to connect with socket', account);
-        if (account && account["world"] && account["chara"]) {
-          socket["account"] = account;
-          socket.join(account["world"]);
-          initCharaSocket(socket, account);
+
+      readToken( socket.handshake.query["token"], resToken => {
+
+        console.log('token found for socket co', resToken );
+
+        if ( resToken && resToken['id'] ){
+          readAccountByToken(socket.handshake.query["token"], (account) => {
+            if (account && account["world"] && account["chara"]) {
+              socket["account"] = account;
+              socket.join(account["world"]);
+              initCharaSocket(socket, account);
+            }
+          });
+        }else if ( resToken && resToken['admin'] ){
+          socket["admin"] = resToken ;
+          initAdminSocket(socket);
         }
+
       });
+
+
     }
   });
 };
