@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routerAdmin = void 0;
 const admin_controller_1 = require("../controllers/admin.controller");
+const clan_controller_1 = require("../controllers/clan.controller");
 const world_controller_1 = require("../controllers/world.controller");
 const world_data_1 = require("../data/world.data");
 const express = require("express");
@@ -20,4 +21,5 @@ router.post("/createWorld", (req, res) => {
     res.status(200).send("ok");
 });
 router.post("/updateWorldValue", world_controller_1.updateWorldValueRequest);
+router.post("/createClan", clan_controller_1.createClanRequest);
 exports.routerAdmin = router;

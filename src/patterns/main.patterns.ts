@@ -47,12 +47,10 @@ const updateValueInPattern = (world_name, target, key, value, callback) => {
     let patt = PATTERNS[pattKey];
     console.log( patt.readKey(), target['key_']);
     if ( patt.readKey() === target['key_'] ){
-      patt.updateValue(world_name, target['id'], key, value, callback);
+      patt.updateValue(world_name, target, key, value, callback);
       break ;
     }
   }
-
-  callback(true);
 
 }
 

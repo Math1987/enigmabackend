@@ -7,6 +7,7 @@ import { initCalculationData } from "./calcul.data";
 import { environment } from "./../environment/environment";
 import { initRankKillData } from "./rank_kill.data";
 import { initHistoricData } from "./historic.data";
+import { initClansData } from "./clan.data";
 
 const HOST = environment.db.host;
 const USER = environment.db.user;
@@ -40,7 +41,9 @@ const initData = (callBack: CallableFunction) => {
             initHistoricData((resHistoric) => {
               initRankKillData((resRankKill) => {
                 initWorldData((worldInit) => {
-                  callBack("init");
+                  initClansData(clanRes => {
+                    callBack("init");
+                  })
                 });
               });
             });

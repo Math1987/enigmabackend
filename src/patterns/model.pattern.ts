@@ -43,8 +43,8 @@ export class ModelPattern {
   addValue(world_name, id, key, value, callback) {
     callback(null);
   }
-  updateValue(world_name, id, key, value, callback ){
-    console.log('I am a pattern ready to update the value', this.readKey())
+  updateValue(world_name, obj, key, value, callback ){
+    console.log('I am a pattern ready to update the value', this.readKey());
     callback(false);
   }
 

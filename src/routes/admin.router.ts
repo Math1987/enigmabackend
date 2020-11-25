@@ -1,5 +1,6 @@
 import { midleWearTokenSecur } from "../controllers/account.controller";
 import { adminLoginReq, adminReadTokenReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
+import { createClanRequest } from "../controllers/clan.controller";
 import { getWorldsRequest, updateWorldValueRequest } from "../controllers/world.controller";
 import { buildWorldData } from "../data/world.data";
 
@@ -22,7 +23,8 @@ router.post("/createWorld", (req: Request, res: Response) => {
   }
   res.status(200).send("ok");
 });
-
 router.post("/updateWorldValue", updateWorldValueRequest);
+router.post("/createClan", createClanRequest);
+
 
 export const routerAdmin = router;

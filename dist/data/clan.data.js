@@ -1,33 +1,37 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readClans = exports.insertClanData = exports.buildWorldClanData = exports.TABLE_SQUELETONS = void 0;
+exports.readClans = exports.insertClanData = exports.initClansData = exports.TABLE_SQUELETONS = void 0;
 const data_1 = require("./data");
-const TABLE_NAME = "clan";
+const TABLE_NAME = "clans";
 exports.TABLE_SQUELETONS = TABLE_NAME;
-const buildWorldClanData = (datas, callBack) => {
+const initClansData = (callBack) => {
     console.log('create table for clans', TABLE_NAME);
     data_1.successOrFailData(`
-      CREATE TABLE IF NOT EXISTS ${datas.name}_${TABLE_NAME}
+      CREATE TABLE IF NOT EXISTS ${TABLE_NAME}
       ( 
-      key_ VARCHAR(36) primary key,
+      world VARCHAR(36),
+      key_ VARCHAR(36),
       color VARCHAR(36),
-      img TEXT
+      img TEXT,
+      PRIMARY KEY (world, key_)
       )
       `, function (res) {
         callBack(res);
     });
 };
-exports.buildWorldClanData = buildWorldClanData;
+exports.initClansData = initClansData;
 const insertClanData = (world_name, clanName, color, image, callBack) => {
     console.log('insert clan', clanName);
     data_1.successOrFailData(`
-        INSERT INTO ${world_name}_${TABLE_NAME}
+        INSERT INTO ${TABLE_NAME}
         (
+        world,
         key_,
         color,
         img
         )
         VALUES ( 
+        "${world_name}",
         "${clanName}", 
         "${color}", 
         "${image}"
@@ -61,7 +65,8 @@ const insertClanData = (world_name, clanName, color, image, callBack) => {
 exports.insertClanData = insertClanData;
 const readClans = (world_name, callback) => {
     data_1.successOrFailData(`
-    SELECT * FROM ${world_name}_${TABLE_NAME}
+    SELECT * FROM ${TABLE_NAME}
+    WHERE world = "${world_name}"
   `, (updateRes) => {
         if (updateRes && updateRes.length > 0) {
             callback(updateRes);

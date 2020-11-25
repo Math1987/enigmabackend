@@ -66,10 +66,16 @@ class Player extends model_pattern_1.ModelPattern {
             func();
         });
     }
-    updateValue(world_name, id, key, value, callback) {
+    updateValue(world_name, obj, key, value, callback) {
         console.log('I am a pattern ready to update the value', this.readKey());
-        player_data_1.updateCharaValueData(world_name, id, key, value, res => {
-            callback({ update: "ok" });
+        player_data_1.updateCharaValueData(world_name, obj['id'], key, value, res => {
+            if (res) {
+                obj[key] = value;
+                callback(obj);
+            }
+            else {
+                callback(null);
+            }
         });
     }
     move(world_name, id, x, y, free, callback) {

@@ -10,6 +10,7 @@ const calcul_data_1 = require("./calcul.data");
 const environment_1 = require("./../environment/environment");
 const rank_kill_data_1 = require("./rank_kill.data");
 const historic_data_1 = require("./historic.data");
+const clan_data_1 = require("./clan.data");
 const HOST = environment_1.environment.db.host;
 const USER = environment_1.environment.db.user;
 const PASSWORD = environment_1.environment.db.password;
@@ -37,7 +38,9 @@ const initData = (callBack) => {
                         historic_data_1.initHistoricData((resHistoric) => {
                             rank_kill_data_1.initRankKillData((resRankKill) => {
                                 world_data_1.initWorldData((worldInit) => {
-                                    callBack("init");
+                                    clan_data_1.initClansData(clanRes => {
+                                        callBack("init");
+                                    });
                                 });
                             });
                         });

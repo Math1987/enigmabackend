@@ -83,10 +83,15 @@ export class Player extends ModelPattern {
       func();
     });
   }
-  updateValue(world_name, id, key, value, callback ){
+  updateValue(world_name, obj, key, value, callback ){
     console.log('I am a pattern ready to update the value', this.readKey());
-    updateCharaValueData(world_name, id, key, value, res => {
-      callback({update: "ok"});
+    updateCharaValueData(world_name, obj['id'], key, value, res => {
+      if ( res ){
+        obj[key] = value ;
+        callback(obj);
+      }else{
+        callback(null);
+      }
     });
   }
 
