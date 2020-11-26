@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateWorldValueRequest = exports.getWorldsRequest = exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
+exports.updateWorldConstantRequest = exports.updateWorldValueRequest = exports.passWorldRequest = exports.getWorldsRequest = exports.passWorlds = exports.getWorld = exports.getOnPositions = exports.initWorld = void 0;
 const world_data_1 = require("./../data/world.data");
 const player_data_1 = require("./../data/player.data");
 const grounds_controller_1 = require("./grounds.controller");
@@ -64,10 +64,38 @@ const getWorldsRequest = (req, res) => {
     });
 };
 exports.getWorldsRequest = getWorldsRequest;
+const passWorldRequest = (req, res) => {
+    if (req.query['world']) {
+        passWorld(req.query['world'], passRes => {
+            if (passRes) {
+                res.status(200).send(passRes);
+            }
+            else {
+                res.status(401).send('err');
+            }
+        });
+    }
+    else {
+        res.status(401).send('need a name');
+    }
+};
+exports.passWorldRequest = passWorldRequest;
 const getWorld = (world_name, callback) => {
     world_data_1.readWorldData(world_name, callback);
 };
 exports.getWorld = getWorld;
+const passWorld = (worldName, callback) => {
+    world_data_1.readWorldData(worldName, world => {
+        if (world) {
+            main_patterns_1.passPatterns(world, patternsRes => {
+                callback('done');
+            });
+        }
+        else {
+            callback(null);
+        }
+    });
+};
 const passWorlds = (callback) => {
     world_data_1.readWorldsData(worlds => {
         console.log('pass worlds', worlds);
@@ -90,3 +118,22 @@ const updateWorldValueRequest = (req, res) => {
     }
 };
 exports.updateWorldValueRequest = updateWorldValueRequest;
+const updateWorldConstantRequest = (req, res) => {
+    console.log('update world constant request', req.body);
+    if (req.body && req.body['worldName'] && req.body['key'] && req.body['value']) {
+        world_data_1.readWorldData(req.body['worldName'], world => {
+            if (world) {
+                world_data_1.updateWorldConstantData(world['name'], req.body['key'], req.body['value'], upRes => {
+                    res.status(200).send(upRes);
+                });
+            }
+            else {
+                res.status(401).send('err');
+            }
+        });
+    }
+    else {
+        res.status(401).send('err');
+    }
+};
+exports.updateWorldConstantRequest = updateWorldConstantRequest;

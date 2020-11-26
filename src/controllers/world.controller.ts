@@ -1,4 +1,4 @@
-import { readWorldData, buildWorldData, initWorldData, readWorldsData } from "./../data/world.data";
+import { readWorldData, buildWorldData, initWorldData, readWorldsData, updateWorldConstantData } from "./../data/world.data";
 import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
 import { passPatterns, updateValueInPattern } from "../patterns/main.patterns";
@@ -67,10 +67,39 @@ const getWorldsRequest = (req, res) => {
     }
   });
 }
+const passWorldRequest = (req, res) => {
+  if ( req.query['world'] ){
+    passWorld(req.query['world'], passRes => {
+      if ( passRes ){
+        res.status(200).send(passRes);
+      }else{
+        res.status(401).send('err');
+      }
+    })
+  }else{
+    res.status(401).send('need a name');
+  }
+}
 
 const getWorld = (world_name, callback) => {
   readWorldData(world_name, callback);
 };
+const passWorld = (worldName, callback) => {
+  readWorldData( worldName, world => {
+
+    if ( world ){
+
+      passPatterns(world, patternsRes=>{
+        callback('done');
+      });  
+
+    }else{
+      callback(null);
+    }
+
+
+  })
+}
 const passWorlds = (callback) =>{
   readWorldsData( worlds => {
     console.log('pass worlds', worlds);
@@ -101,5 +130,44 @@ const updateWorldValueRequest = (req, res) => {
 
 
 }
+const updateWorldConstantRequest = (req, res ) => {
 
-export { initWorld, getOnPositions, getWorld, passWorlds, getWorldsRequest, updateWorldValueRequest };
+  console.log('update world constant request', req.body);
+  if ( req.body && req.body['worldName']  && req.body['key']  && req.body['value']){
+
+    readWorldData(req.body['worldName'], world => {
+
+      if ( world ){
+
+        updateWorldConstantData( world['name'], req.body['key'], req.body['value'], upRes => {
+
+          res.status(200).send(upRes);
+
+        });
+
+      }else{
+
+        res.status(401).send('err');
+        
+      }
+
+    });
+
+  }else{
+
+    res.status(401).send('err');
+
+  }
+
+}
+
+export {
+   initWorld,
+   getOnPositions, 
+   getWorld, 
+   passWorlds, 
+   getWorldsRequest,
+   passWorldRequest,
+   updateWorldValueRequest,
+   updateWorldConstantRequest
+ };

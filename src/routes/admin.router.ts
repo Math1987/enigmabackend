@@ -1,7 +1,7 @@
 import { midleWearTokenSecur } from "../controllers/account.controller";
 import { adminLoginReq, adminReadTokenReq, midleWearTokenSecurADMIN } from "../controllers/admin.controller";
 import { createClanRequest } from "../controllers/clan.controller";
-import { getWorldsRequest, updateWorldValueRequest } from "../controllers/world.controller";
+import { getWorldsRequest, passWorldRequest, updateWorldConstantRequest, updateWorldValueRequest } from "../controllers/world.controller";
 import { buildWorldData } from "../data/world.data";
 
 const express = require("express");
@@ -25,6 +25,7 @@ router.post("/createWorld", (req: Request, res: Response) => {
 });
 router.post("/updateWorldValue", updateWorldValueRequest);
 router.post("/createClan", createClanRequest);
-
+router.get('/pass', passWorldRequest );
+router.post('/updateWorldConstantValue', updateWorldConstantRequest );
 
 export const routerAdmin = router;

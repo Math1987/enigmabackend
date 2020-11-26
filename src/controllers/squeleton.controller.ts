@@ -4,10 +4,13 @@ import { getWorld } from "./world.controller";
 
 const passSqueletons = (worldDatas : Object, callback) => {
 
+
     const width = parseInt(worldDatas['width']);
     const height = parseInt(worldDatas['height']);
-    const density = 0.01 ;
+    const density = parseFloat(worldDatas['squeletons']) ;
     const numberOfSqueletons = Math.floor(density*(width*height-Math.pow(getNeutralZoneSize(),2))) ;
+    console.log('world passed', worldDatas);
+    console.log('density of squeletons', density);
     console.log('number of squeleton', width, height, numberOfSqueletons);
     
     readAllSqueletonsData( worldDatas['name'], squeletons => {

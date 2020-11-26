@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildWorldData = exports.readWorldsData = exports.readWorldData = exports.initWorldData = void 0;
+exports.buildWorldData = exports.updateWorldConstantData = exports.readWorldsData = exports.readWorldData = exports.initWorldData = void 0;
 const data_1 = require("./data");
 const player_data_1 = require("./player.data");
 const squeleton_data_1 = require("./squeleton.data");
@@ -68,12 +68,8 @@ const readWorldsData = (callBack) => {
                     }
                 }
                 if (!focusWorld) {
-                    focusWorld = {
-                        name: row['name'],
-                        width: row['width'],
-                        height: row['height'],
-                        clans: []
-                    };
+                    focusWorld = JSON.parse(JSON.stringify(row));
+                    focusWorld['clans'] = [];
                     worlds.push(focusWorld);
                 }
                 let clan = {
@@ -92,15 +88,30 @@ const readWorldsData = (callBack) => {
     });
 };
 exports.readWorldsData = readWorldsData;
+const updateWorldConstantData = (worldName, key, value, callback) => {
+    data_1.successOrFailData(`
+    update ${TABLE_NAME} set ${key} = ${value} 
+    where name = "${worldName}"
+  `, res => {
+        callback(res);
+    });
+};
+exports.updateWorldConstantData = updateWorldConstantData;
 const buildWorldData = (datas, callBack) => {
+    console.log('build world at start');
     data_1.successOrFailData(`
       INSERT INTO ${TABLE_NAME}
       (name, width, height)
       VALUES ("${datas.name}", ${datas.width}, ${datas.height})
       `, function (worldInsert) {
-        player_data_1.buildWorldPlayerData(datas, (playerRes) => {
-            squeleton_data_1.buildWorldSqueletonData(datas, (squeletonsRes) => {
-                callBack("done");
+        data_1.successOrFailData(`
+          ALTER TABLE ${TABLE_NAME}
+          ADD COLUMN squeletons FLOAT NOT NULL DEFAULT 0.01 ;
+          `, function (fieldRes) {
+            player_data_1.buildWorldPlayerData(datas, (playerRes) => {
+                squeleton_data_1.buildWorldSqueletonData(datas, (squeletonsRes) => {
+                    callBack("done");
+                });
             });
         });
     });

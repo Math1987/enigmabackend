@@ -22,4 +22,6 @@ router.post("/createWorld", (req, res) => {
 });
 router.post("/updateWorldValue", world_controller_1.updateWorldValueRequest);
 router.post("/createClan", clan_controller_1.createClanRequest);
+router.get('/pass', world_controller_1.passWorldRequest);
+router.post('/updateWorldConstantValue', world_controller_1.updateWorldConstantRequest);
 exports.routerAdmin = router;

@@ -78,12 +78,8 @@ const readWorldsData = (callBack: CallableFunction): Array<World> => {
           }
 
           if ( !focusWorld ){
-            focusWorld = {
-              name : row['name'],
-              width : row['width'],
-              height : row['height'],
-              clans : []
-             };
+            focusWorld = JSON.parse(JSON.stringify(row));
+            focusWorld['clans'] = [] ;
             worlds.push(focusWorld);
           }
 
@@ -105,7 +101,20 @@ const readWorldsData = (callBack: CallableFunction): Array<World> => {
     }
   );
 };
+const updateWorldConstantData = (worldName, key, value, callback){
+
+  successOrFailData(`
+    update ${TABLE_NAME} set ${key} = ${value} 
+    where name = "${worldName}"
+  `, res => {
+    callback(res);
+  })
+
+}
 const buildWorldData = (datas: World, callBack: CallableFunction) => {
+
+  console.log('build world at start');
+
   successOrFailData(
     `
       INSERT INTO ${TABLE_NAME}
@@ -113,13 +122,30 @@ const buildWorldData = (datas: World, callBack: CallableFunction) => {
       VALUES ("${datas.name}", ${datas.width}, ${datas.height})
       `,
     function (worldInsert) {
-      buildWorldPlayerData(datas, (playerRes) => {
-        buildWorldSqueletonData(datas, (squeletonsRes)=> {
-          callBack("done");
+
+      successOrFailData(
+        `
+          ALTER TABLE ${TABLE_NAME}
+          ADD COLUMN squeletons FLOAT NOT NULL DEFAULT 0.01 ;
+          `,
+        function (fieldRes) {
+        
+          buildWorldPlayerData(datas, (playerRes) => {
+            buildWorldSqueletonData(datas, (squeletonsRes)=> {
+              callBack("done");
+            });
+          });
+
         });
-      });
+
     }
   );
 };
 
-export { initWorldData, readWorldData, readWorldsData, buildWorldData };
+export {
+   initWorldData,
+   readWorldData, 
+   readWorldsData,
+   updateWorldConstantData,
+   buildWorldData 
+  };
