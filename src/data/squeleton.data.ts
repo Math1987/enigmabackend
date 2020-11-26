@@ -203,7 +203,7 @@ const readSqueletonById = (world_name, id: string, callback) => {
       `,
     function (charaRes) {
       if (charaRes && charaRes.length > 0) {
-        charaRes[0]['key'] = charaRes[0]['key_'];
+        charaRes[0]['key'] = "squeleton";
         callback(JSON.parse(JSON.stringify(charaRes[0])));
       } else {
         callback(null);
@@ -301,7 +301,19 @@ const updateSqueletonPositionData = (world_name:string, id: string, x : number, 
     
 
 });
-const updateSqueletonData = (world_name:string, chara, pattern, callback )=>{
+const updateSqueletonData = (world_name:string, id,  key, value, callback )=>{
+
+  successOrFailData(`
+    UPDATE ${world_name}_${TABLE_NAME}  
+    SET ${key} = ${value}
+    WHERE id = "${id}"
+  `, updateRes => {
+    console.log(updateRes);
+    callback(updateRes);
+  })
+
+}
+const updateSqueletonDatas = (world_name:string, chara, pattern, callback )=>{
 
   let stringCharas = '' ;
   for ( let key in chara ){
@@ -382,6 +394,7 @@ export {
   updateSqueletonData,
   readSqueletonByPositions,
   updateSqueletonPositionData,
+  updateSqueletonDatas,
   removeSqueletonDataById,
   removeSqueletonsData
 };

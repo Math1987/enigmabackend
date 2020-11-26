@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeSqueletonsData = exports.removeSqueletonDataById = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonsData = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
+exports.removeSqueletonsData = exports.removeSqueletonDataById = exports.updateSqueletonDatas = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonsData = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -163,7 +163,7 @@ const readSqueletonById = (world_name, id, callback) => {
       WHERE id = "${id}"
       `, function (charaRes) {
         if (charaRes && charaRes.length > 0) {
-            charaRes[0]['key'] = charaRes[0]['key_'];
+            charaRes[0]['key'] = "squeleton";
             callback(JSON.parse(JSON.stringify(charaRes[0])));
         }
         else {
@@ -250,7 +250,18 @@ const updateSqueletonPositionData = (world_name, id, x, y, callback) => {
     });
 };
 exports.updateSqueletonPositionData = updateSqueletonPositionData;
-const updateSqueletonData = (world_name, chara, pattern, callback) => {
+const updateSqueletonData = (world_name, id, key, value, callback) => {
+    data_1.successOrFailData(`
+    UPDATE ${world_name}_${TABLE_NAME}  
+    SET ${key} = ${value}
+    WHERE id = "${id}"
+  `, updateRes => {
+        console.log(updateRes);
+        callback(updateRes);
+    });
+};
+exports.updateSqueletonData = updateSqueletonData;
+const updateSqueletonDatas = (world_name, chara, pattern, callback) => {
     let stringCharas = '';
     for (let key in chara) {
         if (typeof chara[key] === "number" && key in pattern) {
@@ -271,7 +282,7 @@ const updateSqueletonData = (world_name, chara, pattern, callback) => {
         callback(null);
     }
 };
-exports.updateSqueletonData = updateSqueletonData;
+exports.updateSqueletonDatas = updateSqueletonDatas;
 const removeSqueletonDataById = (world_name, id, callback) => {
     data_1.successOrFailData(`
   DELETE FROM ${world_name}_${TABLE_NAME}  
