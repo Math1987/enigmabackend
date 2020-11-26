@@ -341,6 +341,32 @@ const removeSqueletonDataById = (  world_name: string, id: String,callback : Cal
     }
   );
 }
+const removeSqueletonsData  = ( world_name, squeletons : string[], callback : CallableFunction) => {
+
+  let ids = '(' ;
+  for ( let id of squeletons ){
+    ids += `'${id}'`
+    if ( id !== squeletons[squeletons.length-1]){
+      ids += ', ' ;
+    }
+  }
+  ids += ')' ;
+
+  successOrFailData(
+    `
+      DELETE FROM ${world_name}_${TABLE_NAME}  
+      WHERE id IN ${ids}
+          `,
+    (res) => {
+      if (res ) {
+        console.log('remove done', res);
+        callback('done');
+      } else {
+        callback(null);
+      }
+    }
+  );
+}
 
 export {
   buildWorldSqueletonData, 
@@ -356,5 +382,6 @@ export {
   updateSqueletonData,
   readSqueletonByPositions,
   updateSqueletonPositionData,
-  removeSqueletonDataById
+  removeSqueletonDataById,
+  removeSqueletonsData
 };

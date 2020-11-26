@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeSqueletonDataById = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonsData = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
+exports.removeSqueletonsData = exports.removeSqueletonDataById = exports.updateSqueletonPositionData = exports.readSqueletonByPositions = exports.updateSqueletonData = exports.readAllSqueletonsData = exports.readSqueletonsById = exports.readSqueletonById = exports.addSqueletonValuesData = exports.addSqueletonValueData = exports.readSqueletonValues = exports.readSqueletonValue = exports.insertSqueletonsData = exports.insertSqueletonData = exports.buildWorldSqueletonData = exports.TABLE_SQUELETONS = void 0;
 const data_1 = require("./data");
 /**
  * This object manage all the world data.
@@ -287,3 +287,26 @@ const removeSqueletonDataById = (world_name, id, callback) => {
     });
 };
 exports.removeSqueletonDataById = removeSqueletonDataById;
+const removeSqueletonsData = (world_name, squeletons, callback) => {
+    let ids = '(';
+    for (let id of squeletons) {
+        ids += `'${id}'`;
+        if (id !== squeletons[squeletons.length - 1]) {
+            ids += ', ';
+        }
+    }
+    ids += ')';
+    data_1.successOrFailData(`
+      DELETE FROM ${world_name}_${TABLE_NAME}  
+      WHERE id IN ${ids}
+          `, (res) => {
+        if (res) {
+            console.log('remove done', res);
+            callback('done');
+        }
+        else {
+            callback(null);
+        }
+    });
+};
+exports.removeSqueletonsData = removeSqueletonsData;
