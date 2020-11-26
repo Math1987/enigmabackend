@@ -3,11 +3,12 @@ import { readCharasByPositions } from "./../data/player.data";
 import { getGroundsOnPositions } from "./grounds.controller";
 import { passPatterns, updateValueInPattern } from "../patterns/main.patterns";
 import { readSqueletonByPositions } from "../data/squeleton.data";
+import { insertClanData } from "../data/clan.data";
 
 const initWorld = (callback) =>{
   readWorldsData( (worlds: Array<string>) => {
     if (!(worlds && worlds.length > 0)) {
-      buildWorldData({ name: "world1", width: 100, height: 100 }, world => {
+      createWorld('world1', 100, 100, world => {
         callback("done");
       });
     } else {
@@ -15,6 +16,19 @@ const initWorld = (callback) =>{
     }
   });
 });
+const createWorld = (worldName:string, width:number, height:number, callback) => {
+
+  buildWorldData( { name: worldName, width: width, height: height }, world => {
+
+    insertClanData( worldName, "clan1", "blue", null, res => {
+      insertClanData( worldName, "clan2", "red", null, res => {
+        callback('done');
+      });
+    });
+    
+  });
+
+}
 
 const getOnPositions = (
   world_name,

@@ -38,10 +38,12 @@ const initWorldData = (callBack) => {
 exports.initWorldData = initWorldData;
 const readWorldData = (world_name, callBack) => {
     data_1.successOrFailData(`
-      SELECT * FROM ${TABLE_NAME}
-      WHERE name = "${world_name}"
+      SELECT ${TABLE_NAME}.*, clans.* FROM ${TABLE_NAME}
+      INNER JOIN clans
+      WHERE ${TABLE_NAME}.name = "${world_name}"
       `, function (res) {
         if (res && res.length > 0) {
+            console.log('getting world', res[0]);
             callBack(JSON.parse(JSON.stringify(res[0])));
         }
         else {
@@ -52,10 +54,37 @@ const readWorldData = (world_name, callBack) => {
 exports.readWorldData = readWorldData;
 const readWorldsData = (callBack) => {
     data_1.successOrFailData(`
-      SELECT * FROM ${TABLE_NAME}
+      SELECT ${TABLE_NAME}.*, clans.* FROM ${TABLE_NAME}
+      INNER JOIN clans
       `, function (res) {
         if (res) {
-            callBack(JSON.parse(JSON.stringify(res)));
+            let worlds = [];
+            for (let row of res) {
+                let focusWorld = null;
+                for (let w of worlds) {
+                    if (w['name'] === row['name']) {
+                        focusWorld = w;
+                        break;
+                    }
+                }
+                if (!focusWorld) {
+                    focusWorld = {
+                        name: row['name'],
+                        width: row['width'],
+                        height: row['height'],
+                        clans: []
+                    };
+                    worlds.push(focusWorld);
+                }
+                let clan = {
+                    key_: row['key_'],
+                    color: row['color'],
+                    img: row['img']
+                };
+                focusWorld['clans'].push(clan);
+            }
+            console.log(worlds);
+            callBack(worlds);
         }
         else {
             callBack([]);
