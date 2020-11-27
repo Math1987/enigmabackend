@@ -7,7 +7,6 @@ const player_data_1 = require("./../data/player.data");
 const patternPlayer_1 = require("../data/patternPlayer");
 const historic_controller_1 = require("./historic.controller");
 const createChara = (world_name, datas, callback) => {
-    console.log('create chara', datas);
     if (datas["sexe"] && datas["race"]) {
         datas["key_"] = `${datas["race"]}${datas["sexe"]}`;
     }
@@ -54,7 +53,9 @@ const readChara = (world_name, id, callback) => {
                 const addMessage = () => {
                     if (i < res.length) {
                         charaPattern.writeHistoric(world_name, res[i], 'fr', resMessage => {
-                            messages.push(resMessage);
+                            if (resMessage) {
+                                messages.push(resMessage);
+                            }
                             i++;
                             addMessage();
                         });
@@ -117,7 +118,6 @@ const addSkill = (req, res) => {
 };
 exports.addSkill = addSkill;
 exports.createCharaRequest = (req, res) => {
-    console.log('createCharaRequest', req.body);
     if (req["account"] &&
         req["account"]["id"] &&
         !req["account"]["chara"] &&

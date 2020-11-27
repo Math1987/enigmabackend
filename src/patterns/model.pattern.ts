@@ -59,7 +59,7 @@ export class ModelPattern {
             let receiverPatter = getPattern(receiver['key']);
             receiverPatter.readDatas(world_name, receiver, receiverValues => {
       
-              receiverPatter.counterAttack2(
+              receiverPatter.counterAttack(
                 world_name,
                 receiverValues, 
                 this, 
@@ -68,7 +68,7 @@ export class ModelPattern {
     
                   if ( !counterRes ){
       
-                    this.attack2(
+                    this.attack(
                       world_name, 
                       attackerValues,
                       receiverPatter,
@@ -117,7 +117,6 @@ export class ModelPattern {
 
                     this.readDatas(world_name, attackerValues, lastAttacker => {
 
-                      console.log('counter attack done', counterRes);
                       callBack(counterRes);
                       sendToNear(
                         world_name,
@@ -165,7 +164,7 @@ export class ModelPattern {
       status : true
     });
   }
-  attack2(
+  attack(
     world_name: string,
     attacker: Object,
     receiverPattern: ModelPattern,
@@ -245,7 +244,7 @@ export class ModelPattern {
     }
 
   }
-  counterAttack2(
+  counterAttack(
     world_name, 
     counterAttacker,
 
@@ -298,7 +297,7 @@ export class ModelPattern {
       let rand = Math.random();
       if ( rand <= proba ){
 
-        this.attack2(world_name, counterAttacker, attackerPattern, attacker, 0.5, attackRes => {
+        this.attack(world_name, counterAttacker, attackerPattern, attacker, 0.5, attackRes => {
 
           attackRes['type'] = "counterAttack";
           callback(attackRes);
@@ -336,13 +335,15 @@ export class ModelPattern {
   }
 
   writeHistoric( world_name, historicRow, language, callback ){
-    console.log('historic row', historicRow);
 
     readObjById(world_name, historicRow['target'], objRes => {
-      let targetName = objRes['key'] ;
 
-      if ( historicRow['key_'] === "attack" ){
+      if ( objRes ){
 
+        const targetName = objRes["key"]; 
+
+        if (  historicRow['key_'] === "attack" ){
+          
           let phrase = '' ;
           if ( historicRow['status'] === "kill" ){
             phrase = `${historicRow.time} Vous avez tué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
@@ -352,21 +353,25 @@ export class ModelPattern {
           callback({
             message : phrase
           }) ;
-
-      }else if ( historicRow['key_'] === "counterAttack" ){
-
-        let phrase = '' ;
-        if ( historicRow['status'] === "kill" ){
-          phrase = `${historicRow.time} Vous avez été tué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          
+        }else if ( historicRow['key_'] === "counterAttack" ){
+          
+          let phrase = '' ;
+          if ( historicRow['status'] === "kill" ){
+            phrase = `${historicRow.time} Vous avez été tué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          }else{
+            phrase = `${historicRow.time} vous avez été contre-attaqué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          }
+          callback({
+            message : phrase
+          }) ;
+          
         }else{
-          phrase = `${historicRow.time} vous avez été contre-attaqué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          callback(null) ;
         }
-        callback({
-          message : phrase
-        }) ;
-
-    }else{
-        callback(null) ;
+        
+      }else{
+        callback(null);
       }
     });
         

@@ -11,6 +11,7 @@ import { initClansData } from "./clan.data";
 import { initHistoric2Data } from "./historic2.data";
 import { readCharaById } from "./player.data";
 import { readSqueletonById } from "./squeleton.data";
+import { initDeadData, readDeadByIdData } from "./dead.data";
 
 const HOST = environment.db.host;
 const USER = environment.db.user;
@@ -43,11 +44,13 @@ const initData = (callBack: CallableFunction) => {
           initAccountData((account) => {
             initHistoricData((resHistoric) => {
               initHistoric2Data((resHistoric) => {
-                initRankKillData((resRankKill) => {
-                  initWorldData((worldInit) => {
-                    initClansData(clanRes => {
-                      callBack("init");
-                    })
+                initDeadData((resDeads) => {
+                  initRankKillData((resRankKill) => {
+                    initWorldData((worldInit) => {
+                      initClansData(clanRes => {
+                        callBack("init");
+                      })
+                    });
                   });
                 });
               });
@@ -82,7 +85,19 @@ const readObjById = (world_name, id, callback ){
 
         if ( !squeletonRes ){
 
-          callback(null);
+          readDeadByIdData(world_name, id, deadRes => {
+
+            if ( deadRes ){
+              let lastDatas = JSON.parse(JSON.stringify(deadRes));
+              lastDatas['key'] = lastDatas['key_'];
+              console.log('dead thing found', lastDatas);
+              callback(lastDatas);
+            }else{
+              callback(null);
+            }
+
+
+          });
 
         }else{
           callback(squeletonRes);

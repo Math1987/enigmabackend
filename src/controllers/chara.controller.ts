@@ -12,7 +12,6 @@ import { readHistoric2 } from "./historic.controller";
 import { endianness } from "os";
 
 const createChara = (world_name: string, datas: {}, callback) => {
-  console.log('create chara', datas);
   if (datas["sexe"] && datas["race"]) {
     datas["key_"] = `${datas["race"]}${datas["sexe"]}`;
   }
@@ -72,7 +71,9 @@ const readChara = (world_name: string, id: string, callback: Function) => {
           if ( i < res.length ){
 
             charaPattern.writeHistoric(world_name, res[i], 'fr', resMessage => {
-              messages.push(resMessage);
+              if ( resMessage ){
+                messages.push(resMessage);
+              }
               i ++ ;
               addMessage();
             })
@@ -144,7 +145,6 @@ const addSkill = (req: Request, res: Response) => {
   }
 };
 export const createCharaRequest = (req: Request, res: Response) => {
-  console.log('createCharaRequest', req.body);
   if (
     req["account"] &&
     req["account"]["id"] &&

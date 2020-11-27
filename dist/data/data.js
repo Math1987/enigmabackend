@@ -14,6 +14,7 @@ const clan_data_1 = require("./clan.data");
 const historic2_data_1 = require("./historic2.data");
 const player_data_1 = require("./player.data");
 const squeleton_data_1 = require("./squeleton.data");
+const dead_data_1 = require("./dead.data");
 const HOST = environment_1.environment.db.host;
 const USER = environment_1.environment.db.user;
 const PASSWORD = environment_1.environment.db.password;
@@ -40,10 +41,12 @@ const initData = (callBack) => {
                     account_data_1.initAccountData((account) => {
                         historic_data_1.initHistoricData((resHistoric) => {
                             historic2_data_1.initHistoric2Data((resHistoric) => {
-                                rank_kill_data_1.initRankKillData((resRankKill) => {
-                                    world_data_1.initWorldData((worldInit) => {
-                                        clan_data_1.initClansData(clanRes => {
-                                            callBack("init");
+                                dead_data_1.initDeadData((resDeads) => {
+                                    rank_kill_data_1.initRankKillData((resRankKill) => {
+                                        world_data_1.initWorldData((worldInit) => {
+                                            clan_data_1.initClansData(clanRes => {
+                                                callBack("init");
+                                            });
                                         });
                                     });
                                 });
@@ -74,7 +77,17 @@ const readObjById = (world_name, id, callback) => {
         if (!charaRes) {
             squeleton_data_1.readSqueletonById(world_name, id, squeletonRes => {
                 if (!squeletonRes) {
-                    callback(null);
+                    dead_data_1.readDeadByIdData(world_name, id, deadRes => {
+                        if (deadRes) {
+                            let lastDatas = JSON.parse(JSON.stringify(deadRes));
+                            lastDatas['key'] = lastDatas['key_'];
+                            console.log('dead thing found', lastDatas);
+                            callback(lastDatas);
+                        }
+                        else {
+                            callback(null);
+                        }
+                    });
                 }
                 else {
                     callback(squeletonRes);
