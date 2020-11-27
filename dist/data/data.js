@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.successOrFailData = exports.initData = void 0;
+exports.readObjById = exports.successOrFailData = exports.initData = void 0;
 const patternPlayer_1 = require("./patternPlayer");
 const world_data_1 = require("./world.data");
 const account_data_1 = require("./account.data");
@@ -11,6 +11,9 @@ const environment_1 = require("./../environment/environment");
 const rank_kill_data_1 = require("./rank_kill.data");
 const historic_data_1 = require("./historic.data");
 const clan_data_1 = require("./clan.data");
+const historic2_data_1 = require("./historic2.data");
+const player_data_1 = require("./player.data");
+const squeleton_data_1 = require("./squeleton.data");
 const HOST = environment_1.environment.db.host;
 const USER = environment_1.environment.db.user;
 const PASSWORD = environment_1.environment.db.password;
@@ -36,10 +39,12 @@ const initData = (callBack) => {
                 valuesPatterns_data_1.initPatternValueData((patternData) => {
                     account_data_1.initAccountData((account) => {
                         historic_data_1.initHistoricData((resHistoric) => {
-                            rank_kill_data_1.initRankKillData((resRankKill) => {
-                                world_data_1.initWorldData((worldInit) => {
-                                    clan_data_1.initClansData(clanRes => {
-                                        callBack("init");
+                            historic2_data_1.initHistoric2Data((resHistoric) => {
+                                rank_kill_data_1.initRankKillData((resRankKill) => {
+                                    world_data_1.initWorldData((worldInit) => {
+                                        clan_data_1.initClansData(clanRes => {
+                                            callBack("init");
+                                        });
                                     });
                                 });
                             });
@@ -63,3 +68,22 @@ const successOrFailData = (sql, callBack) => {
     });
 };
 exports.successOrFailData = successOrFailData;
+const readObjById = (world_name, id, callback) => {
+    console.log('readObjById');
+    player_data_1.readCharaById(world_name, id, charaRes => {
+        if (!charaRes) {
+            squeleton_data_1.readSqueletonById(world_name, id, squeletonRes => {
+                if (!squeletonRes) {
+                    callback(null);
+                }
+                else {
+                    callback(squeletonRes);
+                }
+            });
+        }
+        else {
+            callback(charaRes);
+        }
+    });
+};
+exports.readObjById = readObjById;

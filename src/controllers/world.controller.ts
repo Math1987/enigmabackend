@@ -49,7 +49,9 @@ const getOnPositions = (
       readSqueletonByPositions(world_name, positions, squeletons => {
         if (squeletons && squeletons.length > 0) {
           for (let squeleton of squeletons) {
-            newPos.push(squeleton);
+            if ( squeleton['life'] > 0 ){
+              newPos.push(squeleton);
+            }
           }
         }
         callback(newPos);

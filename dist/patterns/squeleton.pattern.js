@@ -20,7 +20,8 @@ class Squeleton extends model_pattern_1.ModelPattern {
         squeleton_data_1.updateSqueletonData(world_name, obj['id'], key, value, callback);
     }
     die(world_name, obj, callback) {
-        squeleton_data_1.removeSqueletonDataById(world_name, obj['id'], callback);
+        squeleton_data_1.updateSqueletonData(world_name, obj['id'], "life", -1, callback);
+        //removeSqueletonDataById(world_name, obj['id'], callback);
     }
     pass(worldDatas, callback) {
         squeleton_controller_1.passSqueletons(worldDatas, callback);

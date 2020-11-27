@@ -8,6 +8,7 @@ const socket_controller_1 = require("../controllers/socket.controller");
 const patternPlayer_1 = require("../data/patternPlayer");
 const historic_data_1 = require("../data/historic.data");
 const chara_controller_1 = require("../controllers/chara.controller");
+const historic2_data_1 = require("../data/historic2.data");
 class Player extends model_pattern_1.ModelPattern {
     constructor(key) {
         super();
@@ -148,6 +149,24 @@ class Player extends model_pattern_1.ModelPattern {
                 err: "need more actions"
             });
         }
+    }
+    sendAttack(world_name, attacker, receiver, callBack) {
+        super.sendAttack(world_name, attacker, receiver, resAttack => {
+            console.log('sendAttack for chara add historic', resAttack);
+            if (resAttack &&
+                resAttack['status'] &&
+                resAttack['type'] &&
+                resAttack['attackData'] &&
+                resAttack['attackData']['d100'] &&
+                resAttack['attackData']['dammages']) {
+                historic2_data_1.addInHistoric2(world_name, resAttack['type'], attacker['id'], receiver['id'], resAttack.status, resAttack.attackData['d100'], resAttack.attackData['dammages'], callback => {
+                    callBack(resAttack);
+                });
+            }
+            else {
+                callBack(resAttack);
+            }
+        });
     }
     canMakeAttack(world_name, attacker, receiver, callBack) {
         if (attacker['action'] > 0) {

@@ -1,5 +1,6 @@
 import { getCalculation } from "../controllers/calculation.controller";
 import { sendToSocketId, sendToNear } from "../controllers/socket.controller";
+import { readObjById } from "../data/data";
 import { readPatterValueData } from "./../data/valuesPatterns.data";
 import { getPattern } from "./main.patterns";
 
@@ -53,34 +54,31 @@ export class ModelPattern {
 
         if ( canAttackRes['status'] ){
 
-          console.log('send Attack receiver', receiver );
           this.readDatas(world_name, attacker, attackerValues => {
+
             let receiverPatter = getPattern(receiver['key']);
             receiverPatter.readDatas(world_name, receiver, receiverValues => {
       
               receiverPatter.counterAttack2(
                 world_name,
                 receiverValues, 
-      
                 this, 
                 attackerValues,
-      
                 counterRes => {
-      
+    
                   if ( !counterRes ){
       
                     this.attack2(
                       world_name, 
                       attackerValues,
-          
                       receiverPatter,
                       receiverValues,
-          
                       1,
-          
                       attackRes => {
       
                         if ( attackRes ){
+
+                          attackRes['type'] = "attack" ;
       
                           this.readDatas(world_name, attackerValues, lastAttacker => {
                             receiverPatter.readDatas(world_name, receiverValues, lastReceiver => {
@@ -114,7 +112,33 @@ export class ModelPattern {
                     );
       
                   }else{
-                    callBack(counterRes);
+
+                    counterRes['type'] = "counterAttack" ;
+
+                    this.readDatas(world_name, attackerValues, lastAttacker => {
+
+                      console.log('counter attack done', counterRes);
+                      callBack(counterRes);
+                      sendToNear(
+                        world_name,
+                        {
+                          x: attackerValues["position"]["x"],
+                          y: attackerValues["position"]["y"],
+                        },
+                        8,
+                        "counterAttack",
+                        {
+                          counterAttacker : receiverValues, 
+                          attacker : lastAttacker,
+                          datas : counterRes,
+                        },
+                        (sendRes) => {}
+                      );
+  
+
+                    });
+
+
                   }
       
                 }
@@ -141,7 +165,6 @@ export class ModelPattern {
       status : true
     });
   }
-
   attack2(
     world_name: string,
     attacker: Object,
@@ -189,13 +212,13 @@ export class ModelPattern {
               calculation.factor)
         )
       );
-      receiverPattern.receiveDammages(world_name, receiver, { D100 : D100, dammages : dammages}, dammageRes => {
+      receiverPattern.receiveDammages(world_name, receiver, { d100 : D100, dammages : dammages}, dammageRes => {
 
         if ( dammageRes ){
 
           callBack({
             status : dammageRes['status'],
-            attackData : { D100 : D100, dammages : dammages }
+            attackData : { d100 : D100, dammages : dammages }
           });
 
         }
@@ -204,7 +227,6 @@ export class ModelPattern {
     });
 
   }
-
   receiveDammages(world_name, values, dammagesValues, callback){
 
     let lastLife = Math.max(0,  values['life']-dammagesValues.dammages);
@@ -223,8 +245,6 @@ export class ModelPattern {
     }
 
   }
-
-
   counterAttack2(
     world_name, 
     counterAttacker,
@@ -234,97 +254,64 @@ export class ModelPattern {
     callback
   ){
 
-    callback(false);
-    // getCalculation( calculs => {
+    getCalculation( calculs => {
 
-    //   let calculation = calculs["attack"];
-    //   let proba_skillAttack = 10;
-    //   let proba_getFood = 10;
-    //   let proba_defense = 10;
-    //   let proba_getFaith = 10;
+      let calculation = calculs["attack"];
+      let proba_skillAttack = 10;
+      let proba_getFood = 10;
+      let proba_defense = 10;
+      let proba_getFaith = 10;
 
-    //   if ("attack" in counterAttacker) {
-    //     proba_skillAttack = counterAttacker.attack;
-    //   }
-    //   if ("getFood" in counterAttacker) {
-    //     proba_getFood = counterAttacker.getFood;
-    //   }
-    //   if ("defense" in attacker) {
-    //     proba_defense = attacker.defense;
-    //   }
-    //   if ("getFaith" in attacker) {
-    //     proba_getFaith = attacker.getFaith;
-    //   }
-
-
-    //   let proba = Math.max(
-    //     0.05,
-    //     Math.min(
-    //       9.95,
-    //       calculation.proba_min +
-    //         (Math.log10(proba_skillAttack) +
-    //           Math.log10(
-    //             (proba_getFood + calculation.proba_getFood_min) *
-    //               calculation.proba_getFood
-    //           ) *
-    //             calculation.proba_factor1) -
-    //         (Math.log10(proba_defense) +
-    //           Math.log10(
-    //             (proba_getFaith + calculation.proba_getFaith_min) *
-    //               calculation.proba_getFaith
-    //           ) *
-    //             calculation.proba_factor2)
-    //     )
-    //   );
-    //   let rand = Math.random();
-    //   if ( rand <= 0 ){
-
-    //     this.attack2(world_name, counterAttacker, attackerPattern, attacker, 0.5, attackRes => {
-    //       callback(true);
-    //     });
-
-    //   }else{
-    //     callback(false) ;
-    //   }
-    // });
-
-  }
+      if ("attack" in counterAttacker) {
+        proba_skillAttack = counterAttacker.attack;
+      }
+      if ("getFood" in counterAttacker) {
+        proba_getFood = counterAttacker.getFood;
+      }
+      if ("defense" in attacker) {
+        proba_defense = attacker.defense;
+      }
+      if ("getFaith" in attacker) {
+        proba_getFaith = attacker.getFaith;
+      }
 
 
-  attack(
-    world_name: string,
-    attacker: Object,
-    receiver: Object,
-    callBack: Function
-  ) {
-  }
+      let proba = Math.max(
+        0.05,
+        Math.min(
+          9.95,
+          calculation.proba_min +
+            (Math.log10(proba_skillAttack) +
+              Math.log10(
+                (proba_getFood + calculation.proba_getFood_min) *
+                  calculation.proba_getFood
+              ) *
+                calculation.proba_factor1) -
+            (Math.log10(proba_defense) +
+              Math.log10(
+                (proba_getFaith + calculation.proba_getFaith_min) *
+                  calculation.proba_getFaith
+              ) *
+                calculation.proba_factor2)
+        )
+      );
+      let rand = Math.random();
+      if ( rand <= proba ){
 
+        this.attack2(world_name, counterAttacker, attackerPattern, attacker, 0.5, attackRes => {
 
-  receiveAttack(
-    world_name: string,
-    attacker: Object,
-    receiver: Object,
-    callBack: Function
-  ){
+          attackRes['type'] = "counterAttack";
+          callback(attackRes);
+        });
+
+      }else{
+        callback(false) ;
+      }
+    });
 
   }
-  counterAttack(
-    world_name: string,
-    counterAttacker: Object,
-    attackerPatter: ModelPattern,
-    attacker: Object,
-    callback
-  ) {
 
-
-    callback(false);
-  }
-
-  getDammage(world_name, user, value, callback) {}
   die(world_name, user, callback) {}
-
-
-
   pops(world_name, user, callBack) {
     // if (this.values["life"]) {
     //   MobilesData.updateLifeAndPosition(
@@ -347,4 +334,43 @@ export class ModelPattern {
     //   callBack(null);
     // }
   }
+
+  writeHistoric( world_name, historicRow, language, callback ){
+    console.log('historic row', historicRow);
+
+    readObjById(world_name, historicRow['target'], objRes => {
+      let targetName = objRes['key'] ;
+
+      if ( historicRow['key_'] === "attack" ){
+
+          let phrase = '' ;
+          if ( historicRow['status'] === "kill" ){
+            phrase = `${historicRow.time} Vous avez tué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          }else{
+            phrase = `${historicRow.time} vous avez attaqué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+          }
+          callback({
+            message : phrase
+          }) ;
+
+      }else if ( historicRow['key_'] === "counterAttack" ){
+
+        let phrase = '' ;
+        if ( historicRow['status'] === "kill" ){
+          phrase = `${historicRow.time} Vous avez été tué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+        }else{
+          phrase = `${historicRow.time} vous avez été contre-attaqué ${targetName} d100 ${historicRow['d100']} dammages ${historicRow['value']}.` ;
+        }
+        callback({
+          message : phrase
+        }) ;
+
+    }else{
+        callback(null) ;
+      }
+    });
+        
+  }
+
+
 }

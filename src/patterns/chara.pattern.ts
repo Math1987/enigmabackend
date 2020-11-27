@@ -22,6 +22,7 @@ import { addRankKillData } from "../data/rank_kill.data";
 import { addInHistoric } from "../data/historic.data";
 import { readChara, readCharas } from "../controllers/chara.controller";
 import { isOnNeutralZone } from "../controllers/grounds.controller";
+import { addInHistoric2 } from "../data/historic2.data";
 
 export class Player extends ModelPattern {
 
@@ -188,6 +189,51 @@ export class Player extends ModelPattern {
     }
   }
 
+  sendAttack(
+    world_name: string,
+    attacker: Object,
+    receiver: Object,
+    callBack: Function
+  ){
+
+
+    super.sendAttack( 
+      world_name,
+      attacker,
+      receiver,
+      resAttack => {
+
+        console.log('sendAttack for chara add historic', resAttack);
+
+        if ( resAttack &&
+          resAttack['status'] &&
+          resAttack['type'] &&
+          resAttack['attackData'] && 
+          resAttack['attackData']['d100'] && 
+          resAttack['attackData']['dammages']
+          ){
+
+            addInHistoric2(
+              world_name,
+              resAttack['type'],
+              attacker['id'], 
+              receiver['id'],
+              resAttack.status,
+              resAttack.attackData['d100'],
+              resAttack.attackData['dammages'],
+              callback => {
+                
+                callBack(resAttack);
+                
+              });
+              
+          }else{
+            callBack(resAttack);
+          }
+
+    });
+    
+  }
   canMakeAttack(
     world_name: string,
     attacker: Object,
@@ -213,7 +259,6 @@ export class Player extends ModelPattern {
         status : false
       })
     }
-
 
   }
 

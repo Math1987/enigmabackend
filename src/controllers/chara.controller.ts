@@ -8,6 +8,8 @@ import {
 } from "./../data/player.data";
 import { readPlayerPatternData } from "../data/patternPlayer";
 import { readHistoricData } from "../data/historic.data";
+import { readHistoric2 } from "./historic.controller";
+import { endianness } from "os";
 
 const createChara = (world_name: string, datas: {}, callback) => {
   console.log('create chara', datas);
@@ -48,14 +50,52 @@ const getCharasOnPositions = (
 };
 const readChara = (world_name: string, id: string, callback: Function) => {
   readCharaById(world_name, id, (charaRes) => {
-    readHistoricData(world_name, id, (historic) => {
-      if (charaRes) {
-        charaRes["historic"] = historic;
+    // readHistoricData(world_name, id, (historic) => {
+    //   if (charaRes) {
+    //     charaRes["historic"] = historic;
+    //   }
+    //   callback(charaRes);
+    // });
+    readHistoric2(world_name, id, res => {
+
+      const charaPattern = getPattern(charaRes['key_']);
+
+      const end = () => {
+        callback(charaRes);
       }
-      callback(charaRes);
+
+      if ( res ){
+
+        let i = 0 ;
+        let messages = [] ;
+        const addMessage = () =>{
+          if ( i < res.length ){
+
+            charaPattern.writeHistoric(world_name, res[i], 'fr', resMessage => {
+              messages.push(resMessage);
+              i ++ ;
+              addMessage();
+            })
+          }else{
+            charaRes['historic'] = messages ;
+            end();
+          }
+
+        }
+        addMessage();
+
+      }else{
+
+        end();
+        
+      }
+      
+
     });
   });
 };
+
+
 const readCharas = (world_name: string, ids: string[], callback: Function) => {
   let i = 0;
   let arr = [];

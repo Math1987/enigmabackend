@@ -5,7 +5,7 @@ const main_patterns_1 = require("./../patterns/main.patterns");
 const account_data_1 = require("./../data/account.data");
 const player_data_1 = require("./../data/player.data");
 const patternPlayer_1 = require("../data/patternPlayer");
-const historic_data_1 = require("../data/historic.data");
+const historic_controller_1 = require("./historic.controller");
 const createChara = (world_name, datas, callback) => {
     console.log('create chara', datas);
     if (datas["sexe"] && datas["race"]) {
@@ -37,11 +37,38 @@ const getCharasOnPositions = (world_name, positions, callback) => {
 exports.getCharasOnPositions = getCharasOnPositions;
 const readChara = (world_name, id, callback) => {
     player_data_1.readCharaById(world_name, id, (charaRes) => {
-        historic_data_1.readHistoricData(world_name, id, (historic) => {
-            if (charaRes) {
-                charaRes["historic"] = historic;
+        // readHistoricData(world_name, id, (historic) => {
+        //   if (charaRes) {
+        //     charaRes["historic"] = historic;
+        //   }
+        //   callback(charaRes);
+        // });
+        historic_controller_1.readHistoric2(world_name, id, res => {
+            const charaPattern = main_patterns_1.getPattern(charaRes['key_']);
+            const end = () => {
+                callback(charaRes);
+            };
+            if (res) {
+                let i = 0;
+                let messages = [];
+                const addMessage = () => {
+                    if (i < res.length) {
+                        charaPattern.writeHistoric(world_name, res[i], 'fr', resMessage => {
+                            messages.push(resMessage);
+                            i++;
+                            addMessage();
+                        });
+                    }
+                    else {
+                        charaRes['historic'] = messages;
+                        end();
+                    }
+                };
+                addMessage();
             }
-            callback(charaRes);
+            else {
+                end();
+            }
         });
     });
 };

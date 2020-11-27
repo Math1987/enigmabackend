@@ -8,6 +8,9 @@ import { environment } from "./../environment/environment";
 import { initRankKillData } from "./rank_kill.data";
 import { initHistoricData } from "./historic.data";
 import { initClansData } from "./clan.data";
+import { initHistoric2Data } from "./historic2.data";
+import { readCharaById } from "./player.data";
+import { readSqueletonById } from "./squeleton.data";
 
 const HOST = environment.db.host;
 const USER = environment.db.user;
@@ -39,11 +42,13 @@ const initData = (callBack: CallableFunction) => {
         initPatternValueData((patternData) => {
           initAccountData((account) => {
             initHistoricData((resHistoric) => {
-              initRankKillData((resRankKill) => {
-                initWorldData((worldInit) => {
-                  initClansData(clanRes => {
-                    callBack("init");
-                  })
+              initHistoric2Data((resHistoric) => {
+                initRankKillData((resRankKill) => {
+                  initWorldData((worldInit) => {
+                    initClansData(clanRes => {
+                      callBack("init");
+                    })
+                  });
                 });
               });
             });
@@ -64,4 +69,32 @@ const successOrFailData = (sql: String, callBack: CallableFunction) => {
   });
 };
 
-export { initData, successOrFailData };
+
+const readObjById = (world_name, id, callback ){
+
+  console.log('readObjById');
+
+  readCharaById(world_name, id, charaRes => {
+
+    if ( !charaRes ){
+
+      readSqueletonById(world_name, id, squeletonRes => {
+
+        if ( !squeletonRes ){
+
+          callback(null);
+
+        }else{
+          callback(squeletonRes);
+        }
+
+      });
+
+    }else{
+      callback(charaRes);
+    }
+  })
+
+}
+
+export { initData, successOrFailData, readObjById };
