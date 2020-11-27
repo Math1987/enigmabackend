@@ -45,80 +45,102 @@ export class ModelPattern {
     callBack: Function
   ){
 
-    console.log('send Attack receiver', receiver );
-    this.readDatas(world_name, attacker, attackerValues => {
-      let receiverPatter = getPattern(receiver['key']);
-      receiverPatter.readDatas(world_name, receiver, receiverValues => {
+    this.canMakeAttack(
+      world_name, 
+      attacker,
+      receiver,
+      canAttackRes => {
 
-        receiverPatter.counterAttack2(
-          world_name,
-          receiverValues, 
+        if ( canAttackRes['status'] ){
 
-          this, 
-          attackerValues,
-
-          counterRes => {
-
-            if ( !counterRes ){
-
-              this.attack2(
-                world_name, 
+          console.log('send Attack receiver', receiver );
+          this.readDatas(world_name, attacker, attackerValues => {
+            let receiverPatter = getPattern(receiver['key']);
+            receiverPatter.readDatas(world_name, receiver, receiverValues => {
+      
+              receiverPatter.counterAttack2(
+                world_name,
+                receiverValues, 
+      
+                this, 
                 attackerValues,
-    
-                receiverPatter,
-                receiverValues,
-    
-                1,
-    
-                attackRes => {
-
-                  if ( attackRes ){
-
-                    this.readDatas(world_name, attackerValues, lastAttacker => {
-                      receiverPatter.readDatas(world_name, receiverValues, lastReceiver => {
-                        
-                        console.log('last receiver', lastReceiver);
-                        if ( !lastReceiver ){
-                          lastReceiver = receiverValues ;
+      
+                counterRes => {
+      
+                  if ( !counterRes ){
+      
+                    this.attack2(
+                      world_name, 
+                      attackerValues,
+          
+                      receiverPatter,
+                      receiverValues,
+          
+                      1,
+          
+                      attackRes => {
+      
+                        if ( attackRes ){
+      
+                          this.readDatas(world_name, attackerValues, lastAttacker => {
+                            receiverPatter.readDatas(world_name, receiverValues, lastReceiver => {
+                              
+                              if ( !lastReceiver ){
+                                lastReceiver = receiverValues ;
+                              }
+      
+                              sendToNear(
+                                world_name,
+                                {
+                                  x: attackerValues["position"]["x"],
+                                  y: attackerValues["position"]["y"],
+                                },
+                                8,
+                                "attack",
+                                {
+                                  attacker : lastAttacker, 
+                                  receiver : lastReceiver,
+                                  datas : attackRes,
+                                },
+                                (sendRes) => {}
+                              );
+      
+                            });
+                          });
+                          callBack(attackRes);
                         }
-                        console.log('last receiver', lastReceiver);
-
-                        sendToNear(
-                          world_name,
-                          {
-                            x: attackerValues["position"]["x"],
-                            y: attackerValues["position"]["y"],
-                          },
-                          8,
-                          "attack",
-                          {
-                            attacker : lastAttacker, 
-                            receiver : lastReceiver,
-                            datas : attackRes,
-                          },
-                          (sendRes) => {}
-                        );
-
-                      });
-                    });
-                    callBack(attackRes);
+                      
+                      }
+                    );
+      
+                  }else{
+                    callBack(counterRes);
                   }
-                
+      
                 }
               );
+      
+            });
+          });
 
-            }else{
-              callBack(counterRes);
-            }
+        }else{
+          callBack(canAttackRes);
+        }
 
-          }
-        );
-
-      });
-    });
+      }
+    );
 
   }
-
+  canMakeAttack(
+    world_name: string,
+    attacker: Object,
+    receiver: Object,
+    callBack: Function
+  ){
+    callBack({
+      status : true
+    });
+  }
 
   attack2(
     world_name: string,

@@ -125,15 +125,83 @@ class Player extends model_pattern_1.ModelPattern {
             });
         });
     }
-    attack2(world_name, attacker, receiverPattern, receiver, intensity, callBack) {
-        console.log('attack 2 from chara patern');
-        let actions = Math.max(0, attacker['action'] - 1);
-        player_data_1.updateCharaValueData(world_name, attacker['id'], "action", actions, updateRes => {
-            this.readDatas(world_name, attacker, lastAttacker => {
-                super.attack2(world_name, lastAttacker, receiverPattern, receiver, intensity, callBack);
+    useAction(world_name, chara, number, callback) {
+        if (chara['action'] >= number) {
+            let actions = Math.max(0, chara['action'] - number);
+            player_data_1.updateCharaValueData(world_name, chara['id'], "action", actions, updateRes => {
+                if (updateRes) {
+                    this.readDatas(world_name, chara, lastAttacker => {
+                        callback(lastAttacker);
+                    });
+                }
+                else {
+                    callback({
+                        status: false,
+                        err: "error using action"
+                    });
+                }
             });
-        });
+        }
+        else {
+            callback({
+                status: false,
+                err: "need more actions"
+            });
+        }
     }
+    canMakeAttack(world_name, attacker, receiver, callBack) {
+        if (attacker['action'] > 0) {
+            super.canMakeAttack(world_name, attacker, receiver, canRes => {
+                if (canRes) {
+                    this.useAction(world_name, attacker, 1, useActionRes => {
+                        callBack(canRes);
+                    });
+                }
+                else {
+                    callBack(true);
+                }
+            });
+        }
+        else {
+            callBack({
+                status: false
+            });
+        }
+    }
+    // sendAttack(
+    //   world_name: string,
+    //   attacker: Object,
+    //   receiver: Object,
+    //   callBack: Function
+    // ){
+    //   super.sendAttack(
+    //     world_name, 
+    //     attacker, 
+    //     receiver, 
+    //     resSendAttack => {
+    //       if ( resSendAttack ){
+    //         this.useAction( world_name, attacker, 1, charaAfterUsingAction => {
+    //         });
+    //       }
+    //     }
+    //   )
+    // }
+    // attack2(
+    //   world_name: string,
+    //   attacker: Object,
+    //   receiverPattern: ModelPattern,
+    //   receiver: Object,
+    //   intensity : Number,
+    //   callBack: Function
+    // ) {
+    //   console.log('attack 2 from chara patern');
+    //   let actions = Math.max(0, attacker['action'] -1 );
+    //   updateCharaValueData(world_name, attacker['id'], "action", actions, updateRes => {
+    //     this.readDatas(world_name, attacker, lastAttacker => {
+    //       super.attack2(world_name, lastAttacker, receiverPattern, receiver, intensity, callBack);
+    //     })
+    //   });
+    // }
     // attack(
     //   world_name: string,
     //   userId: string,

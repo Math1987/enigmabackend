@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initCharaSocket = void 0;
 const world_controller_1 = require("../controllers/world.controller");
 const main_patterns_1 = require("../patterns/main.patterns");
+const player_data_1 = require("../data/player.data");
 const initCharaSocket = (socket, account) => {
     const id = account["id"];
     const world_name = account["world"];
@@ -17,7 +18,9 @@ const initCharaSocket = (socket, account) => {
         });
         socket.on("attack", (target, callback) => {
             console.log("attack!", target);
-            pattern.sendAttack(world_name, account["chara"], target, callback);
+            player_data_1.readCharaById(world_name, account['chara']['id'], chara => {
+                pattern.sendAttack(world_name, chara, target, callback);
+            });
         });
     }
 };
