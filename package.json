@@ -25,6 +25,6 @@
     "file-system": "^2.2.2",
     "jsonwebtoken": "^8.5.1",
     "mysql": "github:mysqljs/mysql",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   }
 }
